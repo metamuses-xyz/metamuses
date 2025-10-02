@@ -1,0 +1,346 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --background: #0a0a0f;
+    --foreground: #ffffff;
+    --primary-purple: #8b5cf6;
+    --primary-blue: #3b82f6;
+    --primary-cyan: #06b6d4;
+    --accent-pink: #ec4899;
+    --accent-orange: #f59e0b;
+}
+
+body {
+    color: var(--foreground);
+    background: var(--background);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1a1a2e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, var(--primary-purple), var(--primary-blue));
+    border-radius: 3px;
+}
+
+/* Complex gradient animations */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
+    50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.5), 0 0 60px rgba(139, 92, 246, 0.3); }
+}
+
+@keyframes matrix {
+    0% { transform: translateY(-100%); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(100vh); opacity: 0; }
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2.5);
+        opacity: 0;
+    }
+}
+
+/* Advanced gradient text */
+.hero-gradient-text {
+    background: linear-gradient(
+        135deg,
+        #8b5cf6 0%,
+        #3b82f6 25%,
+        #06b6d4 50%,
+        #ec4899 75%,
+        #8b5cf6 100%
+    );
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 4s ease infinite;
+}
+
+.secondary-gradient-text {
+    background: linear-gradient(90deg, #a855f7, #3b82f6, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Matrix rain effect */
+.matrix-rain {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.matrix-column {
+    position: absolute;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: rgba(139, 92, 246, 0.8);
+    animation: matrix 10s linear infinite;
+    white-space: pre-line;
+}
+
+/* Geometric shapes */
+.geometric-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.geometric-shape {
+    position: absolute;
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    animation: float 6s ease-in-out infinite;
+}
+
+.geometric-shape:nth-child(1) { 
+    top: 10%; 
+    left: 10%; 
+    width: 80px; 
+    height: 80px; 
+    transform: rotate(45deg);
+    animation-delay: 0s;
+}
+
+.geometric-shape:nth-child(2) { 
+    top: 60%; 
+    right: 15%; 
+    width: 120px; 
+    height: 120px; 
+    border-radius: 50%;
+    animation-delay: 2s;
+}
+
+.geometric-shape:nth-child(3) { 
+    bottom: 20%; 
+    left: 20%; 
+    width: 0; 
+    height: 0; 
+    border-left: 40px solid transparent;
+    border-right: 40px solid transparent;
+    border-bottom: 60px solid rgba(59, 130, 246, 0.2);
+    border: none;
+    animation-delay: 4s;
+}
+
+/* Advanced card designs */
+.neural-card {
+    background: linear-gradient(145deg, rgba(20, 20, 40, 0.8), rgba(30, 30, 60, 0.4));
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.neural-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.neural-card:hover::before {
+    left: 100%;
+}
+
+.neural-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: rgba(139, 92, 246, 0.6);
+    box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
+}
+
+/* Hexagonal patterns */
+.hex-pattern {
+    background-image: 
+        radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.1) 2px, transparent 2px),
+        radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+    background-size: 40px 40px, 20px 20px;
+    animation: hex-move 20s linear infinite;
+}
+
+@keyframes hex-move {
+    0% { background-position: 0px 0px, 0px 0px; }
+    100% { background-position: 40px 40px, 20px 20px; }
+}
+
+/* Advanced button styles */
+.neural-button {
+    position: relative;
+    background: linear-gradient(45deg, rgba(139, 92, 246, 0.8), rgba(59, 130, 246, 0.8));
+    border: none;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.neural-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.neural-button:hover::before {
+    left: 100%;
+}
+
+.neural-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+}
+
+/* Code-like elements */
+.code-block {
+    background: rgba(10, 10, 20, 0.8);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    position: relative;
+    overflow: hidden;
+}
+
+.code-block::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.8), transparent);
+    animation: scan-line 2s ease-in-out infinite;
+}
+
+@keyframes scan-line {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}
+
+/* Stats counter animation */
+.stat-number {
+    background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+}
+
+.pulse-ring {
+    position: absolute;
+    border: 2px solid rgba(139, 92, 246, 0.4);
+    border-radius: 50%;
+    animation: pulse-ring 2s cubic-bezier(0.25, 0, 0, 1) infinite;
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+    .matrix-rain {
+        display: none;
+    }
+    
+    .geometric-bg {
+        display: none;
+    }
+}
+
+/* Slider animations */
+@keyframes slider-glow {
+    0%, 100% { box-shadow: 0 0 10px rgba(139, 92, 246, 0.5); }
+    50% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.8); }
+}
+
+.slider-active {
+    animation: slider-glow 2s ease-in-out infinite;
+}
+
+/* Step progression animation */
+@keyframes step-complete {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.step-complete {
+    animation: step-complete 0.5s ease-in-out;
+}
+
+/* Avatar generation effect */
+@keyframes avatar-generate {
+    0% { opacity: 0; transform: scale(0.8) rotate(-10deg); }
+    50% { opacity: 0.7; transform: scale(1.1) rotate(5deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+.avatar-generate {
+    animation: avatar-generate 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Transaction loading */
+@keyframes transaction-pulse {
+    0%, 100% { 
+        background: linear-gradient(45deg, rgba(139, 92, 246, 0.8), rgba(59, 130, 246, 0.8));
+    }
+    50% { 
+        background: linear-gradient(45deg, rgba(139, 92, 246, 1), rgba(59, 130, 246, 1));
+    }
+}
+
+.transaction-loading {
+    animation: transaction-pulse 2s ease-in-out infinite;
+}
+
+/* Performance optimization */
+.will-change-transform {
+    will-change: transform;
+}
+
+.gpu-accelerated {
+    transform: translate3d(0, 0, 0);
+}
