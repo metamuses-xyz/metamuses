@@ -223,11 +223,8 @@ export default function Page() {
               className="text-2xl font-bold hero-gradient-text"
               data-oid="ym6cmwd"
             >
-              MetaMuse
+              MetaMuses
             </span>
-            <div className="text-xs text-gray-400 font-mono" data-oid="mcc_hto">
-              v2.0.1-beta
-            </div>
           </div>
         </div>
 
@@ -237,10 +234,7 @@ export default function Page() {
         >
           {[
             { icon: "🏠", label: "Home", active: true },
-            { icon: "✨", label: "Create Muse", href: "/create" },
-            { icon: "👥", label: "My Muses" },
-            { icon: "🔍", label: "Explore" },
-            { icon: "📊", label: "My DATs" },
+            { icon: "🎨", label: "Mint Muse", href: "/mint" },
           ].map((item, index) => (
             <a
               key={index}
@@ -279,12 +273,12 @@ export default function Page() {
           data-oid="17_ti2v"
         >
           <div data-oid="ohqrdh1">
-            <div
-              className="inline-block px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-300 text-sm font-mono mb-8"
-              data-oid="5s90rue"
-            >
-              🚀 Next-Gen AI Companions
-            </div>
+            {/* <div
+                                className="inline-block px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-300 text-sm font-mono mb-8"
+                                data-oid="5s90rue"
+                               >
+                                🚀 Next-Gen AI Companions
+                               </div> */}
 
             <h1
               className="text-6xl lg:text-8xl font-black mb-8 leading-tight"
@@ -323,7 +317,7 @@ export default function Page() {
                 data-oid="63hdv_7"
               >
                 <span data-oid="9hw2x17">🔗</span>
-                <span data-oid="br1pg5v">Connect Wallet</span>
+                <span data-oid="br1pg5v">Mint Muse AI</span>
                 <span
                   className="group-hover:translate-x-1 transition-transform"
                   data-oid="usx_b20"
@@ -331,13 +325,13 @@ export default function Page() {
                   →
                 </span>
               </button>
-              <button
-                className="px-8 py-4 border border-purple-500/30 text-purple-300 font-semibold rounded-xl hover:bg-purple-500/10 transition-all flex items-center space-x-2"
-                data-oid="pgq7ogg"
-              >
-                <span data-oid="73il3l2">▶️</span>
-                <span data-oid="q6sfal0">Watch Demo</span>
-              </button>
+              {/* <button
+                        className="px-8 py-4 border border-purple-500/30 text-purple-300 font-semibold rounded-xl hover:bg-purple-500/10 transition-all flex items-center space-x-2"
+                        data-oid="pgq7ogg"
+                       >
+                        <span data-oid="73il3l2">▶️</span>
+                        <span data-oid="q6sfal0">Watch Demo</span>
+                       </button> */}
             </div>
 
             {/* Stats */}
@@ -347,7 +341,7 @@ export default function Page() {
             >
               <div className="text-center" data-oid="hd2hjdc">
                 <div className="text-3xl font-bold" data-oid="0di3goh">
-                  <AnimatedCounter end={12400} data-oid="kq0qvf9" />+
+                  <AnimatedCounter end={100} data-oid="kq0qvf9" />+
                 </div>
                 <div className="text-gray-400 text-sm" data-oid="o7648ag">
                   Active Users
@@ -355,7 +349,7 @@ export default function Page() {
               </div>
               <div className="text-center" data-oid="r_jiuy3">
                 <div className="text-3xl font-bold" data-oid="lpfbk2b">
-                  <AnimatedCounter end={847} data-oid=".6c4:ee" />
+                  <AnimatedCounter end={10} data-oid=".6c4:ee" />
                 </div>
                 <div className="text-gray-400 text-sm" data-oid="feo08d9">
                   AI Companions
@@ -363,7 +357,7 @@ export default function Page() {
               </div>
               <div className="text-center" data-oid="ksit-gn">
                 <div className="text-3xl font-bold" data-oid="yq9q3l5">
-                  <AnimatedCounter end={2.4} data-oid="ffr4jl8" />M
+                  <AnimatedCounter end={1000} data-oid="ffr4jl8" />+
                 </div>
                 <div className="text-gray-400 text-sm" data-oid="ba9am2h">
                   Conversations
@@ -477,12 +471,12 @@ export default function Page() {
         data-oid=".2aqx57"
       >
         <div className="text-center mb-20" data-oid="a22tt::">
-          <div
-            className="inline-block px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-full text-blue-300 text-sm font-mono mb-6"
-            data-oid="ts9pawn"
-          >
-            🔬 Advanced Technology Stack
-          </div>
+          {/* <div
+                   className="inline-block px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-full text-blue-300 text-sm font-mono mb-6"
+                   data-oid="ts9pawn"
+                  >
+                   🔬 Advanced Technology Stack
+                  </div> */}
           <h2
             className="text-5xl lg:text-6xl font-black mb-6 secondary-gradient-text"
             data-oid="tjqnqju"
@@ -687,7 +681,7 @@ export default function Page() {
                 data-oid="0daom03"
               >
                 <span data-oid="t6nylvy">🚀</span>
-                <span data-oid="-a:w8uf">Launch Your Muse</span>
+                <span data-oid="-a:w8uf">Mint Your Muse</span>
                 <span
                   className="group-hover:translate-x-1 transition-transform"
                   data-oid="z_2smqk"
@@ -695,19 +689,19 @@ export default function Page() {
                   →
                 </span>
               </button>
-              <button
-                className="px-12 py-5 border-2 border-purple-500/50 text-purple-300 font-bold text-xl rounded-xl hover:bg-purple-500/10 transition-all"
-                data-oid="2kdr654"
-              >
-                View Documentation
-              </button>
+              {/* <button
+                 className="px-12 py-5 border-2 border-purple-500/50 text-purple-300 font-bold text-xl rounded-xl hover:bg-purple-500/10 transition-all"
+                 data-oid="2kdr654"
+                >
+                 View Documentation
+                </button> */}
             </div>
 
-            <div className="text-sm text-gray-400 space-x-6" data-oid="-iw76x6">
-              <span data-oid="nm.hwo_">✓ No setup fees</span>
-              <span data-oid="5tnbaey">✓ 30-day free trial</span>
-              <span data-oid="xbk2d9_">✓ Cancel anytime</span>
-            </div>
+            {/* <div className="text-sm text-gray-400 space-x-6" data-oid="-iw76x6">
+                 <span data-oid="nm.hwo_">✓ No setup fees</span>
+                 <span data-oid="5tnbaey">✓ 30-day free trial</span>
+                 <span data-oid="xbk2d9_">✓ Cancel anytime</span>
+                </div> */}
           </div>
         </div>
       </div>
@@ -756,15 +750,11 @@ export default function Page() {
             {[
               {
                 title: "Product",
-                links: ["Features", "Pricing", "API", "Documentation"],
-              },
-              {
-                title: "Company",
-                links: ["About", "Blog", "Careers", "Contact"],
+                links: ["Features", "Documentation"],
               },
               {
                 title: "Resources",
-                links: ["Help Center", "Community", "Guides", "Status"],
+                links: ["Community"],
               },
             ].map((section, index) => (
               <div key={index} data-oid="dwf2.:-">
@@ -796,7 +786,7 @@ export default function Page() {
             data-oid="6z775v8"
           >
             <p className="text-gray-400 mb-4 md:mb-0" data-oid="7wqgf4o">
-              © 2024 MetaMuses. All rights reserved. Built with ❤️ for the
+              © 2025 MetaMuses. All rights reserved. Built with ❤️ for the
               future.
             </p>
             <div
