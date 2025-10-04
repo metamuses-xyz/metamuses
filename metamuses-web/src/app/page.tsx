@@ -52,7 +52,7 @@ const MatrixRain = () => {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 pointer-events-none opacity-30"
-      data-oid="w2hloja"
+      data-oid="ie2pkjj"
     />
   );
 };
@@ -87,7 +87,7 @@ const AnimatedCounter = ({
   }, [end, duration]);
 
   return (
-    <span className="stat-number" data-oid="znowpt3">
+    <span className="stat-number" data-oid="1fj316u">
       {count}
     </span>
   );
@@ -98,7 +98,7 @@ const FloatingParticles = () => {
   return (
     <div
       className="absolute inset-0 overflow-hidden pointer-events-none"
-      data-oid="w37yp2g"
+      data-oid="pq24e6g"
     >
       {[...Array(20)].map((_, i) => (
         <div
@@ -110,7 +110,7 @@ const FloatingParticles = () => {
             animationDelay: `${Math.random() * 5}s`,
             animationDuration: `${3 + Math.random() * 4}s`,
           }}
-          data-oid="o:9vux8"
+          data-oid="rvo0gv5"
         />
       ))}
     </div>
@@ -173,19 +173,19 @@ export default function Page() {
   return (
     <div
       className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden"
-      data-oid="cumm2st"
+      data-oid="you6-0g"
     >
       {/* Matrix Rain Background */}
-      <MatrixRain data-oid="mtb6t_9" />
+      <MatrixRain data-oid="ti-45:c" />
 
       {/* Floating Particles */}
-      <FloatingParticles data-oid="pe70evx" />
+      <FloatingParticles data-oid="3y-.49x" />
 
       {/* Geometric Background */}
-      <div className="geometric-bg" data-oid="3p0qi95">
-        <div className="geometric-shape" data-oid="a8oh025"></div>
-        <div className="geometric-shape" data-oid="sv4vu9b"></div>
-        <div className="geometric-shape" data-oid="l26j9d3"></div>
+      <div className="geometric-bg" data-oid="cu8:f3u">
+        <div className="geometric-shape" data-oid="sidj-re"></div>
+        <div className="geometric-shape" data-oid="z2wt-p0"></div>
+        <div className="geometric-shape" data-oid=".5hgt24"></div>
       </div>
 
       {/* Mouse Follower */}
@@ -197,31 +197,31 @@ export default function Page() {
           background:
             "radial-gradient(circle, rgba(139, 92, 246, 0.03) 0%, transparent 70%)",
         }}
-        data-oid="j9_59j1"
+        data-oid="g5ign.6"
       />
 
       {/* Navigation */}
       <nav
         className="relative z-20 flex items-center justify-between p-6 max-w-7xl mx-auto backdrop-blur-sm"
-        data-oid="r4y2.92"
+        data-oid="w-qqbb1"
       >
-        <div className="flex items-center space-x-3" data-oid="0.hgn2t">
-          <div className="relative" data-oid="9xkdxmq">
+        <div className="flex items-center space-x-3" data-oid="otazn0l">
+          <div className="relative" data-oid="xsj3q7q">
             <div
               className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center font-bold text-white shadow-lg"
-              data-oid="pn1wur1"
+              data-oid="5:soysa"
             >
               M
             </div>
             <div
               className="pulse-ring w-12 h-12 top-0 left-0"
-              data-oid="fl2uxu-"
+              data-oid="_7-wnim"
             ></div>
           </div>
-          <div data-oid="8nmv4h5">
+          <div data-oid="4got08u">
             <span
               className="text-2xl font-bold hero-gradient-text"
-              data-oid="ym6cmwd"
+              data-oid="s23g17f"
             >
               MetaMuses
             </span>
@@ -230,7 +230,7 @@ export default function Page() {
 
         <div
           className="hidden lg:flex items-center space-x-8 text-gray-300 font-medium"
-          data-oid="idjkf0i"
+          data-oid="b_:.f50"
         >
           {[
             { icon: "🏠", label: "Home", active: true },
@@ -242,10 +242,10 @@ export default function Page() {
               className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all hover:bg-white/5 ${
                 item.active ? "text-white bg-white/10" : "hover:text-white"
               }`}
-              data-oid="69bn.tt"
+              data-oid="z.huo3v"
             >
-              <span data-oid="bsk_lbw">{item.icon}</span>
-              <span data-oid="12nxtdw">{item.label}</span>
+              <span data-oid="b340dqt">{item.icon}</span>
+              <span data-oid="a57b7k1">{item.label}</span>
             </a>
           ))}
         </div>
@@ -257,7 +257,7 @@ export default function Page() {
               ? "bg-green-600 hover:bg-green-700 text-white"
               : "text-white"
           }`}
-          data-oid="-6f:lg9"
+          data-oid="ij67ayj"
         >
           {isConnected ? "✅ Connected" : "Connect Wallet"}
         </button>
@@ -266,40 +266,40 @@ export default function Page() {
       {/* Hero Section */}
       <div
         className="relative z-10 max-w-7xl mx-auto px-4 py-20"
-        data-oid="cy6nfrb"
+        data-oid="x6ilhfc"
       >
         <div
           className="grid lg:grid-cols-2 gap-16 items-center"
-          data-oid="17_ti2v"
+          data-oid="lc:0rma"
         >
-          <div data-oid="ohqrdh1">
+          <div data-oid="2.ta0y0">
             {/* <div
-                                   className="inline-block px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-300 text-sm font-mono mb-8"
-                                   data-oid="5s90rue"
-                                  >
-                                   🚀 Next-Gen AI Companions
-                                  </div> */}
+                                         className="inline-block px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-300 text-sm font-mono mb-8"
+                                         data-oid="5s90rue"
+                                        >
+                                         🚀 Next-Gen AI Companions
+                                        </div> */}
 
             <h1
               className="text-6xl lg:text-8xl font-black mb-8 leading-tight"
-              data-oid="5h9mqtv"
+              data-oid="t557tx8"
             >
-              <div className="hero-gradient-text mb-4" data-oid="g0mq.e2">
+              <div className="hero-gradient-text mb-4" data-oid="-0mwrjc">
                 Meet Your
               </div>
-              <div className="hero-gradient-text" data-oid="2nxy5ho">
+              <div className="hero-gradient-text" data-oid="apqkxrc">
                 AI Companion
               </div>
             </h1>
 
             <p
               className="text-xl text-gray-300 mb-8 leading-relaxed max-w-2xl"
-              data-oid="gilmsrr"
+              data-oid="5b7tdj4"
             >
               Create unique AI companions with{" "}
               <span
                 className="text-purple-400 font-semibold"
-                data-oid="n7a78vz"
+                data-oid="a6h-8--"
               >
                 verifiable blockchain interactions
               </span>
@@ -309,57 +309,57 @@ export default function Page() {
 
             <div
               className="flex flex-col sm:flex-row gap-6 mb-12"
-              data-oid="a8nh3x."
+              data-oid="fcjsg3-"
             >
               <button
                 onClick={handleConnectWallet}
                 className="neural-button px-8 py-4 text-white font-bold text-lg rounded-xl flex items-center space-x-2 group"
-                data-oid="63hdv_7"
+                data-oid="n-ezokz"
               >
-                <span data-oid="9hw2x17">🔗</span>
-                <span data-oid="br1pg5v">Mint Muse AI</span>
+                <span data-oid="lqt4kj6">🔗</span>
+                <span data-oid="q3hxi_v">Mint Muse AI</span>
                 <span
                   className="group-hover:translate-x-1 transition-transform"
-                  data-oid="usx_b20"
+                  data-oid="thn95kt"
                 >
                   →
                 </span>
               </button>
               {/* <button
-                           className="px-8 py-4 border border-purple-500/30 text-purple-300 font-semibold rounded-xl hover:bg-purple-500/10 transition-all flex items-center space-x-2"
-                           data-oid="pgq7ogg"
-                          >
-                           <span data-oid="73il3l2">▶️</span>
-                           <span data-oid="q6sfal0">Watch Demo</span>
-                          </button> */}
+                                 className="px-8 py-4 border border-purple-500/30 text-purple-300 font-semibold rounded-xl hover:bg-purple-500/10 transition-all flex items-center space-x-2"
+                                 data-oid="pgq7ogg"
+                                >
+                                 <span data-oid="73il3l2">▶️</span>
+                                 <span data-oid="q6sfal0">Watch Demo</span>
+                                </button> */}
             </div>
 
             {/* Stats */}
             <div
               className="grid grid-cols-3 gap-8 pt-8 border-t border-gray-800"
-              data-oid="rr--kpe"
+              data-oid="1.cp:77"
             >
-              <div className="text-center" data-oid="hd2hjdc">
-                <div className="text-3xl font-bold" data-oid="0di3goh">
-                  <AnimatedCounter end={100} data-oid="kq0qvf9" />+
+              <div className="text-center" data-oid="-qhbg15">
+                <div className="text-3xl font-bold" data-oid="kr189kc">
+                  <AnimatedCounter end={100} data-oid="qvrto1f" />+
                 </div>
-                <div className="text-gray-400 text-sm" data-oid="o7648ag">
+                <div className="text-gray-400 text-sm" data-oid="ok-_ssd">
                   Active Users
                 </div>
               </div>
-              <div className="text-center" data-oid="r_jiuy3">
-                <div className="text-3xl font-bold" data-oid="lpfbk2b">
-                  <AnimatedCounter end={10} data-oid=".6c4:ee" />
+              <div className="text-center" data-oid=":.cw288">
+                <div className="text-3xl font-bold" data-oid="fk8mwmx">
+                  <AnimatedCounter end={10} data-oid="iikc6l2" />
                 </div>
-                <div className="text-gray-400 text-sm" data-oid="feo08d9">
+                <div className="text-gray-400 text-sm" data-oid="wn_adw7">
                   AI Companions
                 </div>
               </div>
-              <div className="text-center" data-oid="ksit-gn">
-                <div className="text-3xl font-bold" data-oid="yq9q3l5">
-                  <AnimatedCounter end={1000} data-oid="ffr4jl8" />+
+              <div className="text-center" data-oid="gnywzqn">
+                <div className="text-3xl font-bold" data-oid="dhkvfec">
+                  <AnimatedCounter end={1000} data-oid="7_8k6i5" />+
                 </div>
-                <div className="text-gray-400 text-sm" data-oid="ba9am2h">
+                <div className="text-gray-400 text-sm" data-oid="ry72nq.">
                   Conversations
                 </div>
               </div>
@@ -367,73 +367,73 @@ export default function Page() {
           </div>
 
           {/* Interactive Demo */}
-          <div className="relative" data-oid="fjf8fis">
+          <div className="relative" data-oid="cydfzca">
             <div
               className="neural-card rounded-3xl p-8 backdrop-blur-xl"
-              data-oid="a4rsr55"
+              data-oid="s2dc-nj"
             >
               <div
                 className="code-block p-6 rounded-xl mb-6"
-                data-oid="a_v5qvq"
+                data-oid="9_9xelh"
               >
                 <div
                   className="flex items-center space-x-2 mb-4"
-                  data-oid="_b-iorf"
+                  data-oid="dfui14a"
                 >
                   <div
                     className="w-3 h-3 bg-red-500 rounded-full"
-                    data-oid="tx30vsa"
+                    data-oid="qlmpis9"
                   ></div>
                   <div
                     className="w-3 h-3 bg-yellow-500 rounded-full"
-                    data-oid="ap.vayh"
+                    data-oid="ecd7qza"
                   ></div>
                   <div
                     className="w-3 h-3 bg-green-500 rounded-full"
-                    data-oid="zvunp76"
+                    data-oid=":m8k8ne"
                   ></div>
                   <span
                     className="text-gray-400 text-sm ml-4"
-                    data-oid="-qv6eyy"
+                    data-oid="ro-:g6a"
                   >
                     MetaMuse Terminal
                   </span>
                 </div>
-                <div className="font-mono text-sm space-y-2" data-oid="k_hp-3h">
-                  <div className="text-purple-400" data-oid="z-.ui.j">
+                <div className="font-mono text-sm space-y-2" data-oid="_v3tz82">
+                  <div className="text-purple-400" data-oid="qzedaz8">
                     $ metamuse create --personality curious
                   </div>
-                  <div className="text-green-400" data-oid="sbq9key">
+                  <div className="text-green-400" data-oid=".cf.2:6">
                     ✓ Initializing neural pathways...
                   </div>
-                  <div className="text-cyan-400" data-oid="7qg1ce8">
+                  <div className="text-cyan-400" data-oid="td2m._2">
                     ✓ Blockchain identity verified
                   </div>
-                  <div className="text-yellow-400" data-oid="2t33tp2">
+                  <div className="text-yellow-400" data-oid="_1a4x1m">
                     ⚡ Your AI companion is ready!
                   </div>
                   <div
                     className="text-gray-300 cursor-blink"
-                    data-oid="l7dfj7v"
+                    data-oid="8cs0sgm"
                   >
                     $ _
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-4" data-oid="pcl7hhj">
-                <div className="flex items-start space-x-4" data-oid="a0pw-vo">
+              <div className="space-y-4" data-oid="35rzorc">
+                <div className="flex items-start space-x-4" data-oid="adma1.b">
                   <div
                     className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm"
-                    data-oid="b6oym:x"
+                    data-oid="vik0lh_"
                   >
                     AI
                   </div>
                   <div
                     className="flex-1 bg-gray-800/50 rounded-lg p-4"
-                    data-oid=":u29et_"
+                    data-oid="_49fc.i"
                   >
-                    <p className="text-gray-300 text-sm" data-oid="4nbmct3">
+                    <p className="text-gray-300 text-sm" data-oid="j4grxln">
                       Hello! I'm your new AI companion. I can remember our
                       conversations, learn from your preferences, and help you
                       with creative tasks. What would you like to explore
@@ -442,18 +442,18 @@ export default function Page() {
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4" data-oid="qq8mf3k">
+                <div className="flex items-start space-x-4" data-oid="17f2aes">
                   <div
                     className="w-10 h-10 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full flex items-center justify-center text-white font-bold text-sm"
-                    data-oid="hex_4kd"
+                    data-oid="dpt052b"
                   >
                     You
                   </div>
                   <div
                     className="flex-1 bg-purple-500/20 rounded-lg p-4"
-                    data-oid="4.uuz9a"
+                    data-oid="w0aft94"
                   >
-                    <p className="text-purple-200 text-sm" data-oid="mvubcp4">
+                    <p className="text-purple-200 text-sm" data-oid="zn50dby">
                       Let's brainstorm some creative writing ideas for my sci-fi
                       novel...
                     </p>
@@ -468,24 +468,24 @@ export default function Page() {
       {/* Advanced Features Section */}
       <div
         className="relative z-10 max-w-7xl mx-auto px-4 py-32"
-        data-oid=".2aqx57"
+        data-oid="-px5utq"
       >
-        <div className="text-center mb-20" data-oid="a22tt::">
+        <div className="text-center mb-20" data-oid="s2ypz1c">
           {/* <div
-                      className="inline-block px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-full text-blue-300 text-sm font-mono mb-6"
-                      data-oid="ts9pawn"
-                     >
-                      🔬 Advanced Technology Stack
-                     </div> */}
+                            className="inline-block px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-full text-blue-300 text-sm font-mono mb-6"
+                            data-oid="ts9pawn"
+                           >
+                            🔬 Advanced Technology Stack
+                           </div> */}
           <h2
             className="text-5xl lg:text-6xl font-black mb-6 secondary-gradient-text"
-            data-oid="tjqnqju"
+            data-oid="7kclv9z"
           >
             Powered by AI & Blockchain
           </h2>
           <p
             className="text-xl text-gray-400 max-w-3xl mx-auto"
-            data-oid="km-usa9"
+            data-oid="-9z5owj"
           >
             Our cutting-edge technology stack combines the latest advances in
             artificial intelligence with blockchain security to create truly
@@ -493,7 +493,7 @@ export default function Page() {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8" data-oid="helra.:">
+        <div className="grid lg:grid-cols-2 gap-8" data-oid="i.wo6ta">
           {features.map((feature, index) => (
             <div
               key={index}
@@ -502,47 +502,47 @@ export default function Page() {
               }`}
               onClick={() => setActiveFeature(index)}
               onMouseEnter={() => setActiveFeature(index)}
-              data-oid="-o:13gy"
+              data-oid="etd7sxp"
             >
-              <div className="flex items-start space-x-6" data-oid="_3uv_bp">
+              <div className="flex items-start space-x-6" data-oid="76x02do">
                 <div
                   className={`w-16 h-16 bg-gradient-to-br ${feature.gradient} rounded-2xl flex items-center justify-center text-2xl shadow-lg`}
-                  data-oid="a2rqa5k"
+                  data-oid="_vtt4bg"
                 >
                   {feature.icon}
                 </div>
-                <div className="flex-1" data-oid="puz4x0e">
+                <div className="flex-1" data-oid="9padb6m">
                   <div
                     className="flex items-center space-x-3 mb-3"
-                    data-oid="cfdx7-s"
+                    data-oid="6h6jxb9"
                   >
                     <h3
                       className="text-2xl font-bold text-white"
-                      data-oid="i4grkw_"
+                      data-oid="i7geb1_"
                     >
                       {feature.title}
                     </h3>
                     <span
                       className="px-2 py-1 bg-gray-700/50 text-gray-300 text-xs rounded font-mono"
-                      data-oid="c9gc_qy"
+                      data-oid="ov7ciyo"
                     >
                       {feature.tech}
                     </span>
                   </div>
                   <p
                     className="text-gray-300 leading-relaxed mb-4"
-                    data-oid="evosvrj"
+                    data-oid="l_0:s5u"
                   >
                     {feature.description}
                   </p>
                   <div
                     className="flex items-center text-purple-400 hover:text-purple-300 transition-colors"
-                    data-oid="245l_gn"
+                    data-oid="x0oybtd"
                   >
-                    <span className="text-sm font-semibold" data-oid="qap9w4a">
+                    <span className="text-sm font-semibold" data-oid="ebgt:3n">
                       Learn more
                     </span>
-                    <span className="ml-2" data-oid="5ow0dh7">
+                    <span className="ml-2" data-oid=":vhrted">
                       →
                     </span>
                   </div>
@@ -556,72 +556,72 @@ export default function Page() {
       {/* Technical Architecture */}
       <div
         className="relative z-10 max-w-7xl mx-auto px-4 py-20"
-        data-oid="9t_6vz:"
+        data-oid="jp9crfw"
       >
-        <div className="hex-pattern rounded-3xl p-12" data-oid="o4eggpf">
-          <div className="text-center mb-16" data-oid="deugzcv">
+        <div className="hex-pattern rounded-3xl p-12" data-oid="rin47zl">
+          <div className="text-center mb-16" data-oid="1nklwk:">
             <h2
               className="text-4xl font-bold text-white mb-4"
-              data-oid="mlodncn"
+              data-oid="63j3r-i"
             >
               Technical Architecture
             </h2>
-            <p className="text-gray-300 text-lg" data-oid="ndu1-:z">
+            <p className="text-gray-300 text-lg" data-oid="5xg9s08">
               Built for scale, security, and seamless integration
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8" data-oid="wbq562p">
-            <div className="text-center space-y-4" data-oid="34g0uer">
+          <div className="grid md:grid-cols-3 gap-8" data-oid="o6-v-d7">
+            <div className="text-center space-y-4" data-oid="65m3906">
               <div
                 className="w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full mx-auto flex items-center justify-center text-3xl"
-                data-oid="2q.4f21"
+                data-oid="pj.k3fe"
               >
                 ⚡
               </div>
               <h3
                 className="text-xl font-semibold text-white"
-                data-oid="f.64i3c"
+                data-oid="nv1gsa-"
               >
                 Lightning Fast
               </h3>
-              <p className="text-gray-400" data-oid="s0o.j98">
+              <p className="text-gray-400" data-oid="_7t56n7">
                 Sub-100ms response times with distributed computing
               </p>
             </div>
 
-            <div className="text-center space-y-4" data-oid="mn2je7n">
+            <div className="text-center space-y-4" data-oid="ce9x..z">
               <div
                 className="w-20 h-20 bg-gradient-to-br from-green-500 to-teal-500 rounded-full mx-auto flex items-center justify-center text-3xl"
-                data-oid=":y8jimg"
+                data-oid="ux9_ctx"
               >
                 🛡️
               </div>
               <h3
                 className="text-xl font-semibold text-white"
-                data-oid="n167585"
+                data-oid="sdc859w"
               >
                 Enterprise Security
               </h3>
-              <p className="text-gray-400" data-oid=":9_7o5y">
+              <p className="text-gray-400" data-oid="_m1wiul">
                 End-to-end encryption with zero-knowledge proofs
               </p>
             </div>
 
-            <div className="text-center space-y-4" data-oid="v9b8.sg">
+            <div className="text-center space-y-4" data-oid="ya:apzi">
               <div
                 className="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-500 rounded-full mx-auto flex items-center justify-center text-3xl"
-                data-oid="vszd7fl"
+                data-oid="zw80qd0"
               >
                 🌐
               </div>
               <h3
                 className="text-xl font-semibold text-white"
-                data-oid="xy_:0e2"
+                data-oid=":p0s_5n"
               >
                 Global Scale
               </h3>
-              <p className="text-gray-400" data-oid="g393luf">
+              <p className="text-gray-400" data-oid="ngz87jz">
                 Distributed across 50+ data centers worldwide
               </p>
             </div>
@@ -632,39 +632,39 @@ export default function Page() {
       {/* Advanced CTA */}
       <div
         className="relative z-10 max-w-7xl mx-auto px-4 py-20"
-        data-oid="c6ukyhr"
+        data-oid="42-1xhw"
       >
         <div
           className="neural-card rounded-3xl p-16 text-center relative overflow-hidden"
-          data-oid="5y6fpo1"
+          data-oid="-0n4mtc"
         >
           <div
             className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-cyan-500/10"
-            data-oid="vvlq3j:"
+            data-oid="ov4snx:"
           ></div>
-          <div className="relative z-10" data-oid=".1y8._m">
+          <div className="relative z-10" data-oid="b8:nx73">
             <div
               className="inline-block px-4 py-2 bg-gradient-to-r from-purple-500/20 to-blue-500/20 border border-purple-500/30 rounded-full text-purple-300 text-sm font-mono mb-8"
-              data-oid="z0kcv25"
+              data-oid="41u:_iw"
             >
               🚀 Join the Future of AI
             </div>
 
             <h2
               className="text-5xl lg:text-6xl font-black mb-6 hero-gradient-text"
-              data-oid="cf:p1zx"
+              data-oid="zbcie2h"
             >
               Ready to Build Your
-              <br data-oid="ohea1ap" />
+              <br data-oid=":5b4527" />
               AI Companion?
             </h2>
 
             <p
               className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed"
-              data-oid=":hg.zfj"
+              data-oid="i9-k:nm"
             >
               Join{" "}
-              <span className="font-bold text-purple-400" data-oid="ubk1egf">
+              <span className="font-bold text-purple-400" data-oid="puhwy8n">
                 12,400+
               </span>{" "}
               creators already building lasting relationships with their AI
@@ -673,35 +673,35 @@ export default function Page() {
 
             <div
               className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12"
-              data-oid="0vev2sc"
+              data-oid="o-.t96s"
             >
               <button
                 onClick={handleConnectWallet}
                 className="neural-button px-12 py-5 text-white font-bold text-xl rounded-xl flex items-center space-x-3 group"
-                data-oid="0daom03"
+                data-oid="-b2_tqa"
               >
-                <span data-oid="t6nylvy">🚀</span>
-                <span data-oid="-a:w8uf">Mint Your Muse AI</span>
+                <span data-oid="4p.q5.h">🚀</span>
+                <span data-oid="znr0w.5">Mint Your Muse AI</span>
                 <span
                   className="group-hover:translate-x-1 transition-transform"
-                  data-oid="z_2smqk"
+                  data-oid="-atdfg."
                 >
                   →
                 </span>
               </button>
               {/* <button
-                    className="px-12 py-5 border-2 border-purple-500/50 text-purple-300 font-bold text-xl rounded-xl hover:bg-purple-500/10 transition-all"
-                    data-oid="2kdr654"
-                   >
-                    View Documentation
-                   </button> */}
+                          className="px-12 py-5 border-2 border-purple-500/50 text-purple-300 font-bold text-xl rounded-xl hover:bg-purple-500/10 transition-all"
+                          data-oid="2kdr654"
+                         >
+                          View Documentation
+                         </button> */}
             </div>
 
             {/* <div className="text-sm text-gray-400 space-x-6" data-oid="-iw76x6">
-                    <span data-oid="nm.hwo_">✓ No setup fees</span>
-                    <span data-oid="5tnbaey">✓ 30-day free trial</span>
-                    <span data-oid="xbk2d9_">✓ Cancel anytime</span>
-                   </div> */}
+                          <span data-oid="nm.hwo_">✓ No setup fees</span>
+                          <span data-oid="5tnbaey">✓ 30-day free trial</span>
+                          <span data-oid="xbk2d9_">✓ Cancel anytime</span>
+                         </div> */}
           </div>
         </div>
       </div>
@@ -709,37 +709,37 @@ export default function Page() {
       {/* Footer */}
       <footer
         className="relative z-10 border-t border-gray-800/50 backdrop-blur-sm"
-        data-oid="3z5qk-q"
+        data-oid="ksn2nob"
       >
-        <div className="max-w-7xl mx-auto px-4 py-16" data-oid="b1._i7r">
-          <div className="grid md:grid-cols-4 gap-8 mb-12" data-oid="badmqlm">
-            <div data-oid="09bq4cr">
+        <div className="max-w-7xl mx-auto px-4 py-16" data-oid="pns1nww">
+          <div className="grid md:grid-cols-4 gap-8 mb-12" data-oid="de0_sxa">
+            <div data-oid="vvz1-61">
               <div
                 className="flex items-center space-x-3 mb-6"
-                data-oid="is3.9rv"
+                data-oid="51cn8hv"
               >
                 <div
                   className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center font-bold text-white"
-                  data-oid=":f8vvii"
+                  data-oid="e_pr7wf"
                 >
                   M
                 </div>
                 <span
                   className="text-xl font-bold text-white"
-                  data-oid="rir3j_t"
+                  data-oid="fvlvarq"
                 >
                   MetaMuse
                 </span>
               </div>
-              <p className="text-gray-400 mb-6" data-oid="5a2erva">
+              <p className="text-gray-400 mb-6" data-oid="6dm8pyh">
                 Building the future of AI companions on blockchain technology.
               </p>
-              <div className="flex space-x-4" data-oid="llj4zoj">
+              <div className="flex space-x-4" data-oid="hcyvimw">
                 {["🐦", "📘", "💼", "📸"].map((emoji, index) => (
                   <div
                     key={index}
                     className="w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center justify-center cursor-pointer transition-colors"
-                    data-oid="nb3arlr"
+                    data-oid="q:rx4b9"
                   >
                     {emoji}
                   </div>
@@ -757,20 +757,20 @@ export default function Page() {
                 links: ["Community"],
               },
             ].map((section, index) => (
-              <div key={index} data-oid="dwf2.:-">
+              <div key={index} data-oid="yzi8o7l">
                 <h4
                   className="text-white font-semibold mb-6"
-                  data-oid="zqug34t"
+                  data-oid="n3prisa"
                 >
                   {section.title}
                 </h4>
-                <ul className="space-y-4" data-oid="ionkgqd">
+                <ul className="space-y-4" data-oid="bimm:ve">
                   {section.links.map((link, linkIndex) => (
-                    <li key={linkIndex} data-oid="rz9eyvf">
+                    <li key={linkIndex} data-oid="g_hv9o1">
                       <a
                         href="#"
                         className="text-gray-400 hover:text-white transition-colors"
-                        data-oid="aog1otf"
+                        data-oid="1_fkeqa"
                       >
                         {link}
                       </a>
@@ -783,34 +783,34 @@ export default function Page() {
 
           <div
             className="pt-8 border-t border-gray-800/50 flex flex-col md:flex-row justify-between items-center"
-            data-oid="6z775v8"
+            data-oid="9t1_f4y"
           >
-            <p className="text-gray-400 mb-4 md:mb-0" data-oid="7wqgf4o">
+            <p className="text-gray-400 mb-4 md:mb-0" data-oid="pzeyy46">
               © 2025 MetaMuses. All rights reserved. Built with ❤️ for the
               future.
             </p>
             <div
               className="flex space-x-6 text-gray-400 text-sm"
-              data-oid="swk_6ng"
+              data-oid="by.a85_"
             >
               <a
                 href="#"
                 className="hover:text-white transition-colors"
-                data-oid="j7_x6h7"
+                data-oid="-x7t45t"
               >
                 Privacy Policy
               </a>
               <a
                 href="#"
                 className="hover:text-white transition-colors"
-                data-oid="mduj6o4"
+                data-oid="7bjfjk3"
               >
                 Terms of Service
               </a>
               <a
                 href="#"
                 className="hover:text-white transition-colors"
-                data-oid=":-bhp80"
+                data-oid="s7h9tk7"
               >
                 Cookie Policy
               </a>

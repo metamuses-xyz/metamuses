@@ -1,26 +1,23 @@
 import type { Metadata } from "next";
-import Script from "next/script";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
+const inter = Inter({ subsets: ["latin"] });
+
 export const metadata: Metadata = {
-  title: "MetaMuses - AI Companions on Blockchain",
-  description:
-    "Create unique AI companions with verifiable blockchain interactions, persistent memory, and customizable personalities.",
+  title: "MetaMuse - AI Companions NFT",
+  description: "Revolutionary AI companion NFTs on the Metis blockchain",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en" data-oid="xem1bm7">
-      <body className="antialiased" data-oid="nkg:j6m">
+    <html lang="en" data-oid="8mtd6l6">
+      <body className={inter.className} data-oid="0fe3ljn">
         {children}
-        <Script
-          type="module"
-          strategy="afterInteractive"
-          src="https://cdn.jsdelivr.net/gh/onlook-dev/onlook@main/apps/web/client/public/onlook-preload-script.js"
-          data-oid="px:apb-"
-        />
       </body>
     </html>
   );

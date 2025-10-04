@@ -83,7 +83,7 @@ const NeuralNetwork = () => {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 pointer-events-none opacity-30"
-      data-oid="q1lr81t"
+      data-oid="m.dm6un"
     />
   );
 };
@@ -118,22 +118,22 @@ const CountdownTimer = ({ targetDate }: { targetDate: Date }) => {
   }, [targetDate]);
 
   return (
-    <div className="flex justify-center space-x-4 mb-8" data-oid="wqeur-g">
+    <div className="flex justify-center space-x-4 mb-8" data-oid="rfu8c6-">
       {Object.entries(timeLeft).map(([unit, value]) => (
-        <div key={unit} className="text-center" data-oid="06wg4g1">
+        <div key={unit} className="text-center" data-oid="sst7oaf">
           <div
             className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl p-4 min-w-[80px] border border-purple-500/30"
-            data-oid="2ue8vqw"
+            data-oid="vz:eapg"
           >
             <div
               className="text-3xl font-bold text-white font-mono"
-              data-oid="eisq5-z"
+              data-oid="0e5hb.."
             >
               {value.toString().padStart(2, "0")}
             </div>
             <div
               className="text-xs text-purple-200 uppercase tracking-wider"
-              data-oid="k0s:sxm"
+              data-oid="ir:pmq3"
             >
               {unit}
             </div>
@@ -159,39 +159,39 @@ const MuseAINFT = ({
   const remaining = maxSupply - mintCount;
 
   return (
-    <div className="max-w-2xl mx-auto" data-oid="5v7d2bv">
+    <div className="max-w-2xl mx-auto" data-oid="n-_f9d5">
       <div
         className={`neural-card rounded-3xl p-8 transition-all duration-500 hover:scale-105 hover:shadow-2xl relative overflow-hidden group ${
           isHovered ? "ring-2 ring-purple-500/50" : ""
         }`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        data-oid="q.:eyg5"
+        data-oid="o0q_im7"
       >
         {/* Background gradient overlay */}
         <div
           className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-          data-oid="lh.46ih"
+          data-oid="5:pwaga"
         />
 
         {/* Free Mint Badge */}
         <div
           className="absolute top-4 right-4 px-4 py-2 rounded-full text-sm font-bold bg-gradient-to-r from-green-500 to-emerald-500 text-white animate-pulse"
-          data-oid="gi:ehjx"
+          data-oid="ovziyda"
         >
           FREE MINT
         </div>
 
-        <div className="relative z-10" data-oid="1m-18ci">
+        <div className="relative z-10" data-oid=".7nzw9u">
           {/* NFT Avatar */}
-          <div className="text-center mb-8" data-oid="d3w.qan">
+          <div className="text-center mb-8" data-oid="4d38qn_">
             <div
               className="w-48 h-48 rounded-full bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500 mx-auto mb-6 flex items-center justify-center shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-110 relative"
-              data-oid="94-z_ge"
+              data-oid="bnl-7zm"
             >
               <span
                 className="text-8xl font-bold text-white"
-                data-oid="mkhi577"
+                data-oid=".ci-5n6"
               >
                 🤖
               </span>
@@ -199,25 +199,25 @@ const MuseAINFT = ({
               {/* Animated rings */}
               <div
                 className="absolute inset-0 rounded-full border-4 border-purple-400 animate-pulse opacity-50"
-                data-oid="hcr5_:_"
+                data-oid="cdmid_1"
               />
 
               <div
                 className="absolute inset-0 rounded-full border-2 border-blue-400 animate-ping opacity-30"
                 style={{ animationDelay: "1s" }}
-                data-oid="w:73-u6"
+                data-oid="9_8vj-o"
               />
             </div>
 
             <h2
               className="text-4xl font-bold text-white mb-4 group-hover:text-purple-200 transition-colors"
-              data-oid="2vncb4."
+              data-oid="9lqsf4w"
             >
               Muse AI Genesis
             </h2>
             <p
               className="text-gray-300 text-lg mb-6 leading-relaxed"
-              data-oid="r3qjinj"
+              data-oid="3ponytl"
             >
               The first-ever AI companion NFT with advanced personality traits,
               persistent memory, and blockchain-verified interactions. Your
@@ -227,109 +227,109 @@ const MuseAINFT = ({
 
           {/* Personality Traits */}
           {/* <div className="mb-8" data-oid="450uq6u">
-                     <h3
-                       className="text-xl font-semibold text-gray-200 mb-4 text-center"
-                       data-oid="e4:m0aq"
-                     >
-                       🧠 AI Capabilities
-                     </h3>
-                     <div className="grid grid-cols-2 gap-4" data-oid="y:5b.70">
-                       {[
-                         {
-                           trait: "Intelligence",
-                           value: 95,
-                           color: "from-blue-500 to-cyan-500",
-                         },
-                         {
-                           trait: "Creativity",
-                           value: 88,
-                           color: "from-purple-500 to-pink-500",
-                         },
-                         {
-                           trait: "Empathy",
-                           value: 92,
-                           color: "from-green-500 to-teal-500",
-                         },
-                         {
-                           trait: "Adaptability",
-                           value: 90,
-                           color: "from-orange-500 to-yellow-500",
-                         },
-                       ].map(({ trait, value, color }) => (
-                         <div
-                           key={trait}
-                           className="bg-gray-800/50 rounded-lg p-4 border border-gray-700/50"
-                           data-oid="pz9rsvd"
-                         >
-                           <div
-                             className="flex items-center justify-between mb-2"
-                             data-oid="229h4.."
-                           >
-                             <span
-                               className="text-gray-300 font-medium"
-                               data-oid="a9ds6xz"
-                             >
-                               {trait}
-                             </span>
-                             <span
-                               className="text-purple-400 font-mono font-bold"
-                               data-oid="6sqo5dp"
-                             >
-                               {value}%
-                             </span>
-                           </div>
-                           <div
-                             className="w-full h-2 bg-gray-700 rounded-full overflow-hidden"
-                             data-oid="nlnc81h"
-                           >
-                             <div
-                               className={`h-full rounded-full bg-gradient-to-r ${color} transition-all duration-1000`}
-                               style={{ width: `${value}%` }}
-                               data-oid="_mka8dg"
-                             />
-                           </div>
-                         </div>
-                       ))}
-                     </div>
-                    </div> */}
+                          <h3
+                            className="text-xl font-semibold text-gray-200 mb-4 text-center"
+                            data-oid="e4:m0aq"
+                          >
+                            🧠 AI Capabilities
+                          </h3>
+                          <div className="grid grid-cols-2 gap-4" data-oid="y:5b.70">
+                            {[
+                              {
+                                trait: "Intelligence",
+                                value: 95,
+                                color: "from-blue-500 to-cyan-500",
+                              },
+                              {
+                                trait: "Creativity",
+                                value: 88,
+                                color: "from-purple-500 to-pink-500",
+                              },
+                              {
+                                trait: "Empathy",
+                                value: 92,
+                                color: "from-green-500 to-teal-500",
+                              },
+                              {
+                                trait: "Adaptability",
+                                value: 90,
+                                color: "from-orange-500 to-yellow-500",
+                              },
+                            ].map(({ trait, value, color }) => (
+                              <div
+                                key={trait}
+                                className="bg-gray-800/50 rounded-lg p-4 border border-gray-700/50"
+                                data-oid="pz9rsvd"
+                              >
+                                <div
+                                  className="flex items-center justify-between mb-2"
+                                  data-oid="229h4.."
+                                >
+                                  <span
+                                    className="text-gray-300 font-medium"
+                                    data-oid="a9ds6xz"
+                                  >
+                                    {trait}
+                                  </span>
+                                  <span
+                                    className="text-purple-400 font-mono font-bold"
+                                    data-oid="6sqo5dp"
+                                  >
+                                    {value}%
+                                  </span>
+                                </div>
+                                <div
+                                  className="w-full h-2 bg-gray-700 rounded-full overflow-hidden"
+                                  data-oid="nlnc81h"
+                                >
+                                  <div
+                                    className={`h-full rounded-full bg-gradient-to-r ${color} transition-all duration-1000`}
+                                    style={{ width: `${value}%` }}
+                                    data-oid="_mka8dg"
+                                  />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                         </div> */}
 
           {/* NFT Details */}
           <div
             className="bg-gray-800/30 rounded-xl p-6 border border-gray-700/50 mb-8"
-            data-oid="nk6itfs"
+            data-oid="iimlb:q"
           >
-            <div className="grid grid-cols-2 gap-6" data-oid="3urt.w1">
-              <div data-oid="2qsr9pz">
-                <span className="text-gray-400 text-sm" data-oid="p_n2c_c">
+            <div className="grid grid-cols-2 gap-6" data-oid="0er0e6g">
+              <div data-oid="jisdboe">
+                <span className="text-gray-400 text-sm" data-oid="e542f0y">
                   Collection
                 </span>
-                <div className="text-white font-semibold" data-oid="3n47llt">
+                <div className="text-white font-semibold" data-oid="20pci5q">
                   Muse AI Genesis
                 </div>
               </div>
-              <div data-oid="krzb:1x">
-                <span className="text-gray-400 text-sm" data-oid="snjj_lu">
+              <div data-oid="siiwg3l">
+                <span className="text-gray-400 text-sm" data-oid="-9q:roc">
                   Network
                 </span>
-                <div className="text-white font-semibold" data-oid="s29mz:t">
+                <div className="text-white font-semibold" data-oid="p33fi.p">
                   Hyperion Testnet
                 </div>
               </div>
-              <div data-oid="qnfooqr">
-                <span className="text-gray-400 text-sm" data-oid=":y7-:ew">
+              <div data-oid="e-jhwz9">
+                <span className="text-gray-400 text-sm" data-oid="tx-5xh2">
                   Total Supply
                 </span>
-                <div className="text-white font-semibold" data-oid="i-a-kyp">
+                <div className="text-white font-semibold" data-oid="s1hz6rk">
                   {maxSupply.toLocaleString()}
                 </div>
               </div>
-              <div data-oid="sup4u.5">
-                <span className="text-gray-400 text-sm" data-oid="2kjnlld">
+              <div data-oid="2yezyoc">
+                <span className="text-gray-400 text-sm" data-oid="7wbg1m3">
                   Remaining
                 </span>
                 <div
                   className="text-green-400 font-semibold"
-                  data-oid="67wopaa"
+                  data-oid="46l-i0i"
                 >
                   {remaining.toLocaleString()}
                 </div>
@@ -338,45 +338,45 @@ const MuseAINFT = ({
           </div>
 
           {/* Progress Bar */}
-          <div className="mb-8" data-oid="hg9fstc">
+          <div className="mb-8" data-oid="3l152t9">
             <div
               className="flex justify-between items-center mb-2"
-              data-oid="s7m-0ah"
+              data-oid="bbpd-:e"
             >
-              <span className="text-gray-400 text-sm" data-oid="chj5f9d">
+              <span className="text-gray-400 text-sm" data-oid="elp-zl-">
                 Minting Progress
               </span>
               <span
                 className="text-purple-400 font-mono text-sm"
-                data-oid="j5q34p1"
+                data-oid="_einsqg"
               >
                 {mintCount}/{maxSupply}
               </span>
             </div>
             <div
               className="w-full h-3 bg-gray-700 rounded-full overflow-hidden"
-              data-oid="bvgezup"
+              data-oid="wfojg0:"
             >
               <div
                 className="h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-full transition-all duration-500"
                 style={{ width: `${(mintCount / maxSupply) * 100}%` }}
-                data-oid="9d8ax48"
+                data-oid="c.8c6qi"
               />
             </div>
           </div>
 
           {/* Price Display */}
           {/* <div className="text-center mb-8" data-oid="dksbqcz">
-                    <div
-                      className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400 mb-2"
-                      data-oid="jk_izz3"
-                    >
-                      FREE
-                    </div>
-                    <div className="text-gray-400 text-lg" data-oid="8r5ph67">
-                      No gas fees • No hidden costs • Limited time only
-                    </div>
-                   </div> */}
+                         <div
+                           className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400 mb-2"
+                           data-oid="jk_izz3"
+                         >
+                           FREE
+                         </div>
+                         <div className="text-gray-400 text-lg" data-oid="8r5ph67">
+                           No gas fees • No hidden costs • Limited time only
+                         </div>
+                        </div> */}
 
           {/* Mint Button */}
           <button
@@ -389,21 +389,21 @@ const MuseAINFT = ({
                   ? "bg-purple-600/50 text-white cursor-not-allowed"
                   : "neural-button text-white hover:scale-105 shadow-lg shadow-purple-500/30"
             }`}
-            data-oid="t:66ntq"
+            data-oid="a9c-q4w"
           >
             {remaining === 0 ? (
               "🔥 SOLD OUT"
             ) : isMinting ? (
               <div
                 className="flex items-center justify-center space-x-3"
-                data-oid="pqjeemy"
+                data-oid="a0fcre9"
               >
                 <div
                   className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"
-                  data-oid="64e1ixt"
+                  data-oid="iob-7vt"
                 />
 
-                <span data-oid="lvsai:s">Minting Your Muse AI...</span>
+                <span data-oid="1gqw-qa">Minting Your Muse AI...</span>
               </div>
             ) : (
               "🚀 MINT YOUR MUSE AI - FREE"
@@ -412,43 +412,43 @@ const MuseAINFT = ({
 
           {/* Benefits */}
           {/* <div
-                   className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 text-center"
-                   data-oid="rd-zhmj"
-                  >
-                   <div
-                     className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4"
-                     data-oid="r7vcyq_"
-                   >
-                     <div className="text-2xl mb-2" data-oid="3:--cpq">
-                       💬
-                     </div>
-                     <div className="text-sm text-gray-300" data-oid="p.g8ge3">
-                       Persistent Memory
-                     </div>
-                   </div>
-                   <div
-                     className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4"
-                     data-oid="fj2kmvs"
-                   >
-                     <div className="text-2xl mb-2" data-oid="nl8k.8j">
-                       🔗
-                     </div>
-                     <div className="text-sm text-gray-300" data-oid="4po3ugp">
-                       Blockchain Verified
-                     </div>
-                   </div>
-                   <div
-                     className="bg-green-500/10 border border-green-500/30 rounded-lg p-4"
-                     data-oid="7uwtx-q"
-                   >
-                     <div className="text-2xl mb-2" data-oid="foo8y_6">
-                       🎯
-                     </div>
-                     <div className="text-sm text-gray-300" data-oid="xi0r2qj">
-                       Ecosystem Access
-                     </div>
-                   </div>
-                  </div> */}
+                        className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 text-center"
+                        data-oid="rd-zhmj"
+                       >
+                        <div
+                          className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4"
+                          data-oid="r7vcyq_"
+                        >
+                          <div className="text-2xl mb-2" data-oid="3:--cpq">
+                            💬
+                          </div>
+                          <div className="text-sm text-gray-300" data-oid="p.g8ge3">
+                            Persistent Memory
+                          </div>
+                        </div>
+                        <div
+                          className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4"
+                          data-oid="fj2kmvs"
+                        >
+                          <div className="text-2xl mb-2" data-oid="nl8k.8j">
+                            🔗
+                          </div>
+                          <div className="text-sm text-gray-300" data-oid="4po3ugp">
+                            Blockchain Verified
+                          </div>
+                        </div>
+                        <div
+                          className="bg-green-500/10 border border-green-500/30 rounded-lg p-4"
+                          data-oid="7uwtx-q"
+                        >
+                          <div className="text-2xl mb-2" data-oid="foo8y_6">
+                            🎯
+                          </div>
+                          <div className="text-sm text-gray-300" data-oid="xi0r2qj">
+                            Ecosystem Access
+                          </div>
+                        </div>
+                       </div> */}
         </div>
       </div>
     </div>
@@ -506,79 +506,79 @@ export default function MintPage() {
   return (
     <div
       className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden"
-      data-oid="gcp9v1e"
+      data-oid="0ag9-:v"
     >
       {/* Enhanced Background Effects */}
-      <NeuralNetwork data-oid="sgh1q_b" />
+      <NeuralNetwork data-oid="7eca-ok" />
 
-      <div className="absolute inset-0 overflow-hidden" data-oid="g6yxo33">
+      <div className="absolute inset-0 overflow-hidden" data-oid="e0q0b_s">
         <div
           className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"
-          data-oid="zm3z.9_"
+          data-oid="c8:s.-q"
         />
 
         <div
           className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"
-          data-oid="is0um_w"
+          data-oid="7apub9h"
         />
 
         <div
           className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"
-          data-oid="654fxz8"
+          data-oid=":rqjcqf"
         />
       </div>
 
       {/* Navigation */}
       <nav
         className="relative z-20 flex items-center justify-between p-6 max-w-7xl mx-auto"
-        data-oid="citiv90"
+        data-oid="r52qebo"
       >
         <Link
           href="/"
           className="flex items-center space-x-3"
-          data-oid="7vom8ba"
+          data-oid="-0:_rsx"
         >
           <div
             className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center font-bold text-white"
-            data-oid="g-nkavw"
+            data-oid="oml.-p8"
           >
             M
           </div>
-          <div data-oid="vmihdhw">
+          <div data-oid="1z-h3k7">
             <span
               className="text-2xl font-bold hero-gradient-text"
-              data-oid="f2wx:.q"
+              data-oid="0g58ftt"
             >
               MetaMuse
             </span>
-            <div className="text-xs text-gray-400 font-mono" data-oid="y3kyixe">
+            <div className="text-xs text-gray-400 font-mono" data-oid="fw3bdfh">
               Free Mint Campaign
             </div>
           </div>
         </Link>
 
-        <div className="flex items-center space-x-4" data-oid="8g:805x">
+        <div className="flex items-center space-x-4" data-oid="6itsuhu">
           {!walletConnected ? (
             <button
               onClick={connectWallet}
               className="neural-button px-6 py-3 text-white font-semibold rounded-xl hover:scale-105 transition-all"
-              data-oid="c0a7k:u"
+              data-oid="7ru26-m"
             >
               🔗 Connect Wallet
             </button>
           ) : (
             <div
               className="flex items-center space-x-2 px-4 py-2 bg-green-600/20 border border-green-500/30 rounded-xl"
-              data-oid="3q0hroy"
+              data-oid="67rdxuk"
             >
               <div
                 className="w-2 h-2 bg-green-500 rounded-full animate-pulse"
-                data-oid="c8yi396"
+                data-oid="n30_rhl"
               />
 
               <span
                 className="text-green-300 text-sm font-mono"
-                data-oid="-kwfcb."
+                data-oid="vfz_u1u"
               >
                 0x3BD9...7881
               </span>
@@ -588,7 +588,7 @@ export default function MintPage() {
           <Link
             href="/"
             className="px-6 py-3 border border-gray-600 text-gray-300 font-semibold rounded-xl hover:bg-gray-700 transition-all"
-            data-oid="il4gmvv"
+            data-oid="l.r3zf5"
           >
             ← Back to Home
           </Link>
@@ -598,100 +598,100 @@ export default function MintPage() {
       {/* Main Content */}
       <div
         className="relative z-10 max-w-6xl mx-auto px-4 py-12"
-        data-oid="150xr5o"
+        data-oid="mvpr94u"
       >
         {/* Header */}
-        <div className="text-center mb-16" data-oid="495jagk">
+        <div className="text-center mb-16" data-oid=":dpesfs">
           <div
             className="inline-block px-6 py-3 bg-green-500/20 border border-green-500/30 rounded-full text-green-300 text-sm font-mono mb-8 animate-pulse"
-            data-oid="q8assx9"
+            data-oid="muzpnf5"
           >
             🎁 FREE MINT CAMPAIGN - LIMITED TIME
           </div>
 
           <h1
             className="text-6xl lg:text-8xl font-black mb-8 leading-tight"
-            data-oid="tpn7ai2"
+            data-oid="0lfoau0"
           >
-            <div className="hero-gradient-text mb-2" data-oid="xsx_so7">
+            <div className="hero-gradient-text mb-2" data-oid="ku9dlfr">
               Muse AI
             </div>
-            <div className="text-white" data-oid="vsgoles">
+            <div className="text-white" data-oid="aum72tb">
               Genesis Collection
             </div>
           </h1>
 
           <p
             className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed mb-12"
-            data-oid="l0sq424"
+            data-oid="6ln7xut"
           >
             Be among the first to own a revolutionary AI companion NFT. Each
             Muse AI features unique personality traits, persistent memory, and
             verified blockchain interactions.
-            <br data-oid="uqy_-83" />
-            <span className="text-green-400 font-semibold" data-oid="t.1fr0t">
+            <br data-oid="q:z8ekv" />
+            <span className="text-green-400 font-semibold" data-oid="hls1qj:">
               {" "}
               Completely free to mint!
             </span>
           </p>
 
           {/* Countdown Timer */}
-          <div className="mb-12" data-oid="9um71d1">
+          <div className="mb-12" data-oid="ngka4b9">
             <h3
               className="text-2xl font-bold text-white mb-6"
-              data-oid="xhwsv2w"
+              data-oid="1b2j9yd"
             >
               ⏰ Campaign Ends In:
             </h3>
-            <CountdownTimer targetDate={campaignEndDate} data-oid="96s44t4" />
+            <CountdownTimer targetDate={campaignEndDate} data-oid="z6t5zzy" />
           </div>
 
           {/* Stats */}
           <div
             className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto mb-16"
-            data-oid="uhx6526"
+            data-oid="oj7qb78"
           >
-            <div className="text-center" data-oid="8gglp0q">
+            <div className="text-center" data-oid="h3jlw5q">
               <div
                 className="text-4xl font-bold stat-number"
-                data-oid="auiz2vn"
+                data-oid="16v9yzu"
               >
                 {mintCount.toLocaleString()}
               </div>
-              <div className="text-gray-400 text-sm" data-oid="qbl8g92">
+              <div className="text-gray-400 text-sm" data-oid="66jl_0h">
                 Minted
               </div>
             </div>
-            <div className="text-center" data-oid="6r::u_p">
+            <div className="text-center" data-oid="qmmurau">
               <div
                 className="text-4xl font-bold stat-number"
-                data-oid="8pma5no"
+                data-oid="inckk7h"
               >
                 5,000
               </div>
-              <div className="text-gray-400 text-sm" data-oid="h3_l6b4">
+              <div className="text-gray-400 text-sm" data-oid="5mvs_o:">
                 Total Supply
               </div>
             </div>
-            <div className="text-center" data-oid="ikogfgn">
+            <div className="text-center" data-oid="jz6hfbl">
               <div
                 className="text-4xl font-bold text-green-400"
-                data-oid="rc0g7oa"
+                data-oid="l4se-dj"
               >
                 FREE
               </div>
-              <div className="text-gray-400 text-sm" data-oid="t91b9cm">
+              <div className="text-gray-400 text-sm" data-oid="-km58pi">
                 Mint Price
               </div>
             </div>
-            <div className="text-center" data-oid=":bpz_sw">
+            <div className="text-center" data-oid="ro69f_d">
               <div
                 className="text-4xl font-bold stat-number"
-                data-oid="0uvada_"
+                data-oid=":kukzsc"
               >
                 1
               </div>
-              <div className="text-gray-400 text-sm" data-oid="mfj.ckl">
+              <div className="text-gray-400 text-sm" data-oid="k:x-nzg">
                 Per Wallet
               </div>
             </div>
@@ -700,13 +700,13 @@ export default function MintPage() {
 
         {/* Main NFT Display */}
         {isLoading ? (
-          <div className="text-center py-20" data-oid="_0srxhp">
+          <div className="text-center py-20" data-oid="_a0ttvy">
             <div
               className="w-20 h-20 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-6"
-              data-oid="9a:ib0n"
+              data-oid="miykwev"
             />
 
-            <p className="text-gray-400 text-lg" data-oid="9y_w9k_">
+            <p className="text-gray-400 text-lg" data-oid="4j_wrbi">
               Loading your Muse AI...
             </p>
           </div>
@@ -715,69 +715,69 @@ export default function MintPage() {
             onMint={handleMint}
             isMinting={isMinting}
             mintCount={mintCount}
-            data-oid="lwhurv6"
+            data-oid="nrvj8m8"
           />
         )}
 
         {/* Features Section */}
-        <div className="mt-20" data-oid="uoyd486">
+        <div className="mt-20" data-oid="ry2ya9b">
           <h2
             className="text-4xl font-bold text-center text-white mb-12"
-            data-oid="tojtw:o"
+            data-oid="h4p3yyk"
           >
             Why Muse AI Genesis?
           </h2>
-          <div className="grid md:grid-cols-3 gap-8" data-oid="7bzcj4y">
+          <div className="grid md:grid-cols-3 gap-8" data-oid="5zu:rpr">
             <div
               className="neural-card rounded-2xl p-8 text-center"
-              data-oid="nx8nklv"
+              data-oid="5bp_qc0"
             >
-              <div className="text-5xl mb-4" data-oid=".6y0trq">
+              <div className="text-5xl mb-4" data-oid="xc6sji3">
                 🧠
               </div>
               <h3
                 className="text-xl font-bold text-white mb-4"
-                data-oid="iz9n3fp"
+                data-oid="u9kd133"
               >
                 Advanced AI
               </h3>
-              <p className="text-gray-300" data-oid=".:jgjyg">
+              <p className="text-gray-300" data-oid="k93mxtj">
                 Powered by cutting-edge AI technology with persistent memory and
                 evolving personality traits.
               </p>
             </div>
             <div
               className="neural-card rounded-2xl p-8 text-center"
-              data-oid="2owor0a"
+              data-oid="t:w447h"
             >
-              <div className="text-5xl mb-4" data-oid="v28mm0e">
+              <div className="text-5xl mb-4" data-oid="8jms-v.">
                 🔗
               </div>
               <h3
                 className="text-xl font-bold text-white mb-4"
-                data-oid=".p.mi9q"
+                data-oid="aj23bj7"
               >
                 Blockchain Verified
               </h3>
-              <p className="text-gray-300" data-oid="rhf4hxn">
+              <p className="text-gray-300" data-oid="3wevbt:">
                 Every interaction is recorded on the Metis blockchain, ensuring
                 authenticity and ownership.
               </p>
             </div>
             <div
               className="neural-card rounded-2xl p-8 text-center"
-              data-oid="zq3ueq5"
+              data-oid="_3n90kw"
             >
-              <div className="text-5xl mb-4" data-oid="oey4hsu">
+              <div className="text-5xl mb-4" data-oid="dg1m8ju">
                 🌟
               </div>
               <h3
                 className="text-xl font-bold text-white mb-4"
-                data-oid="1mczt99"
+                data-oid="66:_5m0"
               >
                 Ecosystem Access
               </h3>
-              <p className="text-gray-300" data-oid="_2qlymt">
+              <p className="text-gray-300" data-oid="xymf1tt">
                 Your gateway to the entire MetaMuses ecosystem with exclusive
                 features and future utilities.
               </p>
@@ -786,14 +786,14 @@ export default function MintPage() {
         </div>
 
         {/* FAQ Section */}
-        <div className="mt-20" data-oid="swl54cm">
+        <div className="mt-20" data-oid="a1d4:0w">
           <h2
             className="text-4xl font-bold text-center text-white mb-12"
-            data-oid="27kg5_e"
+            data-oid="z6lgn2f"
           >
             Frequently Asked Questions
           </h2>
-          <div className="max-w-4xl mx-auto space-y-6" data-oid="u3soqpq">
+          <div className="max-w-4xl mx-auto space-y-6" data-oid="dpfmu:e">
             {[
               {
                 q: "Is this really free?",
@@ -815,15 +815,15 @@ export default function MintPage() {
               <div
                 key={index}
                 className="neural-card rounded-xl p-6"
-                data-oid="8ur7b5l"
+                data-oid="_mb9:ch"
               >
                 <h3
                   className="text-lg font-bold text-white mb-3"
-                  data-oid="2ho5_nj"
+                  data-oid="dvsp7l4"
                 >
                   {faq.q}
                 </h3>
-                <p className="text-gray-300" data-oid="_v7hs-2">
+                <p className="text-gray-300" data-oid="8.wf32m">
                   {faq.a}
                 </p>
               </div>
