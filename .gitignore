@@ -1,3 +1,35 @@
 .claude/
 *.md
 !README.md
+/contracts/broadcast
+
+# Rust
+target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Qdrant storage
+qdrant_storage/
+
+# Models (large files)
+/models/
+*.gguf
+*.bin
+*.safetensors
+/metamuse-api
