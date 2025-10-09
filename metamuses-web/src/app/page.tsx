@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 // Matrix Rain Component
 const MatrixRain = () => {
@@ -118,7 +120,6 @@ const FloatingParticles = () => {
 };
 
 export default function Page() {
-  const [isConnected, setIsConnected] = useState(false);
   const [activeFeature, setActiveFeature] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -130,10 +131,6 @@ export default function Page() {
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
-
-  const handleConnectWallet = () => {
-    setIsConnected(!isConnected);
-  };
 
   const features = [
     {
@@ -201,67 +198,7 @@ export default function Page() {
       />
 
       {/* Navigation */}
-      <nav
-        className="relative z-20 flex items-center justify-between p-6 max-w-7xl mx-auto backdrop-blur-sm"
-        data-oid="38pil4q"
-      >
-        <div className="flex items-center space-x-3" data-oid="qs-a-g3">
-          <div className="relative" data-oid="vtrmw65">
-            <div
-              className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center font-bold text-white shadow-lg"
-              data-oid="wsx7v5k"
-            >
-              M
-            </div>
-            <div
-              className="pulse-ring w-12 h-12 top-0 left-0"
-              data-oid="j3dl.yi"
-            ></div>
-          </div>
-          <div data-oid="ji.efyf">
-            <span
-              className="text-2xl font-bold hero-gradient-text"
-              data-oid="5nidb7t"
-            >
-              MetaMuses
-            </span>
-          </div>
-        </div>
-
-        <div
-          className="hidden lg:flex items-center space-x-8 text-gray-300 font-medium"
-          data-oid="ylow.6o"
-        >
-          {[
-            { icon: "🏠", label: "Home", active: true },
-            { icon: "🎨", label: "Mint Muse AI", href: "/mint" },
-          ].map((item, index) => (
-            <a
-              key={index}
-              href={item.href}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all hover:bg-white/5 ${
-                item.active ? "text-white bg-white/10" : "hover:text-white"
-              }`}
-              data-oid="04wo6pm"
-            >
-              <span data-oid="zvqht6t">{item.icon}</span>
-              <span data-oid="eaor_yd">{item.label}</span>
-            </a>
-          ))}
-        </div>
-
-        <button
-          onClick={handleConnectWallet}
-          className={`neural-button px-6 py-3 rounded-xl font-semibold transition-all ${
-            isConnected
-              ? "bg-green-600 hover:bg-green-700 text-white"
-              : "text-white"
-          }`}
-          data-oid="54akn:2"
-        >
-          {isConnected ? "✅ Connected" : "Connect Wallet"}
-        </button>
-      </nav>
+      <Header data-oid=".bw.ry1" />
 
       {/* Hero Section */}
       <div
@@ -274,11 +211,11 @@ export default function Page() {
         >
           <div data-oid="0lw6z32">
             {/* <div
-                                            className="inline-block px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-300 text-sm font-mono mb-8"
-                                            data-oid="5s90rue"
-                                           >
-                                            🚀 Next-Gen AI Companions
-                                           </div> */}
+                                                  className="inline-block px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-300 text-sm font-mono mb-8"
+                                                  data-oid="5s90rue"
+                                                 >
+                                                  🚀 Next-Gen AI Companions
+                                                 </div> */}
 
             <h1
               className="text-6xl lg:text-8xl font-black mb-8 leading-tight"
@@ -311,9 +248,9 @@ export default function Page() {
               className="flex flex-col sm:flex-row gap-6 mb-12"
               data-oid="ciccyz7"
             >
-              <button
-                onClick={handleConnectWallet}
-                className="neural-button px-8 py-4 text-white font-bold text-lg rounded-xl flex items-center space-x-2 group"
+              <a
+                href="/mint"
+                className="neural-button px-8 py-4 text-white font-bold text-lg rounded-xl flex items-center justify-center space-x-2 group"
                 data-oid="ic_2_gt"
               >
                 <span data-oid="9r2yxng">🔗</span>
@@ -324,14 +261,14 @@ export default function Page() {
                 >
                   →
                 </span>
-              </button>
+              </a>
               {/* <button
-                                    className="px-8 py-4 border border-purple-500/30 text-purple-300 font-semibold rounded-xl hover:bg-purple-500/10 transition-all flex items-center space-x-2"
-                                    data-oid="pgq7ogg"
-                                   >
-                                    <span data-oid="73il3l2">▶️</span>
-                                    <span data-oid="q6sfal0">Watch Demo</span>
-                                   </button> */}
+                                          className="px-8 py-4 border border-purple-500/30 text-purple-300 font-semibold rounded-xl hover:bg-purple-500/10 transition-all flex items-center space-x-2"
+                                          data-oid="pgq7ogg"
+                                         >
+                                          <span data-oid="73il3l2">▶️</span>
+                                          <span data-oid="q6sfal0">Watch Demo</span>
+                                         </button> */}
             </div>
 
             {/* Stats */}
@@ -472,11 +409,11 @@ export default function Page() {
       >
         <div className="text-center mb-20" data-oid="0b3qc12">
           {/* <div
-                               className="inline-block px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-full text-blue-300 text-sm font-mono mb-6"
-                               data-oid="ts9pawn"
-                              >
-                               🔬 Advanced Technology Stack
-                              </div> */}
+                                     className="inline-block px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-full text-blue-300 text-sm font-mono mb-6"
+                                     data-oid="ts9pawn"
+                                    >
+                                     🔬 Advanced Technology Stack
+                                    </div> */}
           <h2
             className="text-5xl lg:text-6xl font-black mb-6 secondary-gradient-text"
             data-oid="_ezews:"
@@ -675,8 +612,8 @@ export default function Page() {
               className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12"
               data-oid="45wztiw"
             >
-              <button
-                onClick={handleConnectWallet}
+              <a
+                href="/mint"
                 className="neural-button px-12 py-5 text-white font-bold text-xl rounded-xl flex items-center space-x-3 group"
                 data-oid="uofa9nu"
               >
@@ -688,136 +625,26 @@ export default function Page() {
                 >
                   →
                 </span>
-              </button>
+              </a>
               {/* <button
-                             className="px-12 py-5 border-2 border-purple-500/50 text-purple-300 font-bold text-xl rounded-xl hover:bg-purple-500/10 transition-all"
-                             data-oid="2kdr654"
-                            >
-                             View Documentation
-                            </button> */}
+                                   className="px-12 py-5 border-2 border-purple-500/50 text-purple-300 font-bold text-xl rounded-xl hover:bg-purple-500/10 transition-all"
+                                   data-oid="2kdr654"
+                                  >
+                                   View Documentation
+                                  </button> */}
             </div>
 
             {/* <div className="text-sm text-gray-400 space-x-6" data-oid="-iw76x6">
-                             <span data-oid="nm.hwo_">✓ No setup fees</span>
-                             <span data-oid="5tnbaey">✓ 30-day free trial</span>
-                             <span data-oid="xbk2d9_">✓ Cancel anytime</span>
-                            </div> */}
+                                   <span data-oid="nm.hwo_">✓ No setup fees</span>
+                                   <span data-oid="5tnbaey">✓ 30-day free trial</span>
+                                   <span data-oid="xbk2d9_">✓ Cancel anytime</span>
+                                  </div> */}
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <footer
-        className="relative z-10 border-t border-gray-800/50 backdrop-blur-sm"
-        data-oid="jacn44a"
-      >
-        <div className="max-w-7xl mx-auto px-4 py-16" data-oid="ljhdf:t">
-          <div className="grid md:grid-cols-4 gap-8 mb-12" data-oid="pajiqbg">
-            <div data-oid="cbvgb5r">
-              <div
-                className="flex items-center space-x-3 mb-6"
-                data-oid="ff0:7se"
-              >
-                <div
-                  className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center font-bold text-white"
-                  data-oid="m4s4_g:"
-                >
-                  M
-                </div>
-                <span
-                  className="text-xl font-bold text-white"
-                  data-oid="vb_5_na"
-                >
-                  MetaMuse
-                </span>
-              </div>
-              <p className="text-gray-400 mb-6" data-oid="kxt0-bw">
-                Building the future of AI companions on blockchain technology.
-              </p>
-              <div className="flex space-x-4" data-oid="oup.8_k">
-                {["🐦", "📘", "💼", "📸"].map((emoji, index) => (
-                  <div
-                    key={index}
-                    className="w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center justify-center cursor-pointer transition-colors"
-                    data-oid=":k08:7:"
-                  >
-                    {emoji}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {[
-              {
-                title: "Product",
-                links: ["Features", "Documentation"],
-              },
-              {
-                title: "Resources",
-                links: ["Community"],
-              },
-            ].map((section, index) => (
-              <div key={index} data-oid="ep88j3t">
-                <h4
-                  className="text-white font-semibold mb-6"
-                  data-oid="glrafnv"
-                >
-                  {section.title}
-                </h4>
-                <ul className="space-y-4" data-oid="deg36jo">
-                  {section.links.map((link, linkIndex) => (
-                    <li key={linkIndex} data-oid="upc3u5r">
-                      <a
-                        href="#"
-                        className="text-gray-400 hover:text-white transition-colors"
-                        data-oid="91a.f0t"
-                      >
-                        {link}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          <div
-            className="pt-8 border-t border-gray-800/50 flex flex-col md:flex-row justify-between items-center"
-            data-oid="pdiw7pd"
-          >
-            <p className="text-gray-400 mb-4 md:mb-0" data-oid="z64du:q">
-              © 2025 MetaMuses. All rights reserved. Built with ❤️ for the
-              future.
-            </p>
-            <div
-              className="flex space-x-6 text-gray-400 text-sm"
-              data-oid="7p7fi2d"
-            >
-              <a
-                href="#"
-                className="hover:text-white transition-colors"
-                data-oid="icd9i0h"
-              >
-                Privacy Policy
-              </a>
-              <a
-                href="#"
-                className="hover:text-white transition-colors"
-                data-oid="4qljk5l"
-              >
-                Terms of Service
-              </a>
-              <a
-                href="#"
-                className="hover:text-white transition-colors"
-                data-oid="wh4.cvh"
-              >
-                Cookie Policy
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer data-oid="hiv6wzd" />
     </div>
   );
 }

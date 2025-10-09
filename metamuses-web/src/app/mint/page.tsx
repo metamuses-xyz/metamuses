@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
+import { useAccount } from "wagmi";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 // Neural Network Background
 const NeuralNetwork = () => {
@@ -227,71 +229,71 @@ const MuseAINFT = ({
 
           {/* Personality Traits */}
           {/* <div className="mb-8" data-oid="450uq6u">
-                              <h3
-                                className="text-xl font-semibold text-gray-200 mb-4 text-center"
-                                data-oid="e4:m0aq"
-                              >
-                                🧠 AI Capabilities
-                              </h3>
-                              <div className="grid grid-cols-2 gap-4" data-oid="y:5b.70">
-                                {[
-                                  {
-                                    trait: "Intelligence",
-                                    value: 95,
-                                    color: "from-blue-500 to-cyan-500",
-                                  },
-                                  {
-                                    trait: "Creativity",
-                                    value: 88,
-                                    color: "from-purple-500 to-pink-500",
-                                  },
-                                  {
-                                    trait: "Empathy",
-                                    value: 92,
-                                    color: "from-green-500 to-teal-500",
-                                  },
-                                  {
-                                    trait: "Adaptability",
-                                    value: 90,
-                                    color: "from-orange-500 to-yellow-500",
-                                  },
-                                ].map(({ trait, value, color }) => (
-                                  <div
-                                    key={trait}
-                                    className="bg-gray-800/50 rounded-lg p-4 border border-gray-700/50"
-                                    data-oid="pz9rsvd"
+                                  <h3
+                                    className="text-xl font-semibold text-gray-200 mb-4 text-center"
+                                    data-oid="e4:m0aq"
                                   >
-                                    <div
-                                      className="flex items-center justify-between mb-2"
-                                      data-oid="229h4.."
-                                    >
-                                      <span
-                                        className="text-gray-300 font-medium"
-                                        data-oid="a9ds6xz"
-                                      >
-                                        {trait}
-                                      </span>
-                                      <span
-                                        className="text-purple-400 font-mono font-bold"
-                                        data-oid="6sqo5dp"
-                                      >
-                                        {value}%
-                                      </span>
-                                    </div>
-                                    <div
-                                      className="w-full h-2 bg-gray-700 rounded-full overflow-hidden"
-                                      data-oid="nlnc81h"
-                                    >
+                                    🧠 AI Capabilities
+                                  </h3>
+                                  <div className="grid grid-cols-2 gap-4" data-oid="y:5b.70">
+                                    {[
+                                      {
+                                        trait: "Intelligence",
+                                        value: 95,
+                                        color: "from-blue-500 to-cyan-500",
+                                      },
+                                      {
+                                        trait: "Creativity",
+                                        value: 88,
+                                        color: "from-purple-500 to-pink-500",
+                                      },
+                                      {
+                                        trait: "Empathy",
+                                        value: 92,
+                                        color: "from-green-500 to-teal-500",
+                                      },
+                                      {
+                                        trait: "Adaptability",
+                                        value: 90,
+                                        color: "from-orange-500 to-yellow-500",
+                                      },
+                                    ].map(({ trait, value, color }) => (
                                       <div
-                                        className={`h-full rounded-full bg-gradient-to-r ${color} transition-all duration-1000`}
-                                        style={{ width: `${value}%` }}
-                                        data-oid="_mka8dg"
-                                      />
-                                    </div>
+                                        key={trait}
+                                        className="bg-gray-800/50 rounded-lg p-4 border border-gray-700/50"
+                                        data-oid="pz9rsvd"
+                                      >
+                                        <div
+                                          className="flex items-center justify-between mb-2"
+                                          data-oid="229h4.."
+                                        >
+                                          <span
+                                            className="text-gray-300 font-medium"
+                                            data-oid="a9ds6xz"
+                                          >
+                                            {trait}
+                                          </span>
+                                          <span
+                                            className="text-purple-400 font-mono font-bold"
+                                            data-oid="6sqo5dp"
+                                          >
+                                            {value}%
+                                          </span>
+                                        </div>
+                                        <div
+                                          className="w-full h-2 bg-gray-700 rounded-full overflow-hidden"
+                                          data-oid="nlnc81h"
+                                        >
+                                          <div
+                                            className={`h-full rounded-full bg-gradient-to-r ${color} transition-all duration-1000`}
+                                            style={{ width: `${value}%` }}
+                                            data-oid="_mka8dg"
+                                          />
+                                        </div>
+                                      </div>
+                                    ))}
                                   </div>
-                                ))}
-                              </div>
-                             </div> */}
+                                 </div> */}
 
           {/* NFT Details */}
           <div
@@ -367,16 +369,16 @@ const MuseAINFT = ({
 
           {/* Price Display */}
           {/* <div className="text-center mb-8" data-oid="dksbqcz">
-                             <div
-                               className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400 mb-2"
-                               data-oid="jk_izz3"
-                             >
-                               FREE
-                             </div>
-                             <div className="text-gray-400 text-lg" data-oid="8r5ph67">
-                               No gas fees • No hidden costs • Limited time only
-                             </div>
-                            </div> */}
+                                 <div
+                                   className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400 mb-2"
+                                   data-oid="jk_izz3"
+                                 >
+                                   FREE
+                                 </div>
+                                 <div className="text-gray-400 text-lg" data-oid="8r5ph67">
+                                   No gas fees • No hidden costs • Limited time only
+                                 </div>
+                                </div> */}
 
           {/* Mint Button */}
           <button
@@ -412,43 +414,43 @@ const MuseAINFT = ({
 
           {/* Benefits */}
           {/* <div
-                            className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 text-center"
-                            data-oid="rd-zhmj"
-                           >
-                            <div
-                              className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4"
-                              data-oid="r7vcyq_"
-                            >
-                              <div className="text-2xl mb-2" data-oid="3:--cpq">
-                                💬
-                              </div>
-                              <div className="text-sm text-gray-300" data-oid="p.g8ge3">
-                                Persistent Memory
-                              </div>
-                            </div>
-                            <div
-                              className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4"
-                              data-oid="fj2kmvs"
-                            >
-                              <div className="text-2xl mb-2" data-oid="nl8k.8j">
-                                🔗
-                              </div>
-                              <div className="text-sm text-gray-300" data-oid="4po3ugp">
-                                Blockchain Verified
-                              </div>
-                            </div>
-                            <div
-                              className="bg-green-500/10 border border-green-500/30 rounded-lg p-4"
-                              data-oid="7uwtx-q"
-                            >
-                              <div className="text-2xl mb-2" data-oid="foo8y_6">
-                                🎯
-                              </div>
-                              <div className="text-sm text-gray-300" data-oid="xi0r2qj">
-                                Ecosystem Access
-                              </div>
-                            </div>
-                           </div> */}
+                                className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 text-center"
+                                data-oid="rd-zhmj"
+                               >
+                                <div
+                                  className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4"
+                                  data-oid="r7vcyq_"
+                                >
+                                  <div className="text-2xl mb-2" data-oid="3:--cpq">
+                                    💬
+                                  </div>
+                                  <div className="text-sm text-gray-300" data-oid="p.g8ge3">
+                                    Persistent Memory
+                                  </div>
+                                </div>
+                                <div
+                                  className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4"
+                                  data-oid="fj2kmvs"
+                                >
+                                  <div className="text-2xl mb-2" data-oid="nl8k.8j">
+                                    🔗
+                                  </div>
+                                  <div className="text-sm text-gray-300" data-oid="4po3ugp">
+                                    Blockchain Verified
+                                  </div>
+                                </div>
+                                <div
+                                  className="bg-green-500/10 border border-green-500/30 rounded-lg p-4"
+                                  data-oid="7uwtx-q"
+                                >
+                                  <div className="text-2xl mb-2" data-oid="foo8y_6">
+                                    🎯
+                                  </div>
+                                  <div className="text-sm text-gray-300" data-oid="xi0r2qj">
+                                    Ecosystem Access
+                                  </div>
+                                </div>
+                               </div> */}
         </div>
       </div>
     </div>
@@ -456,13 +458,13 @@ const MuseAINFT = ({
 };
 
 export default function MintPage() {
+  const { address, isConnected } = useAccount();
   const [isLoading, setIsLoading] = useState(true);
   const [isMinting, setIsMinting] = useState(false);
-  const [walletConnected, setWalletConnected] = useState(false);
   const [mintCount, setMintCount] = useState(247); // Simulated current mint count
   const [userHasMinted, setUserHasMinted] = useState(false);
 
-  // Campaign end date (7 days from now)
+  // Campaign end date (90 days from now)
   const campaignEndDate = new Date();
   campaignEndDate.setDate(campaignEndDate.getDate() + 90);
 
@@ -474,7 +476,7 @@ export default function MintPage() {
   }, []);
 
   const handleMint = async () => {
-    if (!walletConnected) {
+    if (!isConnected) {
       alert("Please connect your wallet first!");
       return;
     }
@@ -495,12 +497,6 @@ export default function MintPage() {
         "🎉 Congratulations! Your Muse AI NFT has been minted successfully!",
       );
     }, 4000);
-  };
-
-  const connectWallet = () => {
-    // Simulate wallet connection
-    setWalletConnected(true);
-    alert("Wallet connected successfully! 🔗");
   };
 
   return (
@@ -529,71 +525,7 @@ export default function MintPage() {
       </div>
 
       {/* Navigation */}
-      <nav
-        className="relative z-20 flex items-center justify-between p-6 max-w-7xl mx-auto"
-        data-oid="sbyl-vu"
-      >
-        <Link
-          href="/"
-          className="flex items-center space-x-3"
-          data-oid=":kjj9w9"
-        >
-          <div
-            className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center font-bold text-white"
-            data-oid="rfhxvoe"
-          >
-            M
-          </div>
-          <div data-oid="nadleyc">
-            <span
-              className="text-2xl font-bold hero-gradient-text"
-              data-oid="a91z50i"
-            >
-              MetaMuse
-            </span>
-            <div className="text-xs text-gray-400 font-mono" data-oid="9fbcgx4">
-              Free Mint Campaign
-            </div>
-          </div>
-        </Link>
-
-        <div className="flex items-center space-x-4" data-oid="bzkr.rn">
-          {!walletConnected ? (
-            <button
-              onClick={connectWallet}
-              className="neural-button px-6 py-3 text-white font-semibold rounded-xl hover:scale-105 transition-all"
-              data-oid="nfe88ob"
-            >
-              🔗 Connect Wallet
-            </button>
-          ) : (
-            <div
-              className="flex items-center space-x-2 px-4 py-2 bg-green-600/20 border border-green-500/30 rounded-xl"
-              data-oid="o.rmw:0"
-            >
-              <div
-                className="w-2 h-2 bg-green-500 rounded-full animate-pulse"
-                data-oid="1ld3p4m"
-              />
-
-              <span
-                className="text-green-300 text-sm font-mono"
-                data-oid="ds:qs1e"
-              >
-                0x3BD9...7881
-              </span>
-            </div>
-          )}
-
-          {/* <Link
-             href="/"
-             className="px-6 py-3 border border-gray-600 text-gray-300 font-semibold rounded-xl hover:bg-gray-700 transition-all"
-             data-oid="-ouz60l"
-            >
-             ← Back to Home
-            </Link> */}
-        </div>
-      </nav>
+      <Header data-oid="ob9:7v-" />
 
       {/* Main Content */}
       <div
@@ -828,6 +760,9 @@ export default function MintPage() {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <Footer data-oid="6iyn4:1" />
     </div>
   );
 }
