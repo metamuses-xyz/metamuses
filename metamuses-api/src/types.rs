@@ -74,6 +74,12 @@ pub enum Priority {
     Critical = 3,
 }
 
+impl Default for Priority {
+    fn default() -> Self {
+        Priority::Normal
+    }
+}
+
 // ============================================================================
 // Query Complexity
 // ============================================================================

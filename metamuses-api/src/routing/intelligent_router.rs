@@ -11,7 +11,7 @@ use uuid::Uuid;
 
 pub struct IntelligentRouter {
     cache: Arc<SemanticCache>,
-    queue_manager: Arc<RwLock<RedisQueueManager>>,
+    pub queue_manager: Arc<RwLock<RedisQueueManager>>,
     complexity_analyzer: ComplexityAnalyzer,
 }
 
