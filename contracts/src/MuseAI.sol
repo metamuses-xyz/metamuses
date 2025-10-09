@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.28;
+pragma solidity 0.8.13;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -41,7 +41,7 @@ contract MuseAI is ERC721Enumerable, Ownable {
         string memory baseURI,
         uint256 _mintStartTime,
         uint256 _mintEndTime
-    ) ERC721("MetaMuses AI", "MUSEAI") Ownable(msg.sender) {
+    ) ERC721("MetaMuses AI", "MUSEAI") {
         require(_mintStartTime < _mintEndTime, "Invalid mint times");
 
         _baseTokenURI = baseURI;
@@ -116,7 +116,7 @@ contract MuseAI is ERC721Enumerable, Ownable {
      * @param tokenId Token ID to query
      */
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        _requireOwned(tokenId);
+        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
 
         string memory baseURI = _baseURI();
         return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString(), ".json")) : "";
