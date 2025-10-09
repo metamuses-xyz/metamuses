@@ -83,7 +83,7 @@ const NeuralNetwork = () => {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 pointer-events-none opacity-30"
-      data-oid="02dw8.y"
+      data-oid="e71n7as"
     />
   );
 };
@@ -196,51 +196,51 @@ const PersonalityDesigner = ({
   const archetype = getPersonalityArchetype();
 
   return (
-    <div className="space-y-8" data-oid="z:b-k6p">
+    <div className="space-y-8" data-oid=":oetcdw">
       {/* Personality Archetype Display */}
       <div
         className="neural-card rounded-3xl p-8 text-center relative overflow-hidden"
-        data-oid="mqv73js"
+        data-oid="c:vdpxq"
       >
         <div
           className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-blue-500/10"
-          data-oid="uw3wuuh"
+          data-oid="yksjp3u"
         />
 
-        <div className="relative z-10" data-oid="nzu9ir8">
+        <div className="relative z-10" data-oid="92_2uaq">
           <div
             className="w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full mx-auto mb-6 flex items-center justify-center text-3xl shadow-2xl"
-            data-oid="pq7ynxw"
+            data-oid="asmp5zp"
           >
             🧠
           </div>
-          <h3 className="text-3xl font-bold text-white mb-2" data-oid="db_5_ye">
+          <h3 className="text-3xl font-bold text-white mb-2" data-oid="fmai2g0">
             {archetype.name}
           </h3>
-          <p className="text-gray-300 text-lg mb-6" data-oid="apt3.4h">
+          <p className="text-gray-300 text-lg mb-6" data-oid="5_fvl2_">
             {archetype.desc}
           </p>
 
           {/* Personality Radar */}
           <div
             className="grid grid-cols-4 gap-4 max-w-md mx-auto"
-            data-oid="rlb-57:"
+            data-oid="67pfqwe"
           >
             {traits.map((trait) => (
-              <div key={trait.key} className="text-center" data-oid="5ons-5d">
+              <div key={trait.key} className="text-center" data-oid="3-l53ei">
                 <div
                   className={`w-12 h-12 bg-gradient-to-br ${trait.gradient} rounded-xl mx-auto mb-2 flex items-center justify-center text-xl shadow-lg`}
-                  data-oid="efwb5ep"
+                  data-oid="e5q-eo1"
                 >
                   {trait.icon}
                 </div>
                 <div
                   className="text-2xl font-bold text-white"
-                  data-oid="w:etmh7"
+                  data-oid="jloathl"
                 >
                   {personality[trait.key]}
                 </div>
-                <div className="text-xs text-gray-400" data-oid="77uyv:n">
+                <div className="text-xs text-gray-400" data-oid="yj:9e47">
                   {trait.name}
                 </div>
               </div>
@@ -250,9 +250,9 @@ const PersonalityDesigner = ({
       </div>
 
       {/* Interactive Trait Designer */}
-      <div className="grid lg:grid-cols-2 gap-8" data-oid="_dcw9i9">
+      <div className="grid lg:grid-cols-2 gap-8" data-oid="w6h7g8r">
         {/* Trait Selection */}
-        <div className="space-y-4" data-oid="hs1zojp">
+        <div className="space-y-4" data-oid="5h92qz8">
           {traits.map((trait, index) => (
             <div
               key={trait.key}
@@ -262,46 +262,46 @@ const PersonalityDesigner = ({
                   : "hover:scale-102"
               }`}
               onClick={() => setActiveTraitIndex(index)}
-              data-oid="40ffyb."
+              data-oid="cj9ari2"
             >
-              <div className="flex items-center space-x-4" data-oid="trvd1:8">
+              <div className="flex items-center space-x-4" data-oid="60bp1-:">
                 <div
                   className={`w-16 h-16 bg-gradient-to-br ${trait.gradient} rounded-2xl flex items-center justify-center text-2xl shadow-lg`}
-                  data-oid="npama4e"
+                  data-oid=".a64nuq"
                 >
                   {trait.icon}
                 </div>
-                <div className="flex-1" data-oid="wnhtj7r">
+                <div className="flex-1" data-oid="elupc8k">
                   <div
                     className="flex items-center justify-between mb-2"
-                    data-oid="fy4xxdy"
+                    data-oid="t.t:se_"
                   >
                     <h4
                       className="text-xl font-bold text-white"
-                      data-oid="3:-01mv"
+                      data-oid="m2rwno4"
                     >
                       {trait.name}
                     </h4>
                     <div
                       className="text-2xl font-mono font-bold text-purple-400"
-                      data-oid="yl1p1.s"
+                      data-oid="hh55h:9"
                     >
                       {personality[trait.key]}
                     </div>
                   </div>
-                  <p className="text-gray-400 text-sm mb-3" data-oid="75sqwx4">
+                  <p className="text-gray-400 text-sm mb-3" data-oid="8x213-y">
                     {trait.description}
                   </p>
 
                   {/* Mini progress bar */}
                   <div
                     className="w-full h-2 bg-gray-700 rounded-full overflow-hidden"
-                    data-oid="egmf-mk"
+                    data-oid="-kee4kf"
                   >
                     <div
                       className={`h-full bg-gradient-to-r ${trait.gradient} rounded-full transition-all duration-700`}
                       style={{ width: `${personality[trait.key]}%` }}
-                      data-oid="b829uez"
+                      data-oid="fnyib6x"
                     />
                   </div>
                 </div>
@@ -311,43 +311,43 @@ const PersonalityDesigner = ({
         </div>
 
         {/* Active Trait Editor */}
-        <div className="neural-card rounded-3xl p-8" data-oid="3a552-z">
-          <div className="text-center mb-8" data-oid="g0dy1hy">
+        <div className="neural-card rounded-3xl p-8" data-oid="ll1smfj">
+          <div className="text-center mb-8" data-oid="mjo1w9o">
             <div
               className={`w-24 h-24 bg-gradient-to-br ${traits[activeTraitIndex].gradient} rounded-3xl mx-auto mb-4 flex items-center justify-center text-4xl shadow-2xl`}
-              data-oid="e.we:bx"
+              data-oid="u1_2hr-"
             >
               {traits[activeTraitIndex].icon}
             </div>
             <h3
               className="text-3xl font-bold text-white mb-2"
-              data-oid="scgmnfh"
+              data-oid="h_op20b"
             >
               {traits[activeTraitIndex].name}
             </h3>
-            <p className="text-gray-300" data-oid="ijipk.3">
+            <p className="text-gray-300" data-oid="fsun0ox">
               {traits[activeTraitIndex].description}
             </p>
           </div>
 
           {/* Advanced Slider */}
-          <div className="mb-8" data-oid="vbylif5">
+          <div className="mb-8" data-oid="m9vyuof">
             <div
               className="flex justify-between items-center mb-4"
-              data-oid="7azn1ka"
+              data-oid="_liw7_d"
             >
-              <span className="text-gray-400" data-oid="21sfhn.">
+              <span className="text-gray-400" data-oid="6fqzgnk">
                 Intensity
               </span>
               <span
                 className="text-3xl font-mono font-bold text-white"
-                data-oid="00jl7-n"
+                data-oid="w7-0gep"
               >
                 {personality[traits[activeTraitIndex].key]}
               </span>
             </div>
 
-            <div className="relative" data-oid="lplrtze">
+            <div className="relative" data-oid="w-vy_j.">
               <input
                 type="range"
                 min="0"
@@ -368,43 +368,43 @@ const PersonalityDesigner = ({
                     transparent 100%),
                     linear-gradient(to right, ${traits[activeTraitIndex].gradient.replace("from-", "").replace("via-", ", ").replace("to-", ", ")})`,
                 }}
-                data-oid="zo2d7g."
+                data-oid="hvsgi5d"
               />
 
               {/* Slider markers */}
               <div
                 className="flex justify-between text-xs text-gray-500 mt-2"
-                data-oid="uxe32a4"
+                data-oid=".3lxgc8"
               >
-                <span data-oid="om1mujc">Minimal</span>
-                <span data-oid="7tx37qz">Moderate</span>
-                <span data-oid="wpxdz76">Strong</span>
-                <span data-oid="_bu-a4_">Dominant</span>
+                <span data-oid="3nm-k:o">Minimal</span>
+                <span data-oid="gg0zlup">Moderate</span>
+                <span data-oid="3.m9616">Strong</span>
+                <span data-oid="723_c0y">Dominant</span>
               </div>
             </div>
           </div>
 
           {/* Trait Examples */}
-          <div data-oid="h28.3rs">
+          <div data-oid="qua3:jz">
             <h4
               className="text-lg font-semibold text-white mb-4"
-              data-oid="le2vyac"
+              data-oid="z46d-_x"
             >
               This trait enables:
             </h4>
-            <div className="space-y-2" data-oid="brkcpvm">
+            <div className="space-y-2" data-oid="0j04b-o">
               {traits[activeTraitIndex].examples.map((example, idx) => (
                 <div
                   key={idx}
                   className="flex items-center space-x-3 text-gray-300"
-                  data-oid="eu2s292"
+                  data-oid="cs2-0.9"
                 >
                   <div
                     className="w-2 h-2 bg-purple-400 rounded-full"
-                    data-oid="5b1gu7d"
+                    data-oid="l36x1vy"
                   />
 
-                  <span data-oid="g1f9:r3">{example}</span>
+                  <span data-oid="ivfewti">{example}</span>
                 </div>
               ))}
             </div>
@@ -413,19 +413,19 @@ const PersonalityDesigner = ({
       </div>
 
       {/* Personality Presets */}
-      <div className="neural-card rounded-2xl p-6" data-oid="36oczia">
+      <div className="neural-card rounded-2xl p-6" data-oid="b6bxal_">
         <h4
           className="text-xl font-bold text-white mb-6 flex items-center"
-          data-oid="hguo5sd"
+          data-oid="hdyj..9"
         >
-          <span className="mr-3" data-oid="olsgm4p">
+          <span className="mr-3" data-oid="05jppio">
             ⚡
           </span>
           Quick Personality Presets
         </h4>
         <div
           className="grid grid-cols-2 md:grid-cols-4 gap-4"
-          data-oid="tnfe8tk"
+          data-oid="o49ux_:"
         >
           {[
             {
@@ -453,14 +453,14 @@ const PersonalityDesigner = ({
               key={preset.name}
               onClick={() => setPersonality(preset.values)}
               className="neural-card rounded-xl p-4 text-center hover:scale-105 transition-all duration-300 group"
-              data-oid="290548r"
+              data-oid="tts8_td"
             >
-              <div className="text-3xl mb-2" data-oid="9u:7t0e">
+              <div className="text-3xl mb-2" data-oid="vabvysh">
                 {preset.icon}
               </div>
               <div
                 className="text-white font-semibold text-sm"
-                data-oid="l6w8iut"
+                data-oid="i:eaas2"
               >
                 {preset.name}
               </div>
@@ -487,13 +487,13 @@ const StepNavigation = ({
   return (
     <div
       className="fixed left-8 top-1/2 transform -translate-y-1/2 z-30 hidden lg:block"
-      data-oid="58b.9--"
+      data-oid="8p3j8rs"
     >
       <div
         className="neural-card rounded-2xl p-4 backdrop-blur-xl"
-        data-oid="ocaw97l"
+        data-oid="8_s1_8v"
       >
-        <div className="space-y-4" data-oid="abqcfxa">
+        <div className="space-y-4" data-oid="w8a3_b1">
           {Array.from({ length: totalSteps }, (_, i) => i + 1).map((step) => (
             <div
               key={step}
@@ -501,9 +501,9 @@ const StepNavigation = ({
                 step <= currentStep ? "opacity-100" : "opacity-40"
               }`}
               onClick={() => step <= currentStep && onStepChange(step)}
-              data-oid="26ocuqr"
+              data-oid="7cjxxy9"
             >
-              <div className="flex items-center space-x-3" data-oid="f4zbn06">
+              <div className="flex items-center space-x-3" data-oid="0s1qy8e">
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ${
                     step === currentStep
@@ -512,7 +512,7 @@ const StepNavigation = ({
                         ? "bg-green-600 text-white"
                         : "bg-gray-700 text-gray-400"
                   }`}
-                  data-oid="lrk5xyo"
+                  data-oid="w1nsztc"
                 >
                   {step < currentStep ? "✓" : step}
                 </div>
@@ -522,7 +522,7 @@ const StepNavigation = ({
                       ? "text-white opacity-100"
                       : "text-gray-400 opacity-0 group-hover:opacity-100"
                   }`}
-                  data-oid="mpfa8tw"
+                  data-oid="jt9xksm"
                 >
                   {stepTitles[step - 1]}
                 </div>
@@ -548,12 +548,12 @@ const TemplateSelector = ({
   const [hoveredTemplate, setHoveredTemplate] = useState<string | null>(null);
 
   return (
-    <div className="space-y-8" data-oid="x0vdfnb">
+    <div className="space-y-8" data-oid="yx9.dmo">
       {/* Template Categories */}
-      <div className="text-center mb-12" data-oid="ejqad73">
+      <div className="text-center mb-12" data-oid="_:65-v8">
         <div
           className="inline-flex bg-gray-800/50 rounded-2xl p-2 backdrop-blur-sm"
-          data-oid="xplf7s4"
+          data-oid="az4.ll1"
         >
           {["Popular", "Creative", "Professional", "Custom"].map(
             (category, idx) => (
@@ -564,7 +564,7 @@ const TemplateSelector = ({
                     ? "bg-purple-600 text-white shadow-lg"
                     : "text-gray-400 hover:text-white hover:bg-gray-700"
                 }`}
-                data-oid="0c5.so1"
+                data-oid="1pwdk9:"
               >
                 {category}
               </button>
@@ -574,7 +574,7 @@ const TemplateSelector = ({
       </div>
 
       {/* Template Grid */}
-      <div className="grid md:grid-cols-3 gap-8" data-oid="eam44f-">
+      <div className="grid md:grid-cols-3 gap-8" data-oid="v4cl6ww">
         {templates.map((template, index) => (
           <div
             key={template.id}
@@ -589,29 +589,29 @@ const TemplateSelector = ({
             onClick={() => onSelect(template.id)}
             onMouseEnter={() => setHoveredTemplate(template.id)}
             onMouseLeave={() => setHoveredTemplate(null)}
-            data-oid="uyyag3y"
+            data-oid="0irzx:l"
           >
             {/* Animated background */}
             <div
               className="absolute inset-0 bg-gradient-to-br from-transparent via-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-              data-oid="ruk-4g0"
+              data-oid=".e38dz_"
             />
 
             {/* Popular badge */}
             {template.popular && (
               <div
                 className="absolute -top-3 -right-3 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold px-4 py-2 rounded-full transform rotate-12 shadow-lg"
-                data-oid="drbte:4"
+                data-oid="8b:2isi"
               >
                 🔥 Popular
               </div>
             )}
 
-            <div className="relative z-10 text-center" data-oid="htl7rnt">
+            <div className="relative z-10 text-center" data-oid="lklsyex">
               {/* Icon */}
               <div
                 className={`w-24 h-24 bg-gradient-to-br ${template.gradient} rounded-3xl mx-auto mb-6 flex items-center justify-center text-4xl shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-110`}
-                data-oid="4k96icr"
+                data-oid="3o4vm01"
               >
                 {template.icon}
               </div>
@@ -619,7 +619,7 @@ const TemplateSelector = ({
               {/* Title */}
               <h3
                 className="text-2xl font-bold text-white mb-4 group-hover:text-purple-200 transition-colors"
-                data-oid="afiv14c"
+                data-oid="ep1bf73"
               >
                 {template.title}
               </h3>
@@ -627,25 +627,25 @@ const TemplateSelector = ({
               {/* Description */}
               <p
                 className="text-gray-400 mb-6 leading-relaxed"
-                data-oid="a0_6_g0"
+                data-oid="0:icjg7"
               >
                 {template.description}
               </p>
 
               {/* Features */}
-              <div className="space-y-3 mb-6" data-oid="951yntq">
+              <div className="space-y-3 mb-6" data-oid="zw:z_o7">
                 {template.features.map((feature: string, idx: number) => (
                   <div
                     key={idx}
                     className="flex items-center justify-center space-x-2 text-sm"
-                    data-oid=":5gubn:"
+                    data-oid="4az_fbi"
                   >
                     <div
                       className="w-2 h-2 bg-green-400 rounded-full animate-pulse"
-                      data-oid="qdy1dlt"
+                      data-oid="7p---i3"
                     />
 
-                    <span className="text-gray-300" data-oid="zlivduq">
+                    <span className="text-gray-300" data-oid="lh_13ai">
                       {feature}
                     </span>
                   </div>
@@ -659,7 +659,7 @@ const TemplateSelector = ({
                     ? "opacity-100 scale-110"
                     : "opacity-50 group-hover:opacity-100"
                 }`}
-                data-oid="-qm3pw_"
+                data-oid="zyrh0yt"
               />
             </div>
           </div>
@@ -682,17 +682,17 @@ const AvatarPreview = ({
   return (
     <div
       className={`${sizeClasses} rounded-full bg-gradient-to-br ${avatar.gradient} flex items-center justify-center relative overflow-hidden`}
-      data-oid="9rb41hb"
+      data-oid="rogxp8d"
     >
       {avatar.pattern && (
         <div
           className={`absolute inset-0 ${avatar.pattern} opacity-30`}
-          data-oid="2wn_9tj"
+          data-oid="5f72m6_"
         />
       )}
       <div
         className="relative z-10 text-white font-bold text-2xl"
-        data-oid="9o6r9k:"
+        data-oid="egznapk"
       >
         {avatar.initial}
       </div>
@@ -751,76 +751,76 @@ const AvatarCreator = ({
   };
 
   return (
-    <div className="space-y-8" data-oid="8wlkf7n">
+    <div className="space-y-8" data-oid="ec_i65x">
       {/* Current Avatar Preview */}
       <div
         className="neural-card rounded-3xl p-12 text-center relative overflow-hidden"
-        data-oid="basvtid"
+        data-oid="zbdt7-f"
       >
         <div
           className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-blue-500/10"
-          data-oid="m-8_8na"
+          data-oid="iakzw_v"
         />
 
-        <div className="relative z-10" data-oid="ky5qepd">
-          <h3 className="text-3xl font-bold text-white mb-8" data-oid="v.1bk.a">
+        <div className="relative z-10" data-oid="9v9z22_">
+          <h3 className="text-3xl font-bold text-white mb-8" data-oid="bv7k8l-">
             Your Avatar
           </h3>
 
           <div
             className="flex items-center justify-center space-x-12 mb-8"
-            data-oid="38z8v4a"
+            data-oid=":q:i1jc"
           >
             {/* Large avatar preview */}
-            <div className="relative" data-oid="1m90b6s">
+            <div className="relative" data-oid="xhvze2f">
               <div
                 className={`w-32 h-32 rounded-full bg-gradient-to-br ${generatedAvatar?.gradient} flex items-center justify-center shadow-2xl`}
-                data-oid="tvekun9"
+                data-oid="c87vh5y"
               >
                 <span
                   className="text-5xl font-bold text-white"
-                  data-oid="vh2lxbf"
+                  data-oid="mdg.tmx"
                 >
                   {generatedAvatar?.initial}
                 </span>
               </div>
               <div
                 className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 border-4 border-white rounded-full animate-pulse"
-                data-oid="thhbozx"
+                data-oid="qiswqie"
               />
             </div>
 
             {/* Avatar info */}
-            <div className="text-left" data-oid="jgpxj_0">
+            <div className="text-left" data-oid="jebdv-_">
               <h4
                 className="text-2xl font-bold text-white mb-2"
-                data-oid="6v_u67s"
+                data-oid="u1lcwv-"
               >
                 {generatedAvatar?.name}
               </h4>
-              <p className="text-gray-400 mb-4" data-oid="a0l0ol6">
+              <p className="text-gray-400 mb-4" data-oid="q1og0bg">
                 Generated from your personality traits
               </p>
 
               {/* Personality influence */}
-              <div className="space-y-2" data-oid=".q..swe">
-                <div className="text-sm text-gray-300" data-oid="8xy03d2">
+              <div className="space-y-2" data-oid="_uz2dah">
+                <div className="text-sm text-gray-300" data-oid="5jbu77i">
                   Influenced by:
                 </div>
                 {Object.entries(personality).map(([trait, value]) => (
                   <div
                     key={trait}
                     className="flex items-center space-x-2 text-xs"
-                    data-oid="oggenz1"
+                    data-oid=".v2wacj"
                   >
                     <div
                       className="w-2 h-2 bg-purple-400 rounded-full"
-                      data-oid=".z8f5xf"
+                      data-oid="-.jtxns"
                     />
 
                     <span
                       className="text-gray-400 capitalize"
-                      data-oid="hzmmac_"
+                      data-oid="0shr8dx"
                     >
                       {trait}: {value}%
                     </span>
@@ -834,16 +834,16 @@ const AvatarCreator = ({
             onClick={generateNewAvatar}
             disabled={isGenerating}
             className="neural-button px-8 py-3 text-white font-semibold rounded-xl hover:scale-105 transition-all"
-            data-oid="hwfoukp"
+            data-oid="cfy3iju"
           >
             {isGenerating ? (
-              <div className="flex items-center space-x-2" data-oid="584:kwa">
+              <div className="flex items-center space-x-2" data-oid="ltajh9i">
                 <div
                   className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"
-                  data-oid="vo09236"
+                  data-oid="u0_h7l9"
                 />
 
-                <span data-oid="ods8j:r">Generating...</span>
+                <span data-oid="05gicrz">Generating...</span>
               </div>
             ) : (
               "🎲 Generate New Avatar"
@@ -853,7 +853,7 @@ const AvatarCreator = ({
       </div>
 
       {/* Avatar Variations */}
-      <div className="grid md:grid-cols-4 gap-6" data-oid="p9.eubo">
+      <div className="grid md:grid-cols-4 gap-6" data-oid="9:epb4a">
         {avatarVariations.map((avatar, index) => (
           <div
             key={index}
@@ -863,25 +863,25 @@ const AvatarCreator = ({
                 : ""
             }`}
             onClick={() => onAvatarSelect(avatar)}
-            data-oid="6yl5ve9"
+            data-oid="ugg9tp6"
           >
             <div
               className={`w-20 h-20 rounded-full bg-gradient-to-br ${avatar.gradient} mx-auto mb-4 flex items-center justify-center shadow-lg`}
-              data-oid="q20a6re"
+              data-oid="ht7w_nv"
             >
               <span
                 className="text-2xl font-bold text-white"
-                data-oid="-mau0dq"
+                data-oid="x7ru8pp"
               >
                 {avatar.initial}
               </span>
             </div>
-            <h4 className="text-white font-semibold mb-2" data-oid="o--28yb">
+            <h4 className="text-white font-semibold mb-2" data-oid="0ei.afr">
               {avatar.name}
             </h4>
             <span
               className="text-xs text-gray-400 capitalize"
-              data-oid=".o0_4xe"
+              data-oid="fn.gi-_"
             >
               {avatar.type}
             </span>
@@ -892,18 +892,18 @@ const AvatarCreator = ({
       {/* Custom Upload Option */}
       <div
         className="neural-card rounded-2xl p-8 text-center border-2 border-dashed border-gray-600 hover:border-purple-500 transition-colors cursor-pointer"
-        data-oid="aw::nkx"
+        data-oid="hx-wwdo"
       >
         <div
           className="w-16 h-16 bg-gray-700 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl"
-          data-oid="mhpt:.k"
+          data-oid="uo2dumo"
         >
           📁
         </div>
-        <h4 className="text-white font-semibold mb-2" data-oid="i3rwf.n">
+        <h4 className="text-white font-semibold mb-2" data-oid="kok8mcq">
           Upload Custom Avatar
         </h4>
-        <p className="text-gray-400 text-sm" data-oid="o8.2.7q">
+        <p className="text-gray-400 text-sm" data-oid="nmidq4k">
           Drag & drop or click to upload your own image
         </p>
       </div>
@@ -1053,15 +1053,15 @@ export default function CreateMusePage() {
     switch (currentStep) {
       case 1:
         return (
-          <div className="max-w-7xl mx-auto" data-oid="oghqemi">
+          <div className="max-w-7xl mx-auto" data-oid="oiw6w91">
             <TemplateSelector
               templates={templates}
               selectedTemplate={selectedTemplate}
               onSelect={setSelectedTemplate}
-              data-oid="t7lgq48"
+              data-oid="2i:1obk"
             />
 
-            <div className="text-center mt-12" data-oid="rhyu.zb">
+            <div className="text-center mt-12" data-oid="is7ypi8">
               <button
                 onClick={handleNext}
                 disabled={!selectedTemplate}
@@ -1070,7 +1070,7 @@ export default function CreateMusePage() {
                     ? "hover:scale-105 shadow-2xl shadow-purple-500/30"
                     : "opacity-50 cursor-not-allowed"
                 }`}
-                data-oid="d05pls5"
+                data-oid="o.2gc8y"
               >
                 {selectedTemplate
                   ? "Continue with Selection"
@@ -1082,7 +1082,7 @@ export default function CreateMusePage() {
 
       case 2:
         return (
-          <div className="max-w-7xl mx-auto" data-oid="5lcbdt:">
+          <div className="max-w-7xl mx-auto" data-oid="a827jzi">
             <PersonalityDesigner
               personality={personality}
               setPersonality={setPersonality}
@@ -1090,24 +1090,24 @@ export default function CreateMusePage() {
                 // Add any additional logic for trait changes
                 console.log(`${trait} changed to ${value}`);
               }}
-              data-oid="o77vfdw"
+              data-oid="98hvu4g"
             />
 
             <div
               className="flex justify-center space-x-6 mt-12"
-              data-oid="6rpogjg"
+              data-oid="na30-nd"
             >
               <button
                 onClick={handleBack}
                 className="px-10 py-4 border-2 border-gray-600 text-gray-300 font-bold rounded-xl hover:bg-gray-700 transition-all hover:scale-105"
-                data-oid="8o2wd7b"
+                data-oid="_4yoshq"
               >
                 ← Previous
               </button>
               <button
                 onClick={handleNext}
                 className="neural-button px-16 py-4 text-white font-bold text-xl rounded-xl hover:scale-105 transition-all"
-                data-oid="-z-zn5y"
+                data-oid="7op8ulz"
               >
                 Continue to Avatar →
               </button>
@@ -1117,30 +1117,30 @@ export default function CreateMusePage() {
 
       case 3:
         return (
-          <div className="max-w-7xl mx-auto" data-oid="g9gppgg">
+          <div className="max-w-7xl mx-auto" data-oid="2fwwd9x">
             <AvatarCreator
               generatedAvatar={generatedAvatar}
               selectedAvatar={selectedAvatar}
               onAvatarSelect={setSelectedAvatar}
               personality={personality}
-              data-oid="6:haj7e"
+              data-oid="wn8ma1l"
             />
 
             <div
               className="flex justify-center space-x-6 mt-12"
-              data-oid="m6222g."
+              data-oid="m8p0:mg"
             >
               <button
                 onClick={handleBack}
                 className="px-10 py-4 border-2 border-gray-600 text-gray-300 font-bold rounded-xl hover:bg-gray-700 transition-all hover:scale-105"
-                data-oid="8lueo-m"
+                data-oid="2pn65sf"
               >
                 ← Previous
               </button>
               <button
                 onClick={handleNext}
                 className="neural-button px-16 py-4 text-white font-bold text-xl rounded-xl hover:scale-105 transition-all"
-                data-oid="sr35r86"
+                data-oid="bk5us3p"
               >
                 Continue to Identity →
               </button>
@@ -1150,22 +1150,22 @@ export default function CreateMusePage() {
 
       case 4:
         return (
-          <div className="max-w-4xl mx-auto space-y-8" data-oid="680un.o">
+          <div className="max-w-4xl mx-auto space-y-8" data-oid="qgi8sjx">
             {/* Muse Identity Form */}
-            <div className="neural-card rounded-3xl p-8" data-oid="q:kxwq3">
+            <div className="neural-card rounded-3xl p-8" data-oid="ter4zaf">
               <h3
                 className="text-3xl font-bold text-white mb-8 text-center"
-                data-oid="howdggg"
+                data-oid="_1tqof8"
               >
                 Define Your Muse's Identity
               </h3>
 
-              <div className="space-y-6" data-oid="puzrhnc">
+              <div className="space-y-6" data-oid="hs.pluw">
                 {/* Name Input */}
-                <div data-oid="4rr2824">
+                <div data-oid="ml0n0y:">
                   <label
                     className="block text-white font-semibold mb-3"
-                    data-oid="pk3_kq."
+                    data-oid="79mxuf6"
                   >
                     Muse Name
                   </label>
@@ -1175,15 +1175,15 @@ export default function CreateMusePage() {
                     onChange={(e) => setMuseName(e.target.value)}
                     placeholder="Enter your muse's name..."
                     className="w-full bg-gray-800 border border-gray-600 rounded-xl px-6 py-4 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors text-lg"
-                    data-oid="4n_qe7g"
+                    data-oid="_stfkm6"
                   />
                 </div>
 
                 {/* Description Input */}
-                <div data-oid="-meg6rh">
+                <div data-oid="ngf52-j">
                   <label
                     className="block text-white font-semibold mb-3"
-                    data-oid="-b:9s:x"
+                    data-oid="al1lvf5"
                   >
                     Personality Description
                   </label>
@@ -1193,45 +1193,45 @@ export default function CreateMusePage() {
                     placeholder="Describe your muse's personality, interests, and unique traits..."
                     rows={4}
                     className="w-full bg-gray-800 border border-gray-600 rounded-xl px-6 py-4 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors resize-none"
-                    data-oid=":bo2d4y"
+                    data-oid="e1:d1fk"
                   />
                 </div>
 
                 {/* Behavioral Settings */}
-                <div className="grid md:grid-cols-2 gap-6" data-oid="p4208fx">
-                  <div data-oid="3n7sn7o">
+                <div className="grid md:grid-cols-2 gap-6" data-oid="6nwt8bx">
+                  <div data-oid="c0hhxe3">
                     <label
                       className="block text-white font-semibold mb-3"
-                      data-oid="518o1ef"
+                      data-oid="0s5hrgf"
                     >
                       Communication Style
                     </label>
                     <select
                       className="w-full bg-gray-800 border border-gray-600 rounded-xl px-6 py-4 text-white focus:border-purple-500 focus:outline-none transition-colors"
-                      data-oid="k1v7wss"
+                      data-oid="dx88q:1"
                     >
-                      <option data-oid="1gz0lag">Casual & Friendly</option>
-                      <option data-oid="o-ci2j4">Professional & Formal</option>
-                      <option data-oid="bu17_4o">Playful & Energetic</option>
-                      <option data-oid="otab08n">Calm & Thoughtful</option>
+                      <option data-oid="06.c8op">Casual & Friendly</option>
+                      <option data-oid="wqpm.:2">Professional & Formal</option>
+                      <option data-oid="m6:dicm">Playful & Energetic</option>
+                      <option data-oid="a8m5lzo">Calm & Thoughtful</option>
                     </select>
                   </div>
 
-                  <div data-oid="9cvwk..">
+                  <div data-oid="n6o.mu2">
                     <label
                       className="block text-white font-semibold mb-3"
-                      data-oid="tgbuy8v"
+                      data-oid="m7a73an"
                     >
                       Response Length
                     </label>
                     <select
                       className="w-full bg-gray-800 border border-gray-600 rounded-xl px-6 py-4 text-white focus:border-purple-500 focus:outline-none transition-colors"
-                      data-oid="8souwnn"
+                      data-oid="8197yqc"
                     >
-                      <option data-oid="81av2g.">Concise</option>
-                      <option data-oid="z4hu90a">Balanced</option>
-                      <option data-oid="th7ec89">Detailed</option>
-                      <option data-oid="h3lt-z1">Comprehensive</option>
+                      <option data-oid="ur9:-t6">Concise</option>
+                      <option data-oid="1jiu0mr">Balanced</option>
+                      <option data-oid="d91356h">Detailed</option>
+                      <option data-oid="zhbb.kc">Comprehensive</option>
                     </select>
                   </div>
                 </div>
@@ -1239,55 +1239,55 @@ export default function CreateMusePage() {
             </div>
 
             {/* Preview Card */}
-            <div className="neural-card rounded-3xl p-8" data-oid="i2hhrs9">
+            <div className="neural-card rounded-3xl p-8" data-oid="wf.h8pe">
               <h4
                 className="text-2xl font-bold text-white mb-6 text-center"
-                data-oid="_fgxnvq"
+                data-oid="neqffo5"
               >
                 Preview
               </h4>
               <div
                 className="flex items-center space-x-6 p-6 bg-gray-800/30 rounded-2xl"
-                data-oid="tq8s_bx"
+                data-oid="vg-:te1"
               >
                 <div
                   className={`w-20 h-20 rounded-full bg-gradient-to-br ${generatedAvatar?.gradient} flex items-center justify-center shadow-lg`}
-                  data-oid="mv:kh4:"
+                  data-oid="lioh3um"
                 >
                   <span
                     className="text-2xl font-bold text-white"
-                    data-oid="i.:-42l"
+                    data-oid=".lwe9wu"
                   >
                     {generatedAvatar?.initial}
                   </span>
                 </div>
-                <div className="flex-1" data-oid="ia:1n6s">
+                <div className="flex-1" data-oid="ul5elxk">
                   <h5
                     className="text-2xl font-bold text-white mb-2"
-                    data-oid="gaha1x7"
+                    data-oid="khvpg59"
                   >
                     {museName || "Your Muse"}
                   </h5>
-                  <p className="text-gray-400 mb-3" data-oid="a_t2_vi">
+                  <p className="text-gray-400 mb-3" data-oid="z2qkt80">
                     {museDescription ||
                       "A unique AI companion with a carefully crafted personality."}
                   </p>
-                  <div className="flex space-x-4 text-sm" data-oid="t1pmanx">
+                  <div className="flex space-x-4 text-sm" data-oid="655ifff">
                     {Object.entries(personality).map(([trait, value]) => (
                       <div
                         key={trait}
                         className="flex items-center space-x-1"
-                        data-oid="wishedc"
+                        data-oid="a0n6ek7"
                       >
                         <span
                           className="text-gray-500 capitalize"
-                          data-oid="298jfll"
+                          data-oid="pfm.9:s"
                         >
                           {trait}:
                         </span>
                         <span
                           className="text-purple-400 font-bold"
-                          data-oid="p1.ss1e"
+                          data-oid="4qruidr"
                         >
                           {value}
                         </span>
@@ -1298,11 +1298,11 @@ export default function CreateMusePage() {
               </div>
             </div>
 
-            <div className="flex justify-center space-x-6" data-oid="4lt:nl.">
+            <div className="flex justify-center space-x-6" data-oid="5lm4g2.">
               <button
                 onClick={handleBack}
                 className="px-10 py-4 border-2 border-gray-600 text-gray-300 font-bold rounded-xl hover:bg-gray-700 transition-all hover:scale-105"
-                data-oid="oy8rdfi"
+                data-oid="mtaw5m1"
               >
                 ← Previous
               </button>
@@ -1314,7 +1314,7 @@ export default function CreateMusePage() {
                     ? "hover:scale-105"
                     : "opacity-50 cursor-not-allowed"
                 }`}
-                data-oid="-olyqdu"
+                data-oid="sxj6zsp"
               >
                 Deploy Muse →
               </button>
@@ -1324,67 +1324,67 @@ export default function CreateMusePage() {
 
       case 4:
         return (
-          <div className="max-w-6xl mx-auto" data-oid="0ju8mbt">
-            <div className="grid lg:grid-cols-2 gap-8 mb-12" data-oid="baib-ge">
+          <div className="max-w-6xl mx-auto" data-oid="41:x1.b">
+            <div className="grid lg:grid-cols-2 gap-8 mb-12" data-oid="_s1qkfi">
               {/* Avatar and Personality Summary */}
-              <div className="neural-card rounded-2xl p-8" data-oid="8hdbnjj">
+              <div className="neural-card rounded-2xl p-8" data-oid="5q_km0w">
                 <div
                   className="flex items-center justify-center space-x-8 mb-8"
-                  data-oid="wik029-"
+                  data-oid="b8j8qy0"
                 >
-                  <AvatarPreview avatar={generatedAvatar} data-oid="4x40.q_" />
+                  <AvatarPreview avatar={generatedAvatar} data-oid="btl3cs." />
                   <div
                     className="flex flex-col items-center space-y-2"
-                    data-oid="zt6hzee"
+                    data-oid="j-gy394"
                   >
                     <div
                       className="text-4xl font-mono text-purple-400"
-                      data-oid=".wl.93o"
+                      data-oid="0.glklq"
                     >
                       #preview
                     </div>
                     <AvatarPreview
                       avatar={generatedAvatar}
                       size="small"
-                      data-oid="cb47i_8"
+                      data-oid=".:-qw65"
                     />
                   </div>
                 </div>
 
                 <h3
                   className="text-2xl font-semibold text-white text-center mb-2"
-                  data-oid=":ebxmi-"
+                  data-oid="r68e3_i"
                 >
                   {generatedAvatar?.name || "Balanced Harmony"}
                 </h3>
                 <p
                   className="text-gray-400 text-center mb-8"
-                  data-oid="lg7oypf"
+                  data-oid="na.xwxr"
                 >
                   All aspects of being flow together in perfect equilibrium,
                   adaptable to any moment.
                 </p>
 
-                <div className="space-y-4" data-oid="awc.6gs">
+                <div className="space-y-4" data-oid="7m:5eim">
                   {Object.entries(personality).map(([trait, value]) => (
                     <div
                       key={trait}
                       className="flex items-center justify-between"
-                      data-oid="fuc4cbw"
+                      data-oid="a0thl4t"
                     >
                       <span
                         className="text-white capitalize font-medium"
-                        data-oid="7v6jtj6"
+                        data-oid="1bjs7ue"
                       >
                         {trait}
                       </span>
                       <div
                         className="flex items-center space-x-3"
-                        data-oid=":az3mcz"
+                        data-oid="11jg42k"
                       >
                         <div
                           className="w-24 h-2 bg-gray-700 rounded-full"
-                          data-oid="7y_f:o5"
+                          data-oid="uv:q:yx"
                         >
                           <div
                             className={`h-full rounded-full bg-gradient-to-r ${
@@ -1397,12 +1397,12 @@ export default function CreateMusePage() {
                                     : "from-green-500 to-teal-500"
                             }`}
                             style={{ width: `${value}%` }}
-                            data-oid="47eg0mi"
+                            data-oid="ruia7m3"
                           />
                         </div>
                         <span
                           className="text-white font-mono font-bold text-lg w-8"
-                          data-oid="l0hvbq5"
+                          data-oid="c-:8_by"
                         >
                           {value}
                         </span>
@@ -1413,41 +1413,41 @@ export default function CreateMusePage() {
               </div>
 
               {/* Sample Responses */}
-              <div data-oid="mpd4lbe">
+              <div data-oid="7c11wb2">
                 <h3
                   className="text-2xl font-semibold text-white mb-6 flex items-center"
-                  data-oid="1qngsp_"
+                  data-oid="06air1d"
                 >
-                  <span className="text-2xl mr-2" data-oid="v:ica7d">
+                  <span className="text-2xl mr-2" data-oid="wrp6_ji">
                     ✨
                   </span>
                   Sample Responses
                 </h3>
 
-                <div className="space-y-4" data-oid="u077wdg">
+                <div className="space-y-4" data-oid="h2guk.m">
                   {sampleResponses.map((sample, index) => (
                     <div
                       key={index}
                       className="neural-card rounded-xl p-4"
-                      data-oid="pil18_a"
+                      data-oid="y.bg:zv"
                     >
                       <div
                         className="flex items-start space-x-3 mb-3"
-                        data-oid="l8-4w5c"
+                        data-oid=".yszuso"
                       >
                         <div
                           className="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center text-xs"
-                          data-oid="ep_uv8h"
+                          data-oid="yti:s-d"
                         >
                           👤
                         </div>
-                        <div className="text-gray-300" data-oid="pr89e1d">
+                        <div className="text-gray-300" data-oid="9z6ji9h">
                           User: "{sample.user}"
                         </div>
                       </div>
                       <div
                         className="pl-9 text-gray-200 leading-relaxed"
-                        data-oid="d:nr_h-"
+                        data-oid="uo:m:fy"
                       >
                         {sample.response}
                       </div>
@@ -1457,11 +1457,11 @@ export default function CreateMusePage() {
               </div>
             </div>
 
-            <div className="flex justify-center space-x-4" data-oid="k0bdnku">
+            <div className="flex justify-center space-x-4" data-oid="s:4p:kp">
               <button
                 onClick={handleBack}
                 className="px-8 py-3 border border-gray-600 text-gray-300 font-semibold rounded-xl hover:bg-gray-700 transition-all"
-                data-oid="ivlqc1i"
+                data-oid="ykw7a7y"
               >
                 Back to Avatar
               </button>
@@ -1470,14 +1470,14 @@ export default function CreateMusePage() {
                   /* Test interaction */
                 }}
                 className="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl transition-all"
-                data-oid="rx.ilix"
+                data-oid="z.f_j88"
               >
                 Test Interaction
               </button>
               <button
                 onClick={handleNext}
                 className="neural-button px-8 py-3 text-white font-semibold rounded-xl"
-                data-oid="5gxuzcj"
+                data-oid="5n8a4np"
               >
                 Create Muse
               </button>
@@ -1487,60 +1487,60 @@ export default function CreateMusePage() {
 
       case 5:
         return (
-          <div className="max-w-2xl mx-auto text-center" data-oid="gn-.pxh">
+          <div className="max-w-2xl mx-auto text-center" data-oid="-e2io00">
             <div
               className="neural-card rounded-2xl p-12 mb-8"
-              data-oid="vyy7tbj"
+              data-oid="dyiohw_"
             >
               <h3
                 className="text-2xl font-semibold text-white mb-8"
-                data-oid="fo9h6hn"
+                data-oid="-r:2okt"
               >
                 Transaction Details
               </h3>
 
-              <div className="space-y-6 text-left" data-oid="pna662l">
+              <div className="space-y-6 text-left" data-oid="twib:x7">
                 <div
                   className="flex justify-between items-center"
-                  data-oid="7pne:zq"
+                  data-oid="beuw50m"
                 >
-                  <span className="text-gray-400" data-oid="5_enqf.">
+                  <span className="text-gray-400" data-oid="kg2_nv6">
                     Network:
                   </span>
-                  <span className="text-white font-mono" data-oid="iqq.8l7">
+                  <span className="text-white font-mono" data-oid="hulmojc">
                     Metis Hyperion Testnet
                   </span>
                 </div>
                 <div
                   className="flex justify-between items-center"
-                  data-oid="jv-owaj"
+                  data-oid="zs5zhh1"
                 >
-                  <span className="text-gray-400" data-oid="6bxhdk4">
+                  <span className="text-gray-400" data-oid="mro09jl">
                     Gas Fee:
                   </span>
-                  <span className="text-white font-mono" data-oid="e6kphkz">
+                  <span className="text-white font-mono" data-oid="l2qer::">
                     ~0.001 METIS
                   </span>
                 </div>
                 <div
                   className="flex justify-between items-center"
-                  data-oid="p9lfko."
+                  data-oid="h2.lu26"
                 >
-                  <span className="text-gray-400" data-oid="1l_zmjf">
+                  <span className="text-gray-400" data-oid="cp3.zga">
                     Your Wallet:
                   </span>
-                  <span className="text-white font-mono" data-oid="cuz7awa">
+                  <span className="text-white font-mono" data-oid="-nwqt4z">
                     0x3BD9...7881
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="flex justify-center space-x-4" data-oid="_lur-h.">
+            <div className="flex justify-center space-x-4" data-oid="wr:a_z6">
               <button
                 onClick={handleBack}
                 className="px-8 py-3 border border-gray-600 text-gray-300 font-semibold rounded-xl hover:bg-gray-700 transition-all"
-                data-oid="8u76itk"
+                data-oid="m65ev.y"
               >
                 Back to Preview
               </button>
@@ -1550,19 +1550,19 @@ export default function CreateMusePage() {
                 className={`neural-button px-8 py-3 text-white font-semibold rounded-xl ${
                   isCreating ? "opacity-50 cursor-not-allowed" : ""
                 }`}
-                data-oid="k86vu_n"
+                data-oid="e57.o3r"
               >
                 {isCreating ? (
                   <div
                     className="flex items-center space-x-2"
-                    data-oid="yvu7ntj"
+                    data-oid="9c4cp:l"
                   >
                     <div
                       className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"
-                      data-oid="s-:vhlz"
+                      data-oid="ae:rsj."
                     />
 
-                    <span data-oid="mc297g9">Creating...</span>
+                    <span data-oid=".1ito0v">Creating...</span>
                   </div>
                 ) : (
                   "Create My Muse"
@@ -1580,59 +1580,59 @@ export default function CreateMusePage() {
   return (
     <div
       className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden"
-      data-oid="e8rnmtu"
+      data-oid="vlps1i5"
     >
       {/* Enhanced Background Effects */}
-      <NeuralNetwork data-oid="e.__69l" />
+      <NeuralNetwork data-oid="u4aiqly" />
 
-      <div className="absolute inset-0 overflow-hidden" data-oid="eqeoh1j">
+      <div className="absolute inset-0 overflow-hidden" data-oid="ukp3me.">
         <div
           className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"
-          data-oid="v0qq:m6"
+          data-oid="34bq7vu"
         />
 
         <div
           className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"
-          data-oid="syovolt"
+          data-oid="if4c9kk"
         />
 
         <div
           className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse"
-          data-oid="fdqpimr"
+          data-oid="mc:_.g5"
         />
       </div>
 
       {/* Geometric Background Pattern */}
-      <div className="geometric-bg" data-oid="2voa2iz">
-        <div className="geometric-shape" data-oid="akkxtzm" />
-        <div className="geometric-shape" data-oid="pz4beau" />
-        <div className="geometric-shape" data-oid="s_nffbo" />
+      <div className="geometric-bg" data-oid="fmbdi2g">
+        <div className="geometric-shape" data-oid="jt7sn3o" />
+        <div className="geometric-shape" data-oid="rde8ybw" />
+        <div className="geometric-shape" data-oid="d2j8aez" />
       </div>
 
       {/* Navigation */}
       <nav
         className="relative z-20 flex items-center justify-between p-6 max-w-7xl mx-auto"
-        data-oid="1ugj.5m"
+        data-oid="vhjzr:0"
       >
         <Link
           href="/"
           className="flex items-center space-x-3"
-          data-oid="xl5tufc"
+          data-oid="tegeia."
         >
           <div
             className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center font-bold text-white"
-            data-oid="n5cu4ji"
+            data-oid="ivya28s"
           >
             M
           </div>
-          <div data-oid="wlxkzx9">
+          <div data-oid="w46zlxh">
             <span
               className="text-2xl font-bold hero-gradient-text"
-              data-oid="-owy9ys"
+              data-oid="4kv0gvw"
             >
               MetaMuse
             </span>
-            <div className="text-xs text-gray-400 font-mono" data-oid="55-i1h5">
+            <div className="text-xs text-gray-400 font-mono" data-oid="41lnr0n">
               Create Mode
             </div>
           </div>
@@ -1641,7 +1641,7 @@ export default function CreateMusePage() {
         <Link
           href="/"
           className="px-6 py-3 border border-gray-600 text-gray-300 font-semibold rounded-xl hover:bg-gray-700 transition-all"
-          data-oid="nmub4ly"
+          data-oid="z3g379-"
         >
           ← Back to Home
         </Link>
@@ -1650,7 +1650,7 @@ export default function CreateMusePage() {
       {/* Main Content */}
       <div
         className="relative z-10 max-w-7xl mx-auto px-4 py-12"
-        data-oid="aljpjr2"
+        data-oid="xv8meuk"
       >
         {/* Step Navigation */}
         <StepNavigation
@@ -1658,30 +1658,30 @@ export default function CreateMusePage() {
           totalSteps={5}
           onStepChange={setCurrentStep}
           stepTitles={stepTitles}
-          data-oid="49fv37z"
+          data-oid="fwkzggs"
         />
 
         {/* Enhanced Step Info */}
-        <div className="text-center mb-20" data-oid="hhou-u2">
+        <div className="text-center mb-20" data-oid="o511jiq">
           <div
             className="inline-block px-6 py-3 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-300 text-sm font-mono mb-8"
-            data-oid="sgsz16d"
+            data-oid="dsj42uh"
           >
             🚀 Step {currentStep} of 5
           </div>
 
           <h1
             className="text-6xl lg:text-7xl font-black mb-8 leading-tight"
-            data-oid=":r7y:0i"
+            data-oid="8vg9ife"
           >
-            <div className="hero-gradient-text mb-2" data-oid="wataor:">
+            <div className="hero-gradient-text mb-2" data-oid="lhlsj-3">
               {stepTitles[currentStep - 1]}
             </div>
           </h1>
 
           <p
             className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed mb-8"
-            data-oid="hcntjwe"
+            data-oid="xf2d2zj"
           >
             {stepDescriptions[currentStep - 1]}
           </p>
@@ -1689,20 +1689,20 @@ export default function CreateMusePage() {
           {/* Progress indicator */}
           <div
             className="flex justify-center items-center space-x-2 text-sm text-gray-400"
-            data-oid="a06yciu"
+            data-oid="7ac:p:h"
           >
-            <span data-oid="dcedjp:">Progress:</span>
+            <span data-oid="8cizu9h">Progress:</span>
             <div
               className="w-32 h-2 bg-gray-700 rounded-full overflow-hidden"
-              data-oid="w67mf:w"
+              data-oid="hbgb0w3"
             >
               <div
                 className="h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-full transition-all duration-700"
                 style={{ width: `${(currentStep / 5) * 100}%` }}
-                data-oid="f.dg95n"
+                data-oid="w006he0"
               />
             </div>
-            <span data-oid="jc1u49x">
+            <span data-oid="a1c.irh">
               {Math.round((currentStep / 5) * 100)}%
             </span>
           </div>

@@ -52,7 +52,7 @@ const MatrixRain = () => {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 pointer-events-none opacity-30"
-      data-oid="ie2pkjj"
+      data-oid=":24aw48"
     />
   );
 };
@@ -87,7 +87,7 @@ const AnimatedCounter = ({
   }, [end, duration]);
 
   return (
-    <span className="stat-number" data-oid="1fj316u">
+    <span className="stat-number" data-oid="pqgzi4:">
       {count}
     </span>
   );
@@ -98,7 +98,7 @@ const FloatingParticles = () => {
   return (
     <div
       className="absolute inset-0 overflow-hidden pointer-events-none"
-      data-oid="pq24e6g"
+      data-oid=".1lztk1"
     >
       {[...Array(20)].map((_, i) => (
         <div
@@ -110,7 +110,7 @@ const FloatingParticles = () => {
             animationDelay: `${Math.random() * 5}s`,
             animationDuration: `${3 + Math.random() * 4}s`,
           }}
-          data-oid="rvo0gv5"
+          data-oid="ah.xmy_"
         />
       ))}
     </div>
@@ -173,19 +173,19 @@ export default function Page() {
   return (
     <div
       className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden"
-      data-oid="you6-0g"
+      data-oid="4bc5jfj"
     >
       {/* Matrix Rain Background */}
-      <MatrixRain data-oid="ti-45:c" />
+      <MatrixRain data-oid="ku8yqx0" />
 
       {/* Floating Particles */}
-      <FloatingParticles data-oid="3y-.49x" />
+      <FloatingParticles data-oid="85y6wrc" />
 
       {/* Geometric Background */}
-      <div className="geometric-bg" data-oid="cu8:f3u">
-        <div className="geometric-shape" data-oid="sidj-re"></div>
-        <div className="geometric-shape" data-oid="z2wt-p0"></div>
-        <div className="geometric-shape" data-oid=".5hgt24"></div>
+      <div className="geometric-bg" data-oid="7oh8f:8">
+        <div className="geometric-shape" data-oid="31zy1zu"></div>
+        <div className="geometric-shape" data-oid="qna1r_r"></div>
+        <div className="geometric-shape" data-oid="0q9l42t"></div>
       </div>
 
       {/* Mouse Follower */}
@@ -197,31 +197,31 @@ export default function Page() {
           background:
             "radial-gradient(circle, rgba(139, 92, 246, 0.03) 0%, transparent 70%)",
         }}
-        data-oid="g5ign.6"
+        data-oid="o7nv5vl"
       />
 
       {/* Navigation */}
       <nav
         className="relative z-20 flex items-center justify-between p-6 max-w-7xl mx-auto backdrop-blur-sm"
-        data-oid="w-qqbb1"
+        data-oid="38pil4q"
       >
-        <div className="flex items-center space-x-3" data-oid="otazn0l">
-          <div className="relative" data-oid="xsj3q7q">
+        <div className="flex items-center space-x-3" data-oid="qs-a-g3">
+          <div className="relative" data-oid="vtrmw65">
             <div
               className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center font-bold text-white shadow-lg"
-              data-oid="5:soysa"
+              data-oid="wsx7v5k"
             >
               M
             </div>
             <div
               className="pulse-ring w-12 h-12 top-0 left-0"
-              data-oid="_7-wnim"
+              data-oid="j3dl.yi"
             ></div>
           </div>
-          <div data-oid="4got08u">
+          <div data-oid="ji.efyf">
             <span
               className="text-2xl font-bold hero-gradient-text"
-              data-oid="s23g17f"
+              data-oid="5nidb7t"
             >
               MetaMuses
             </span>
@@ -230,7 +230,7 @@ export default function Page() {
 
         <div
           className="hidden lg:flex items-center space-x-8 text-gray-300 font-medium"
-          data-oid="b_:.f50"
+          data-oid="ylow.6o"
         >
           {[
             { icon: "🏠", label: "Home", active: true },
@@ -242,10 +242,10 @@ export default function Page() {
               className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all hover:bg-white/5 ${
                 item.active ? "text-white bg-white/10" : "hover:text-white"
               }`}
-              data-oid="z.huo3v"
+              data-oid="04wo6pm"
             >
-              <span data-oid="b340dqt">{item.icon}</span>
-              <span data-oid="a57b7k1">{item.label}</span>
+              <span data-oid="zvqht6t">{item.icon}</span>
+              <span data-oid="eaor_yd">{item.label}</span>
             </a>
           ))}
         </div>
@@ -257,7 +257,7 @@ export default function Page() {
               ? "bg-green-600 hover:bg-green-700 text-white"
               : "text-white"
           }`}
-          data-oid="ij67ayj"
+          data-oid="54akn:2"
         >
           {isConnected ? "✅ Connected" : "Connect Wallet"}
         </button>
@@ -266,40 +266,40 @@ export default function Page() {
       {/* Hero Section */}
       <div
         className="relative z-10 max-w-7xl mx-auto px-4 py-20"
-        data-oid="x6ilhfc"
+        data-oid="_ujf912"
       >
         <div
           className="grid lg:grid-cols-2 gap-16 items-center"
-          data-oid="lc:0rma"
+          data-oid="m5cnx.5"
         >
-          <div data-oid="2.ta0y0">
+          <div data-oid="0lw6z32">
             {/* <div
-                                         className="inline-block px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-300 text-sm font-mono mb-8"
-                                         data-oid="5s90rue"
-                                        >
-                                         🚀 Next-Gen AI Companions
-                                        </div> */}
+                                            className="inline-block px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-300 text-sm font-mono mb-8"
+                                            data-oid="5s90rue"
+                                           >
+                                            🚀 Next-Gen AI Companions
+                                           </div> */}
 
             <h1
               className="text-6xl lg:text-8xl font-black mb-8 leading-tight"
-              data-oid="t557tx8"
+              data-oid="u9cb:wo"
             >
-              <div className="hero-gradient-text mb-4" data-oid="-0mwrjc">
+              <div className="hero-gradient-text mb-4" data-oid="nj92c3f">
                 Meet Your
               </div>
-              <div className="hero-gradient-text" data-oid="apqkxrc">
+              <div className="hero-gradient-text" data-oid="trjpeh_">
                 AI Companion
               </div>
             </h1>
 
             <p
               className="text-xl text-gray-300 mb-8 leading-relaxed max-w-2xl"
-              data-oid="5b7tdj4"
+              data-oid="r51pqt:"
             >
               Create unique AI companions with{" "}
               <span
                 className="text-purple-400 font-semibold"
-                data-oid="a6h-8--"
+                data-oid="u7lbj-a"
               >
                 verifiable blockchain interactions
               </span>
@@ -309,57 +309,57 @@ export default function Page() {
 
             <div
               className="flex flex-col sm:flex-row gap-6 mb-12"
-              data-oid="fcjsg3-"
+              data-oid="ciccyz7"
             >
               <button
                 onClick={handleConnectWallet}
                 className="neural-button px-8 py-4 text-white font-bold text-lg rounded-xl flex items-center space-x-2 group"
-                data-oid="n-ezokz"
+                data-oid="ic_2_gt"
               >
-                <span data-oid="lqt4kj6">🔗</span>
-                <span data-oid="q3hxi_v">Mint Muse AI</span>
+                <span data-oid="9r2yxng">🔗</span>
+                <span data-oid="681t:z4">Mint Muse AI</span>
                 <span
                   className="group-hover:translate-x-1 transition-transform"
-                  data-oid="thn95kt"
+                  data-oid="72fddy1"
                 >
                   →
                 </span>
               </button>
               {/* <button
-                                 className="px-8 py-4 border border-purple-500/30 text-purple-300 font-semibold rounded-xl hover:bg-purple-500/10 transition-all flex items-center space-x-2"
-                                 data-oid="pgq7ogg"
-                                >
-                                 <span data-oid="73il3l2">▶️</span>
-                                 <span data-oid="q6sfal0">Watch Demo</span>
-                                </button> */}
+                                    className="px-8 py-4 border border-purple-500/30 text-purple-300 font-semibold rounded-xl hover:bg-purple-500/10 transition-all flex items-center space-x-2"
+                                    data-oid="pgq7ogg"
+                                   >
+                                    <span data-oid="73il3l2">▶️</span>
+                                    <span data-oid="q6sfal0">Watch Demo</span>
+                                   </button> */}
             </div>
 
             {/* Stats */}
             <div
               className="grid grid-cols-3 gap-8 pt-8 border-t border-gray-800"
-              data-oid="1.cp:77"
+              data-oid="pvjk13n"
             >
-              <div className="text-center" data-oid="-qhbg15">
-                <div className="text-3xl font-bold" data-oid="kr189kc">
-                  <AnimatedCounter end={100} data-oid="qvrto1f" />+
+              <div className="text-center" data-oid="mm2lf2k">
+                <div className="text-3xl font-bold" data-oid="iasgd2v">
+                  <AnimatedCounter end={100} data-oid="hi-ruko" />+
                 </div>
-                <div className="text-gray-400 text-sm" data-oid="ok-_ssd">
+                <div className="text-gray-400 text-sm" data-oid="fp77fgs">
                   Active Users
                 </div>
               </div>
-              <div className="text-center" data-oid=":.cw288">
-                <div className="text-3xl font-bold" data-oid="fk8mwmx">
-                  <AnimatedCounter end={10} data-oid="iikc6l2" />
+              <div className="text-center" data-oid="key_xzp">
+                <div className="text-3xl font-bold" data-oid="793jx5a">
+                  <AnimatedCounter end={10} data-oid="_s2c2_." />
                 </div>
-                <div className="text-gray-400 text-sm" data-oid="wn_adw7">
+                <div className="text-gray-400 text-sm" data-oid="ff9ryh6">
                   AI Companions
                 </div>
               </div>
-              <div className="text-center" data-oid="gnywzqn">
-                <div className="text-3xl font-bold" data-oid="dhkvfec">
-                  <AnimatedCounter end={1000} data-oid="7_8k6i5" />+
+              <div className="text-center" data-oid="9:cibzr">
+                <div className="text-3xl font-bold" data-oid="tgk1yk4">
+                  <AnimatedCounter end={1000} data-oid="5adogzs" />+
                 </div>
-                <div className="text-gray-400 text-sm" data-oid="ry72nq.">
+                <div className="text-gray-400 text-sm" data-oid="vhcdz.n">
                   Conversations
                 </div>
               </div>
@@ -367,73 +367,73 @@ export default function Page() {
           </div>
 
           {/* Interactive Demo */}
-          <div className="relative" data-oid="cydfzca">
+          <div className="relative" data-oid="my-l2wv">
             <div
               className="neural-card rounded-3xl p-8 backdrop-blur-xl"
-              data-oid="s2dc-nj"
+              data-oid="1q-mpzj"
             >
               <div
                 className="code-block p-6 rounded-xl mb-6"
-                data-oid="9_9xelh"
+                data-oid="l7bzroa"
               >
                 <div
                   className="flex items-center space-x-2 mb-4"
-                  data-oid="dfui14a"
+                  data-oid="j1mt9gt"
                 >
                   <div
                     className="w-3 h-3 bg-red-500 rounded-full"
-                    data-oid="qlmpis9"
+                    data-oid="4uxsh:2"
                   ></div>
                   <div
                     className="w-3 h-3 bg-yellow-500 rounded-full"
-                    data-oid="ecd7qza"
+                    data-oid="0nsb71d"
                   ></div>
                   <div
                     className="w-3 h-3 bg-green-500 rounded-full"
-                    data-oid=":m8k8ne"
+                    data-oid="hiw-f2f"
                   ></div>
                   <span
                     className="text-gray-400 text-sm ml-4"
-                    data-oid="ro-:g6a"
+                    data-oid="a3jurtj"
                   >
                     MetaMuse Terminal
                   </span>
                 </div>
-                <div className="font-mono text-sm space-y-2" data-oid="_v3tz82">
-                  <div className="text-purple-400" data-oid="qzedaz8">
+                <div className="font-mono text-sm space-y-2" data-oid="s7e:dss">
+                  <div className="text-purple-400" data-oid="99bw5vi">
                     $ metamuse create --personality curious
                   </div>
-                  <div className="text-green-400" data-oid=".cf.2:6">
+                  <div className="text-green-400" data-oid="2ovauw_">
                     ✓ Initializing neural pathways...
                   </div>
-                  <div className="text-cyan-400" data-oid="td2m._2">
+                  <div className="text-cyan-400" data-oid="42jm8ij">
                     ✓ Blockchain identity verified
                   </div>
-                  <div className="text-yellow-400" data-oid="_1a4x1m">
+                  <div className="text-yellow-400" data-oid="th28::9">
                     ⚡ Your AI companion is ready!
                   </div>
                   <div
                     className="text-gray-300 cursor-blink"
-                    data-oid="8cs0sgm"
+                    data-oid="e:du:01"
                   >
                     $ _
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-4" data-oid="35rzorc">
-                <div className="flex items-start space-x-4" data-oid="adma1.b">
+              <div className="space-y-4" data-oid="29s.11k">
+                <div className="flex items-start space-x-4" data-oid="lzip-_5">
                   <div
                     className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm"
-                    data-oid="vik0lh_"
+                    data-oid="p3dfqw_"
                   >
                     AI
                   </div>
                   <div
                     className="flex-1 bg-gray-800/50 rounded-lg p-4"
-                    data-oid="_49fc.i"
+                    data-oid="ctsq5ct"
                   >
-                    <p className="text-gray-300 text-sm" data-oid="j4grxln">
+                    <p className="text-gray-300 text-sm" data-oid="544x__w">
                       Hello! I'm your new AI companion. I can remember our
                       conversations, learn from your preferences, and help you
                       with creative tasks. What would you like to explore
@@ -442,18 +442,18 @@ export default function Page() {
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4" data-oid="17f2aes">
+                <div className="flex items-start space-x-4" data-oid="hlujb0r">
                   <div
                     className="w-10 h-10 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full flex items-center justify-center text-white font-bold text-sm"
-                    data-oid="dpt052b"
+                    data-oid="y2gkcg2"
                   >
                     You
                   </div>
                   <div
                     className="flex-1 bg-purple-500/20 rounded-lg p-4"
-                    data-oid="w0aft94"
+                    data-oid="cfk5u7m"
                   >
-                    <p className="text-purple-200 text-sm" data-oid="zn50dby">
+                    <p className="text-purple-200 text-sm" data-oid=":d5ndfe">
                       Let's brainstorm some creative writing ideas for my sci-fi
                       novel...
                     </p>
@@ -468,24 +468,24 @@ export default function Page() {
       {/* Advanced Features Section */}
       <div
         className="relative z-10 max-w-7xl mx-auto px-4 py-32"
-        data-oid="-px5utq"
+        data-oid="2-bu0yr"
       >
-        <div className="text-center mb-20" data-oid="s2ypz1c">
+        <div className="text-center mb-20" data-oid="0b3qc12">
           {/* <div
-                            className="inline-block px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-full text-blue-300 text-sm font-mono mb-6"
-                            data-oid="ts9pawn"
-                           >
-                            🔬 Advanced Technology Stack
-                           </div> */}
+                               className="inline-block px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-full text-blue-300 text-sm font-mono mb-6"
+                               data-oid="ts9pawn"
+                              >
+                               🔬 Advanced Technology Stack
+                              </div> */}
           <h2
             className="text-5xl lg:text-6xl font-black mb-6 secondary-gradient-text"
-            data-oid="7kclv9z"
+            data-oid="_ezews:"
           >
             Powered by AI & Blockchain
           </h2>
           <p
             className="text-xl text-gray-400 max-w-3xl mx-auto"
-            data-oid="-9z5owj"
+            data-oid="_b87_d7"
           >
             Our cutting-edge technology stack combines the latest advances in
             artificial intelligence with blockchain security to create truly
@@ -493,7 +493,7 @@ export default function Page() {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8" data-oid="i.wo6ta">
+        <div className="grid lg:grid-cols-2 gap-8" data-oid="bh3g9s9">
           {features.map((feature, index) => (
             <div
               key={index}
@@ -502,47 +502,47 @@ export default function Page() {
               }`}
               onClick={() => setActiveFeature(index)}
               onMouseEnter={() => setActiveFeature(index)}
-              data-oid="etd7sxp"
+              data-oid="gycyj05"
             >
-              <div className="flex items-start space-x-6" data-oid="76x02do">
+              <div className="flex items-start space-x-6" data-oid="13wty0-">
                 <div
                   className={`w-16 h-16 bg-gradient-to-br ${feature.gradient} rounded-2xl flex items-center justify-center text-2xl shadow-lg`}
-                  data-oid="_vtt4bg"
+                  data-oid="r:5--zf"
                 >
                   {feature.icon}
                 </div>
-                <div className="flex-1" data-oid="9padb6m">
+                <div className="flex-1" data-oid=".:qz.5m">
                   <div
                     className="flex items-center space-x-3 mb-3"
-                    data-oid="6h6jxb9"
+                    data-oid="9xtdybz"
                   >
                     <h3
                       className="text-2xl font-bold text-white"
-                      data-oid="i7geb1_"
+                      data-oid="u3e9ol6"
                     >
                       {feature.title}
                     </h3>
                     <span
                       className="px-2 py-1 bg-gray-700/50 text-gray-300 text-xs rounded font-mono"
-                      data-oid="ov7ciyo"
+                      data-oid="_i8io1b"
                     >
                       {feature.tech}
                     </span>
                   </div>
                   <p
                     className="text-gray-300 leading-relaxed mb-4"
-                    data-oid="l_0:s5u"
+                    data-oid="eswqi8j"
                   >
                     {feature.description}
                   </p>
                   <div
                     className="flex items-center text-purple-400 hover:text-purple-300 transition-colors"
-                    data-oid="x0oybtd"
+                    data-oid="z_d_a2a"
                   >
-                    <span className="text-sm font-semibold" data-oid="ebgt:3n">
+                    <span className="text-sm font-semibold" data-oid="sa7l1fb">
                       Learn more
                     </span>
-                    <span className="ml-2" data-oid=":vhrted">
+                    <span className="ml-2" data-oid="ewba-5h">
                       →
                     </span>
                   </div>
@@ -556,72 +556,72 @@ export default function Page() {
       {/* Technical Architecture */}
       <div
         className="relative z-10 max-w-7xl mx-auto px-4 py-20"
-        data-oid="jp9crfw"
+        data-oid="jnreoo_"
       >
-        <div className="hex-pattern rounded-3xl p-12" data-oid="rin47zl">
-          <div className="text-center mb-16" data-oid="1nklwk:">
+        <div className="hex-pattern rounded-3xl p-12" data-oid="0gobht.">
+          <div className="text-center mb-16" data-oid="7.m2a66">
             <h2
               className="text-4xl font-bold text-white mb-4"
-              data-oid="63j3r-i"
+              data-oid="zi:fp5n"
             >
               Technical Architecture
             </h2>
-            <p className="text-gray-300 text-lg" data-oid="5xg9s08">
+            <p className="text-gray-300 text-lg" data-oid="2yqsic.">
               Built for scale, security, and seamless integration
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8" data-oid="o6-v-d7">
-            <div className="text-center space-y-4" data-oid="65m3906">
+          <div className="grid md:grid-cols-3 gap-8" data-oid="bz6:er0">
+            <div className="text-center space-y-4" data-oid="3t287gf">
               <div
                 className="w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full mx-auto flex items-center justify-center text-3xl"
-                data-oid="pj.k3fe"
+                data-oid="glje7c0"
               >
                 ⚡
               </div>
               <h3
                 className="text-xl font-semibold text-white"
-                data-oid="nv1gsa-"
+                data-oid="r-gn8ns"
               >
                 Lightning Fast
               </h3>
-              <p className="text-gray-400" data-oid="_7t56n7">
+              <p className="text-gray-400" data-oid="x34cqh2">
                 Sub-100ms response times with distributed computing
               </p>
             </div>
 
-            <div className="text-center space-y-4" data-oid="ce9x..z">
+            <div className="text-center space-y-4" data-oid="a-w03jz">
               <div
                 className="w-20 h-20 bg-gradient-to-br from-green-500 to-teal-500 rounded-full mx-auto flex items-center justify-center text-3xl"
-                data-oid="ux9_ctx"
+                data-oid="l3iz14a"
               >
                 🛡️
               </div>
               <h3
                 className="text-xl font-semibold text-white"
-                data-oid="sdc859w"
+                data-oid="w1.:8vs"
               >
                 Enterprise Security
               </h3>
-              <p className="text-gray-400" data-oid="_m1wiul">
+              <p className="text-gray-400" data-oid="a9e5yv3">
                 End-to-end encryption with zero-knowledge proofs
               </p>
             </div>
 
-            <div className="text-center space-y-4" data-oid="ya:apzi">
+            <div className="text-center space-y-4" data-oid="lnn9id8">
               <div
                 className="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-500 rounded-full mx-auto flex items-center justify-center text-3xl"
-                data-oid="zw80qd0"
+                data-oid="14sj4mc"
               >
                 🌐
               </div>
               <h3
                 className="text-xl font-semibold text-white"
-                data-oid=":p0s_5n"
+                data-oid="4lpclcq"
               >
                 Global Scale
               </h3>
-              <p className="text-gray-400" data-oid="ngz87jz">
+              <p className="text-gray-400" data-oid="u48t8o8">
                 Distributed across 50+ data centers worldwide
               </p>
             </div>
@@ -632,39 +632,39 @@ export default function Page() {
       {/* Advanced CTA */}
       <div
         className="relative z-10 max-w-7xl mx-auto px-4 py-20"
-        data-oid="42-1xhw"
+        data-oid="ireikie"
       >
         <div
           className="neural-card rounded-3xl p-16 text-center relative overflow-hidden"
-          data-oid="-0n4mtc"
+          data-oid="kqz5b:6"
         >
           <div
             className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-cyan-500/10"
-            data-oid="ov4snx:"
+            data-oid="fmdil81"
           ></div>
-          <div className="relative z-10" data-oid="b8:nx73">
+          <div className="relative z-10" data-oid="g3489yb">
             <div
               className="inline-block px-4 py-2 bg-gradient-to-r from-purple-500/20 to-blue-500/20 border border-purple-500/30 rounded-full text-purple-300 text-sm font-mono mb-8"
-              data-oid="41u:_iw"
+              data-oid="8yrffhr"
             >
               🚀 Join the Future of AI
             </div>
 
             <h2
               className="text-5xl lg:text-6xl font-black mb-6 hero-gradient-text"
-              data-oid="zbcie2h"
+              data-oid="pqpuj3t"
             >
               Ready to Build Your
-              <br data-oid=":5b4527" />
+              <br data-oid="0f8k659" />
               AI Companion?
             </h2>
 
             <p
               className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed"
-              data-oid="i9-k:nm"
+              data-oid="3hst1q:"
             >
               Join{" "}
-              <span className="font-bold text-purple-400" data-oid="puhwy8n">
+              <span className="font-bold text-purple-400" data-oid="-zjqdsa">
                 12,400+
               </span>{" "}
               creators already building lasting relationships with their AI
@@ -673,35 +673,35 @@ export default function Page() {
 
             <div
               className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12"
-              data-oid="o-.t96s"
+              data-oid="45wztiw"
             >
               <button
                 onClick={handleConnectWallet}
                 className="neural-button px-12 py-5 text-white font-bold text-xl rounded-xl flex items-center space-x-3 group"
-                data-oid="-b2_tqa"
+                data-oid="uofa9nu"
               >
-                <span data-oid="4p.q5.h">🚀</span>
-                <span data-oid="znr0w.5">Mint Your Muse AI</span>
+                <span data-oid="ecaxuaj">🚀</span>
+                <span data-oid="ccyek92">Mint Your Muse AI</span>
                 <span
                   className="group-hover:translate-x-1 transition-transform"
-                  data-oid="-atdfg."
+                  data-oid="c-utrfb"
                 >
                   →
                 </span>
               </button>
               {/* <button
-                          className="px-12 py-5 border-2 border-purple-500/50 text-purple-300 font-bold text-xl rounded-xl hover:bg-purple-500/10 transition-all"
-                          data-oid="2kdr654"
-                         >
-                          View Documentation
-                         </button> */}
+                             className="px-12 py-5 border-2 border-purple-500/50 text-purple-300 font-bold text-xl rounded-xl hover:bg-purple-500/10 transition-all"
+                             data-oid="2kdr654"
+                            >
+                             View Documentation
+                            </button> */}
             </div>
 
             {/* <div className="text-sm text-gray-400 space-x-6" data-oid="-iw76x6">
-                          <span data-oid="nm.hwo_">✓ No setup fees</span>
-                          <span data-oid="5tnbaey">✓ 30-day free trial</span>
-                          <span data-oid="xbk2d9_">✓ Cancel anytime</span>
-                         </div> */}
+                             <span data-oid="nm.hwo_">✓ No setup fees</span>
+                             <span data-oid="5tnbaey">✓ 30-day free trial</span>
+                             <span data-oid="xbk2d9_">✓ Cancel anytime</span>
+                            </div> */}
           </div>
         </div>
       </div>
@@ -709,37 +709,37 @@ export default function Page() {
       {/* Footer */}
       <footer
         className="relative z-10 border-t border-gray-800/50 backdrop-blur-sm"
-        data-oid="ksn2nob"
+        data-oid="jacn44a"
       >
-        <div className="max-w-7xl mx-auto px-4 py-16" data-oid="pns1nww">
-          <div className="grid md:grid-cols-4 gap-8 mb-12" data-oid="de0_sxa">
-            <div data-oid="vvz1-61">
+        <div className="max-w-7xl mx-auto px-4 py-16" data-oid="ljhdf:t">
+          <div className="grid md:grid-cols-4 gap-8 mb-12" data-oid="pajiqbg">
+            <div data-oid="cbvgb5r">
               <div
                 className="flex items-center space-x-3 mb-6"
-                data-oid="51cn8hv"
+                data-oid="ff0:7se"
               >
                 <div
                   className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center font-bold text-white"
-                  data-oid="e_pr7wf"
+                  data-oid="m4s4_g:"
                 >
                   M
                 </div>
                 <span
                   className="text-xl font-bold text-white"
-                  data-oid="fvlvarq"
+                  data-oid="vb_5_na"
                 >
                   MetaMuse
                 </span>
               </div>
-              <p className="text-gray-400 mb-6" data-oid="6dm8pyh">
+              <p className="text-gray-400 mb-6" data-oid="kxt0-bw">
                 Building the future of AI companions on blockchain technology.
               </p>
-              <div className="flex space-x-4" data-oid="hcyvimw">
+              <div className="flex space-x-4" data-oid="oup.8_k">
                 {["🐦", "📘", "💼", "📸"].map((emoji, index) => (
                   <div
                     key={index}
                     className="w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center justify-center cursor-pointer transition-colors"
-                    data-oid="q:rx4b9"
+                    data-oid=":k08:7:"
                   >
                     {emoji}
                   </div>
@@ -757,20 +757,20 @@ export default function Page() {
                 links: ["Community"],
               },
             ].map((section, index) => (
-              <div key={index} data-oid="yzi8o7l">
+              <div key={index} data-oid="ep88j3t">
                 <h4
                   className="text-white font-semibold mb-6"
-                  data-oid="n3prisa"
+                  data-oid="glrafnv"
                 >
                   {section.title}
                 </h4>
-                <ul className="space-y-4" data-oid="bimm:ve">
+                <ul className="space-y-4" data-oid="deg36jo">
                   {section.links.map((link, linkIndex) => (
-                    <li key={linkIndex} data-oid="g_hv9o1">
+                    <li key={linkIndex} data-oid="upc3u5r">
                       <a
                         href="#"
                         className="text-gray-400 hover:text-white transition-colors"
-                        data-oid="1_fkeqa"
+                        data-oid="91a.f0t"
                       >
                         {link}
                       </a>
@@ -783,34 +783,34 @@ export default function Page() {
 
           <div
             className="pt-8 border-t border-gray-800/50 flex flex-col md:flex-row justify-between items-center"
-            data-oid="9t1_f4y"
+            data-oid="pdiw7pd"
           >
-            <p className="text-gray-400 mb-4 md:mb-0" data-oid="pzeyy46">
+            <p className="text-gray-400 mb-4 md:mb-0" data-oid="z64du:q">
               © 2025 MetaMuses. All rights reserved. Built with ❤️ for the
               future.
             </p>
             <div
               className="flex space-x-6 text-gray-400 text-sm"
-              data-oid="by.a85_"
+              data-oid="7p7fi2d"
             >
               <a
                 href="#"
                 className="hover:text-white transition-colors"
-                data-oid="-x7t45t"
+                data-oid="icd9i0h"
               >
                 Privacy Policy
               </a>
               <a
                 href="#"
                 className="hover:text-white transition-colors"
-                data-oid="7bjfjk3"
+                data-oid="4qljk5l"
               >
                 Terms of Service
               </a>
               <a
                 href="#"
                 className="hover:text-white transition-colors"
-                data-oid="s7h9tk7"
+                data-oid="wh4.cvh"
               >
                 Cookie Policy
               </a>
