@@ -44,8 +44,8 @@ const queryClient = new QueryClient();
 
 export function Web3Provider({ children }: { children: ReactNode }) {
   return (
-    <WagmiProvider config={config} data-oid="ji0:kpf">
-      <QueryClientProvider client={queryClient} data-oid="l6txpa5">
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
         <RainbowKitProvider
           theme={darkTheme({
             accentColor: "#8b5cf6", // purple-500 to match your design
@@ -54,7 +54,6 @@ export function Web3Provider({ children }: { children: ReactNode }) {
             fontStack: "system",
             overlayBlur: "small",
           })}
-          data-oid="g9yydyr"
         >
           {children}
         </RainbowKitProvider>
