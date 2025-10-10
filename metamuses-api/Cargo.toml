@@ -1,0 +1,67 @@
+[package]
+name = "metamuses-api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Alith AI Framework
+# Note: Reduced features to avoid tokenizers version conflict
+# Can expand features once upstream fixes are available
+alith = { git = "https://github.com/0xLazAI/alith", features = ["ipfs", "llamacpp", "fastembed", "qdrant"] }
+
+# Async Runtime
+tokio = { version = "1.47", features = ["full"] }
+async-trait = "0.1"
+futures = "0.3"
+
+# Web Framework
+axum = { version = "0.8", features = ["multipart", "ws"] }
+tower = "0.5"
+tower-http = { version = "0.6", features = ["cors", "trace"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Redis
+redis = { version = "0.27", features = ["tokio-comp", "connection-manager"] }
+
+# Vector Database
+qdrant-client = "1.13"
+
+# Error Handling
+anyhow = "1.0"
+thiserror = "2.0"
+
+# Logging & Metrics
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+prometheus = "0.13"
+
+# Utilities
+uuid = { version = "1.17", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+dotenv = "0.15"
+lazy_static = "1.5"
+
+# Existing MetaMuse dependencies
+ethers = { version = "2.0", features = ["abigen", "rustls"] }
+sha256 = "1.0"
+sha3 = "0.10"
+hex = "0.4"
+
+[dev-dependencies]
+criterion = "0.5"
+mockall = "0.13"
+
+[[bin]]
+name = "metamuse-server"
+path = "src/bin/server.rs"
+
+[[bin]]
+name = "metamuse-worker"
+path = "src/bin/worker.rs"
+
+[[bench]]
+name = "inference_bench"
+harness = false
