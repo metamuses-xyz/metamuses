@@ -83,6 +83,7 @@ const NeuralNetwork = () => {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 pointer-events-none opacity-20"
+      data-oid="ki1-o.m"
     />
   );
 };
@@ -106,9 +107,13 @@ const NFTCard = ({
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      data-oid="j7klq2d"
     >
       {/* Background gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div
+        className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        data-oid="r2b8f:z"
+      />
 
       {/* Rarity badge */}
       <div
@@ -121,46 +126,65 @@ const NFTCard = ({
                 ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white"
                 : "bg-gray-600 text-gray-200"
         }`}
+        data-oid="u8s7s0g"
       >
         {nft.rarity.toUpperCase()}
       </div>
 
-      <div className="relative z-10">
+      <div className="relative z-10" data-oid="9u14ss_">
         {/* NFT Avatar */}
-        <div className="text-center mb-6">
+        <div className="text-center mb-6" data-oid="v6-d-mq">
           <div
             className={`w-32 h-32 rounded-full bg-gradient-to-br ${nft.avatar.gradient} mx-auto mb-4 flex items-center justify-center shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-110 relative`}
+            data-oid="u-9wvvq"
           >
-            <span className="text-5xl font-bold text-white">
+            <span className="text-5xl font-bold text-white" data-oid="ju4elud">
               {nft.avatar.initial}
             </span>
 
             {/* Animated ring for legendary */}
             {nft.rarity === "legendary" && (
-              <div className="absolute inset-0 rounded-full border-4 border-yellow-400 animate-pulse opacity-50" />
+              <div
+                className="absolute inset-0 rounded-full border-4 border-yellow-400 animate-pulse opacity-50"
+                data-oid="reod9pj"
+              />
             )}
           </div>
 
-          <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-purple-200 transition-colors">
+          <h3
+            className="text-2xl font-bold text-white mb-2 group-hover:text-purple-200 transition-colors"
+            data-oid="fd0y.a:"
+          >
             {nft.name}
           </h3>
-          <p className="text-gray-400 text-sm mb-4">{nft.description}</p>
+          <p className="text-gray-400 text-sm mb-4" data-oid="ikmk0:j">
+            {nft.description}
+          </p>
         </div>
 
         {/* Personality Traits */}
-        <div className="mb-6">
-          <h4 className="text-sm font-semibold text-gray-300 mb-3">
+        <div className="mb-6" data-oid="kbf_.dl">
+          <h4
+            className="text-sm font-semibold text-gray-300 mb-3"
+            data-oid="sreolif"
+          >
             Personality Traits
           </h4>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2" data-oid="l.hkekr">
             {Object.entries(nft.personality).map(([trait, value]) => (
               <div
                 key={trait}
                 className="flex items-center justify-between text-xs"
+                data-oid="onzfs1f"
               >
-                <span className="text-gray-400 capitalize">{trait}</span>
-                <div className="flex items-center space-x-1">
-                  <div className="w-12 h-1 bg-gray-700 rounded-full overflow-hidden">
+                <span className="text-gray-400 capitalize" data-oid="skciy8p">
+                  {trait}
+                </span>
+                <div className="flex items-center space-x-1" data-oid="dob7dbw">
+                  <div
+                    className="w-12 h-1 bg-gray-700 rounded-full overflow-hidden"
+                    data-oid="ovz8e.2"
+                  >
                     <div
                       className={`h-full rounded-full ${
                         trait === "creativity"
@@ -172,9 +196,13 @@ const NFTCard = ({
                               : "bg-gradient-to-r from-green-500 to-teal-500"
                       }`}
                       style={{ width: `${value}%` }}
+                      data-oid="j1jk3v9"
                     />
                   </div>
-                  <span className="text-purple-400 font-mono font-bold text-xs">
+                  <span
+                    className="text-purple-400 font-mono font-bold text-xs"
+                    data-oid="jd3pti6"
+                  >
                     {value}
                   </span>
                 </div>
@@ -184,40 +212,67 @@ const NFTCard = ({
         </div>
 
         {/* NFT Details */}
-        <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50 mb-6">
-          <div className="grid grid-cols-2 gap-4 text-xs">
-            <div>
-              <span className="text-gray-400">Token ID:</span>
-              <div className="text-white font-mono">#{nft.tokenId}</div>
+        <div
+          className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50 mb-6"
+          data-oid="klo6_q."
+        >
+          <div className="grid grid-cols-2 gap-4 text-xs" data-oid="v0.t3bn">
+            <div data-oid="v2970y.">
+              <span className="text-gray-400" data-oid="dagb7mu">
+                Token ID:
+              </span>
+              <div className="text-white font-mono" data-oid="z61nq6z">
+                #{nft.tokenId}
+              </div>
             </div>
-            <div>
-              <span className="text-gray-400">Edition:</span>
-              <div className="text-white font-mono">
+            <div data-oid="p-72-mq">
+              <span className="text-gray-400" data-oid="1h-0gdr">
+                Edition:
+              </span>
+              <div className="text-white font-mono" data-oid="zhccm.z">
                 {nft.edition}/{nft.maxSupply}
               </div>
             </div>
-            <div>
-              <span className="text-gray-400">Creator:</span>
-              <div className="text-white font-mono">{nft.creator}</div>
+            <div data-oid="yg-1175">
+              <span className="text-gray-400" data-oid="e0c8ew_">
+                Creator:
+              </span>
+              <div className="text-white font-mono" data-oid="qgjgngn">
+                {nft.creator}
+              </div>
             </div>
-            <div>
-              <span className="text-gray-400">Network:</span>
-              <div className="text-white font-mono">Metis</div>
+            <div data-oid="ixwi_bh">
+              <span className="text-gray-400" data-oid="3fq-rml">
+                Network:
+              </span>
+              <div className="text-white font-mono" data-oid="-1s24sx">
+                Metis
+              </div>
             </div>
           </div>
         </div>
 
         {/* Price and Mint Button */}
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <div className="text-2xl font-bold text-white">
+        <div
+          className="flex items-center justify-between mb-4"
+          data-oid="72j-f-u"
+        >
+          <div data-oid="i5r8i9g">
+            <div className="text-2xl font-bold text-white" data-oid="sj.wan3">
               {nft.price} METIS
             </div>
-            <div className="text-xs text-gray-400">≈ ${nft.usdPrice}</div>
+            <div className="text-xs text-gray-400" data-oid="b4r8_pm">
+              ≈ ${nft.usdPrice}
+            </div>
           </div>
-          <div className="text-right">
-            <div className="text-sm text-gray-400">Available</div>
-            <div className="text-lg font-bold text-green-400">
+          <div className="text-right" data-oid="gjgd7.w">
+            <div className="text-sm text-gray-400" data-oid="1qcdjnx">
+              Available
+            </div>
+            <div
+              className="text-lg font-bold text-green-400"
+              data-oid="a-wo5eh"
+            >
               {nft.available}
             </div>
           </div>
@@ -234,14 +289,21 @@ const NFTCard = ({
                 ? "bg-purple-600/50 text-white cursor-not-allowed"
                 : "neural-button text-white hover:scale-105 shadow-lg shadow-purple-500/30"
           }`}
+          data-oid="io63rrp"
         >
           {nft.available === 0 ? (
             "Sold Out"
           ) : isMinting ? (
-            <div className="flex items-center justify-center space-x-2">
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <div
+              className="flex items-center justify-center space-x-2"
+              data-oid="z6x.-ir"
+            >
+              <div
+                className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
+                data-oid="m6stj9y"
+              />
 
-              <span>Minting...</span>
+              <span data-oid="0i5sui5">Minting...</span>
             </div>
           ) : (
             "🎯 Mint NFT"
@@ -273,19 +335,26 @@ const FilterBar = ({
   setSortBy: (sort: string) => void;
 }) => {
   return (
-    <div className="neural-card rounded-2xl p-6 mb-8">
-      <div className="flex flex-col lg:flex-row gap-4 items-center">
+    <div className="neural-card rounded-2xl p-6 mb-8" data-oid="7exw71z">
+      <div
+        className="flex flex-col lg:flex-row gap-4 items-center"
+        data-oid="i.eujpb"
+      >
         {/* Search */}
-        <div className="flex-1 relative">
+        <div className="flex-1 relative" data-oid="czw3lkh">
           <input
             type="text"
             placeholder="Search AI companions..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full bg-gray-800 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
+            data-oid=":4e:-oh"
           />
 
-          <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+          <span
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            data-oid="8hjy.lf"
+          >
             🔍
           </span>
         </div>
@@ -295,12 +364,23 @@ const FilterBar = ({
           value={selectedRarity}
           onChange={(e) => setSelectedRarity(e.target.value)}
           className="bg-gray-800 border border-gray-600 rounded-xl px-4 py-3 text-white focus:border-purple-500 focus:outline-none transition-colors"
+          data-oid="y7xudtp"
         >
-          <option value="all">All Rarities</option>
-          <option value="common">Common</option>
-          <option value="rare">Rare</option>
-          <option value="epic">Epic</option>
-          <option value="legendary">Legendary</option>
+          <option value="all" data-oid="d7k-dgg">
+            All Rarities
+          </option>
+          <option value="common" data-oid="xyf-kzp">
+            Common
+          </option>
+          <option value="rare" data-oid="imz_4ci">
+            Rare
+          </option>
+          <option value="epic" data-oid="uhd.ewm">
+            Epic
+          </option>
+          <option value="legendary" data-oid="0vc-43b">
+            Legendary
+          </option>
         </select>
 
         {/* Price Range */}
@@ -308,12 +388,23 @@ const FilterBar = ({
           value={selectedPriceRange}
           onChange={(e) => setSelectedPriceRange(e.target.value)}
           className="bg-gray-800 border border-gray-600 rounded-xl px-4 py-3 text-white focus:border-purple-500 focus:outline-none transition-colors"
+          data-oid="dubhfp5"
         >
-          <option value="all">All Prices</option>
-          <option value="0-1">0-1 METIS</option>
-          <option value="1-5">1-5 METIS</option>
-          <option value="5-10">5-10 METIS</option>
-          <option value="10+">10+ METIS</option>
+          <option value="all" data-oid="w51vv_q">
+            All Prices
+          </option>
+          <option value="0-1" data-oid="ntlft1b">
+            0-1 METIS
+          </option>
+          <option value="1-5" data-oid="0r7q:rd">
+            1-5 METIS
+          </option>
+          <option value="5-10" data-oid="d9tb7md">
+            5-10 METIS
+          </option>
+          <option value="10+" data-oid="5olqu50">
+            10+ METIS
+          </option>
         </select>
 
         {/* Sort */}
@@ -321,12 +412,23 @@ const FilterBar = ({
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
           className="bg-gray-800 border border-gray-600 rounded-xl px-4 py-3 text-white focus:border-purple-500 focus:outline-none transition-colors"
+          data-oid="72ch0om"
         >
-          <option value="newest">Newest First</option>
-          <option value="price-low">Price: Low to High</option>
-          <option value="price-high">Price: High to Low</option>
-          <option value="rarity">Rarity</option>
-          <option value="popular">Most Popular</option>
+          <option value="newest" data-oid="gp18pfg">
+            Newest First
+          </option>
+          <option value="price-low" data-oid="x3_t0v5">
+            Price: Low to High
+          </option>
+          <option value="price-high" data-oid="1yn3v_i">
+            Price: High to Low
+          </option>
+          <option value="rarity" data-oid="6mixt2f">
+            Rarity
+          </option>
+          <option value="popular" data-oid="rae0l.0">
+            Most Popular
+          </option>
         </select>
       </div>
     </div>
@@ -564,45 +666,82 @@ export default function MintPage() {
     });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+    <div
+      className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden"
+      data-oid="hpttwkb"
+    >
       {/* Enhanced Background Effects */}
-      <NeuralNetwork />
+      <NeuralNetwork data-oid="54ewzlg" />
 
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" />
+      <div className="absolute inset-0 overflow-hidden" data-oid="4p-hwrz">
+        <div
+          className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"
+          data-oid="tn0:n2v"
+        />
 
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" />
+        <div
+          className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"
+          data-oid="6j6.1_0"
+        />
 
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse" />
+        <div
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse"
+          data-oid="4edg3d5"
+        />
       </div>
 
       {/* Navigation */}
-      <nav className="relative z-20 flex items-center justify-between p-6 max-w-7xl mx-auto">
-        <Link href="/" className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center font-bold text-white">
+      <nav
+        className="relative z-20 flex items-center justify-between p-6 max-w-7xl mx-auto"
+        data-oid="bcklgma"
+      >
+        <Link
+          href="/"
+          className="flex items-center space-x-3"
+          data-oid="7ql-klu"
+        >
+          <div
+            className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center font-bold text-white"
+            data-oid="r2kodgy"
+          >
             M
           </div>
-          <div>
-            <span className="text-2xl font-bold hero-gradient-text">
+          <div data-oid="2otu63:">
+            <span
+              className="text-2xl font-bold hero-gradient-text"
+              data-oid=":0vz2mg"
+            >
               MetaMuse
             </span>
-            <div className="text-xs text-gray-400 font-mono">NFT Mint</div>
+            <div className="text-xs text-gray-400 font-mono" data-oid="fhw9-:9">
+              NFT Mint
+            </div>
           </div>
         </Link>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4" data-oid="ds0bgit">
           {!walletConnected ? (
             <button
               onClick={connectWallet}
               className="neural-button px-6 py-3 text-white font-semibold rounded-xl hover:scale-105 transition-all"
+              data-oid="l1w5f6o"
             >
               🔗 Connect Wallet
             </button>
           ) : (
-            <div className="flex items-center space-x-2 px-4 py-2 bg-green-600/20 border border-green-500/30 rounded-xl">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+            <div
+              className="flex items-center space-x-2 px-4 py-2 bg-green-600/20 border border-green-500/30 rounded-xl"
+              data-oid="rkb.edz"
+            >
+              <div
+                className="w-2 h-2 bg-green-500 rounded-full animate-pulse"
+                data-oid="-lzq9ek"
+              />
 
-              <span className="text-green-300 text-sm font-mono">
+              <span
+                className="text-green-300 text-sm font-mono"
+                data-oid="_764fbb"
+              >
                 0x3BD9...7881
               </span>
             </div>
@@ -611,6 +750,7 @@ export default function MintPage() {
           <Link
             href="/create"
             className="px-6 py-3 border border-gray-600 text-gray-300 font-semibold rounded-xl hover:bg-gray-700 transition-all"
+            data-oid="8aq2_sv"
           >
             ✨ Create Muse
           </Link>
@@ -618,6 +758,7 @@ export default function MintPage() {
           <Link
             href="/"
             className="px-6 py-3 border border-gray-600 text-gray-300 font-semibold rounded-xl hover:bg-gray-700 transition-all"
+            data-oid="n_9zw4f"
           >
             ← Back to Home
           </Link>
@@ -625,48 +766,85 @@ export default function MintPage() {
       </nav>
 
       {/* Main Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 py-12">
+      <div
+        className="relative z-10 max-w-7xl mx-auto px-4 py-12"
+        data-oid="aynt9z8"
+      >
         {/* Header */}
-        <div className="text-center mb-16">
-          <div className="inline-block px-6 py-3 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-300 text-sm font-mono mb-8">
+        <div className="text-center mb-16" data-oid="qco4_-q">
+          <div
+            className="inline-block px-6 py-3 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-300 text-sm font-mono mb-8"
+            data-oid="bl3m7c4"
+          >
             🎯 NFT Marketplace
           </div>
 
-          <h1 className="text-6xl lg:text-7xl font-black mb-8 leading-tight">
-            <div className="hero-gradient-text mb-2">Mint AI Companions</div>
+          <h1
+            className="text-6xl lg:text-7xl font-black mb-8 leading-tight"
+            data-oid="n2dxgxy"
+          >
+            <div className="hero-gradient-text mb-2" data-oid="2gb8vas">
+              Mint AI Companions
+            </div>
           </h1>
 
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8">
+          <p
+            className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8"
+            data-oid="ez__.f."
+          >
             Own unique AI companions as NFTs on the Metis blockchain. Each
             companion has distinct personality traits and can be used across the
             MetaMuse ecosystem.
           </p>
 
           {/* Stats */}
-          <div className="grid grid-cols-4 gap-8 max-w-3xl mx-auto">
-            <div className="text-center">
-              <div className="text-3xl font-bold stat-number">
+          <div
+            className="grid grid-cols-4 gap-8 max-w-3xl mx-auto"
+            data-oid="3:n.1f0"
+          >
+            <div className="text-center" data-oid="5j9_jbq">
+              <div
+                className="text-3xl font-bold stat-number"
+                data-oid="jzlpipe"
+              >
                 {nfts.length}
               </div>
-              <div className="text-gray-400 text-sm">Collections</div>
+              <div className="text-gray-400 text-sm" data-oid="t-4w8ud">
+                Collections
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold stat-number">
+            <div className="text-center" data-oid="ppnwbys">
+              <div
+                className="text-3xl font-bold stat-number"
+                data-oid="onp.grn"
+              >
                 {nfts.reduce((sum, nft) => sum + nft.available, 0)}
               </div>
-              <div className="text-gray-400 text-sm">Available</div>
+              <div className="text-gray-400 text-sm" data-oid="o.v__o5">
+                Available
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold stat-number">
+            <div className="text-center" data-oid="42.q_cp">
+              <div
+                className="text-3xl font-bold stat-number"
+                data-oid="_1sc2gl"
+              >
                 {Math.min(...nfts.map((nft) => nft.price)).toFixed(1)}
               </div>
-              <div className="text-gray-400 text-sm">Min Price (METIS)</div>
+              <div className="text-gray-400 text-sm" data-oid="zqom_mv">
+                Min Price (METIS)
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold stat-number">
+            <div className="text-center" data-oid="q9-kchg">
+              <div
+                className="text-3xl font-bold stat-number"
+                data-oid="l649g6x"
+              >
                 {nfts.filter((nft) => nft.rarity === "legendary").length}
               </div>
-              <div className="text-gray-400 text-sm">Legendary</div>
+              <div className="text-gray-400 text-sm" data-oid="10qvp5-">
+                Legendary
+              </div>
             </div>
           </div>
         </div>
@@ -681,40 +859,57 @@ export default function MintPage() {
           setSearchTerm={setSearchTerm}
           sortBy={sortBy}
           setSortBy={setSortBy}
+          data-oid="_:qij9b"
         />
 
         {/* NFT Grid */}
         {isLoading ? (
-          <div className="text-center py-20">
-            <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <div className="text-center py-20" data-oid="tout9oe">
+            <div
+              className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"
+              data-oid=".63t81h"
+            />
 
-            <p className="text-gray-400">Loading NFT collections...</p>
+            <p className="text-gray-400" data-oid="mlmxa0b">
+              Loading NFT collections...
+            </p>
           </div>
         ) : filteredAndSortedNFTs.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="w-24 h-24 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
+          <div className="text-center py-20" data-oid="yf1h3it">
+            <div
+              className="w-24 h-24 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl"
+              data-oid="53x._do"
+            >
               😔
             </div>
-            <h3 className="text-2xl font-bold text-white mb-4">
+            <h3
+              className="text-2xl font-bold text-white mb-4"
+              data-oid="._978xw"
+            >
               No NFTs Found
             </h3>
-            <p className="text-gray-400 mb-8">
+            <p className="text-gray-400 mb-8" data-oid="h:yxpr3">
               Try adjusting your search filters or check back later for new
               collections
             </p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+            data-oid="1736io4"
+          >
             {filteredAndSortedNFTs.map((nft, index) => (
               <div
                 key={nft.id}
                 style={{ animationDelay: `${index * 100}ms` }}
                 className="animate-fade-in"
+                data-oid="ru1h.3o"
               >
                 <NFTCard
                   nft={nft}
                   onMint={handleMint}
                   isMinting={mintingId === nft.id}
+                  data-oid="tc46wcf"
                 />
               </div>
             ))}

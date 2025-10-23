@@ -16,9 +16,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <Web3Provider>{children}</Web3Provider>
+    <html lang="en" data-oid="uqh8gg0">
+      <body className={inter.className} data-oid="91bzhzv">
+        <Web3Provider data-oid="6e..ajl">{children}</Web3Provider>
       </body>
     </html>
   );

@@ -192,11 +192,11 @@ export default function Page() {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div>
             {/* <div
-                                                   className="inline-block px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-300 text-sm font-mono mb-8"
-                                                   data-oid="5s90rue"
-                                                  >
-                                                   🚀 Next-Gen AI Companions
-                                                  </div> */}
+                                                     className="inline-block px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-300 text-sm font-mono mb-8"
+                                                     data-oid="5s90rue"
+                                                    >
+                                                     🚀 Next-Gen AI Companions
+                                                    </div> */}
 
             <h1 className="text-6xl lg:text-8xl font-black mb-8 leading-tight">
               <div className="hero-gradient-text mb-4">Meet Your</div>
@@ -224,12 +224,12 @@ export default function Page() {
                 </span>
               </a>
               {/* <button
-                                           className="px-8 py-4 border border-purple-500/30 text-purple-300 font-semibold rounded-xl hover:bg-purple-500/10 transition-all flex items-center space-x-2"
-                                           data-oid="pgq7ogg"
-                                          >
-                                           <span data-oid="73il3l2">▶️</span>
-                                           <span data-oid="q6sfal0">Watch Demo</span>
-                                          </button> */}
+                                             className="px-8 py-4 border border-purple-500/30 text-purple-300 font-semibold rounded-xl hover:bg-purple-500/10 transition-all flex items-center space-x-2"
+                                             data-oid="pgq7ogg"
+                                            >
+                                             <span data-oid="73il3l2">▶️</span>
+                                             <span data-oid="q6sfal0">Watch Demo</span>
+                                            </button> */}
             </div>
 
             {/* Stats */}
@@ -320,11 +320,11 @@ export default function Page() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-32">
         <div className="text-center mb-20">
           {/* <div
-                                      className="inline-block px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-full text-blue-300 text-sm font-mono mb-6"
-                                      data-oid="ts9pawn"
-                                     >
-                                      🔬 Advanced Technology Stack
-                                     </div> */}
+                                        className="inline-block px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-full text-blue-300 text-sm font-mono mb-6"
+                                        data-oid="ts9pawn"
+                                       >
+                                        🔬 Advanced Technology Stack
+                                       </div> */}
           <h2 className="text-5xl lg:text-6xl font-black mb-6 secondary-gradient-text">
             Powered by AI & Blockchain
           </h2>
@@ -457,18 +457,18 @@ export default function Page() {
                 </span>
               </a>
               {/* <button
-                                    className="px-12 py-5 border-2 border-purple-500/50 text-purple-300 font-bold text-xl rounded-xl hover:bg-purple-500/10 transition-all"
-                                    data-oid="2kdr654"
-                                   >
-                                    View Documentation
-                                   </button> */}
+                                      className="px-12 py-5 border-2 border-purple-500/50 text-purple-300 font-bold text-xl rounded-xl hover:bg-purple-500/10 transition-all"
+                                      data-oid="2kdr654"
+                                     >
+                                      View Documentation
+                                     </button> */}
             </div>
 
             {/* <div className="text-sm text-gray-400 space-x-6" data-oid="-iw76x6">
-                                    <span data-oid="nm.hwo_">✓ No setup fees</span>
-                                    <span data-oid="5tnbaey">✓ 30-day free trial</span>
-                                    <span data-oid="xbk2d9_">✓ Cancel anytime</span>
-                                   </div> */}
+                                      <span data-oid="nm.hwo_">✓ No setup fees</span>
+                                      <span data-oid="5tnbaey">✓ 30-day free trial</span>
+                                      <span data-oid="xbk2d9_">✓ Cancel anytime</span>
+                                     </div> */}
           </div>
         </div>
       </div>
