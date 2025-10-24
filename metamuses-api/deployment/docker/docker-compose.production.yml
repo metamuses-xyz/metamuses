@@ -1,0 +1,291 @@
+version: '3.8'
+
+# ============================================================================
+# MetaMuses API - Production Docker Compose
+# https://api.metamuses.xyz
+# ============================================================================
+
+services:
+  # ==========================================================================
+  # Redis - Queue Manager
+  # ==========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: metamuses-redis
+    restart: unless-stopped
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 2gb
+      --maxmemory-policy allkeys-lru
+      --requirepass ${REDIS_PASSWORD:-changeme}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "127.0.0.1:6379:6379"
+    networks:
+      - metamuses-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+
+  # ==========================================================================
+  # Qdrant - Vector Database for Semantic Caching
+  # ==========================================================================
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: metamuses-qdrant
+    restart: unless-stopped
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    ports:
+      - "127.0.0.1:6333:6333"  # HTTP API
+      - "127.0.0.1:6334:6334"  # gRPC API
+    networks:
+      - metamuses-network
+    environment:
+      - QDRANT__SERVICE__HTTP_PORT=6333
+      - QDRANT__SERVICE__GRPC_PORT=6334
+      - QDRANT__STORAGE__STORAGE_PATH=/qdrant/storage
+      - QDRANT__LOG_LEVEL=INFO
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 4G
+        reservations:
+          cpus: '2'
+          memory: 2G
+
+  # ==========================================================================
+  # MetaMuses API - Main Application
+  # ==========================================================================
+  api:
+    build:
+      context: ../..
+      dockerfile: deployment/docker/Dockerfile
+    image: metamuses-api:latest
+    container_name: metamuses-api
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+    volumes:
+      - /mnt/models:/models:ro  # Read-only model files
+      - ./logs:/app/logs
+    ports:
+      - "127.0.0.1:8080:8080"
+    networks:
+      - metamuses-network
+    environment:
+      # Server
+      - HOST=0.0.0.0
+      - PORT=8080
+
+      # Redis
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-changeme}@redis:6379
+      - REDIS_QUEUE_PREFIX=metamuse
+
+      # Qdrant
+      - QDRANT_URL=http://qdrant:6334
+      - QDRANT_API_KEY=${QDRANT_API_KEY:-}
+
+      # Models
+      - MODELS_DIR=/models
+      - ENABLE_FAST_TIER=${ENABLE_FAST_TIER:-true}
+      - ENABLE_MEDIUM_TIER=${ENABLE_MEDIUM_TIER:-true}
+      - ENABLE_HEAVY_TIER=${ENABLE_HEAVY_TIER:-false}
+
+      # Worker Pools
+      - FAST_TIER_WORKERS=${FAST_TIER_WORKERS:-10}
+      - MEDIUM_TIER_WORKERS=${MEDIUM_TIER_WORKERS:-5}
+      - HEAVY_TIER_WORKERS=${HEAVY_TIER_WORKERS:-2}
+
+      # Semantic Cache
+      - ENABLE_SEMANTIC_CACHE=${ENABLE_SEMANTIC_CACHE:-true}
+      - CACHE_SIMILARITY_THRESHOLD=${CACHE_SIMILARITY_THRESHOLD:-0.95}
+      - CACHE_TTL_HOURS=${CACHE_TTL_HOURS:-24}
+
+      # Blockchain
+      - RPC_URL=${RPC_URL}
+      - PRIVATE_KEY=${PRIVATE_KEY}
+      - IPFS_JWT_TOKEN=${IPFS_JWT_TOKEN}
+
+      # Logging
+      - RUST_LOG=${RUST_LOG:-info}
+      - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s  # Allow time for model loading
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    deploy:
+      resources:
+        limits:
+          cpus: '14'
+          memory: 20G
+        reservations:
+          cpus: '8'
+          memory: 16G
+
+  # ==========================================================================
+  # Prometheus - Metrics Collection
+  # ==========================================================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: metamuses-prometheus
+    restart: unless-stopped
+    user: "65534:65534"  # nobody user
+    volumes:
+      - ../monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "127.0.0.1:9090:9090"
+    networks:
+      - metamuses-network
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+
+  # ==========================================================================
+  # Grafana - Monitoring Dashboard
+  # ==========================================================================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: metamuses-grafana
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+    user: "472:472"  # grafana user
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ../monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ../monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    ports:
+      - "127.0.0.1:3000:3000"
+    networks:
+      - metamuses-network
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-changeme}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=https://api.metamuses.xyz/grafana
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+      - GF_INSTALL_PLUGINS=
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1G
+        reservations:
+          cpus: '1'
+          memory: 512M
+
+# ============================================================================
+# Networks
+# ============================================================================
+networks:
+  metamuses-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# ============================================================================
+# Volumes
+# ============================================================================
+volumes:
+  redis_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /mnt/data/redis
+
+  qdrant_storage:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /mnt/data/qdrant
+
+  prometheus_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /mnt/data/prometheus
+
+  grafana_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /mnt/data/grafana

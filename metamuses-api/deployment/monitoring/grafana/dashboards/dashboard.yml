@@ -1,0 +1,17 @@
+# ============================================================================
+# Grafana Dashboard Provisioning
+# ============================================================================
+
+apiVersion: 1
+
+providers:
+  - name: 'MetaMuses Dashboards'
+    orgId: 1
+    folder: 'MetaMuses'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards
+      foldersFromFilesStructure: true
