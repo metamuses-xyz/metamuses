@@ -203,7 +203,7 @@ const NFTCard = ({
                     className="text-purple-400 font-mono font-bold text-xs"
                     data-oid="jd3pti6"
                   >
-                    {value}
+                    {String(value)}
                   </span>
                 </div>
               </div>

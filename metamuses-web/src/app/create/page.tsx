@@ -822,7 +822,7 @@ const AvatarCreator = ({
                       className="text-gray-400 capitalize"
                       data-oid="7y:qrz."
                     >
-                      {trait}: {value}%
+                      {String(trait)}: {String(value)}%
                     </span>
                   </div>
                 ))}
