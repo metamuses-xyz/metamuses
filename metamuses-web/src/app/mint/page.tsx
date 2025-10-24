@@ -322,7 +322,6 @@ const MuseAINFT = ({
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="w-5 h-5 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" />
-
                   <span className="text-purple-300 font-medium">
                     Transaction in progress...
                   </span>
@@ -348,7 +347,6 @@ const MuseAINFT = ({
             ) : isMinting ? (
               <div className="flex items-center justify-center space-x-3">
                 <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-
                 <span>Minting Your Muse AI...</span>
               </div>
             ) : (
