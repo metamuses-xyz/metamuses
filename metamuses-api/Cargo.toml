@@ -26,8 +26,9 @@ serde_json = "1.0"
 # Redis
 redis = { version = "0.27", features = ["tokio-comp", "connection-manager"] }
 
-# Vector Database
+# Vector Database & Embeddings
 qdrant-client = "1.13"
+fastembed = "4.9"
 
 # Error Handling
 anyhow = "1.0"

@@ -1,0 +1,217 @@
+name: Health Check
+
+permissions:
+  contents: read
+  issues: write
+
+on:
+  schedule:
+    # Run every 15 minutes
+    - cron: '*/15 * * * *'
+
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to check'
+        required: true
+        type: choice
+        options:
+          - production
+          - staging
+          - both
+
+jobs:
+  health-check-production:
+    name: Production Health Check
+    runs-on: ubuntu-latest
+    if: inputs.environment == 'production' || inputs.environment == 'both' || github.event_name == 'schedule'
+
+    steps:
+      - name: Check API health
+        id: api-health
+        run: |
+          echo "🏥 Checking production API health..."
+
+          response=$(curl -s -w "\n%{http_code}" "https://api.metamuses.xyz/health")
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | head -n-1)
+
+          echo "HTTP Status: $http_code"
+          echo "Response: $body"
+
+          if [ "$http_code" = "200" ]; then
+            echo "✅ Production API is healthy"
+            echo "healthy=true" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Production API is unhealthy"
+            echo "healthy=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Check Grafana
+        run: |
+          echo "📊 Checking Grafana..."
+
+          if curl -f -s "https://api.metamuses.xyz/grafana/api/health" > /dev/null 2>&1; then
+            echo "✅ Grafana is accessible"
+          else
+            echo "⚠️  Grafana is not accessible"
+          fi
+
+      - name: Check response time
+        run: |
+          echo "⏱️  Checking response time..."
+
+          time=$(curl -o /dev/null -s -w '%{time_total}' "https://api.metamuses.xyz/health")
+          time_ms=$(echo "$time * 1000" | bc)
+
+          echo "Response time: ${time_ms}ms"
+
+          if (( $(echo "$time > 5.0" | bc -l) )); then
+            echo "⚠️  High response time detected"
+          fi
+
+  health-check-staging:
+    name: Staging Health Check
+    runs-on: ubuntu-latest
+    if: inputs.environment == 'staging' || inputs.environment == 'both'
+
+    steps:
+      - name: Check staging API health
+        run: |
+          echo "🏥 Checking staging API health..."
+
+          if curl -f -s "https://staging-api.metamuses.xyz/health" > /dev/null 2>&1; then
+            echo "✅ Staging API is healthy"
+          else
+            echo "❌ Staging API is unhealthy"
+            exit 1
+          fi
+
+  alert-on-failure:
+    name: Alert on Failure
+    runs-on: ubuntu-latest
+    needs: [health-check-production]
+    if: failure() && github.event_name == 'schedule'
+
+    steps:
+      - name: Send Slack alert
+        if: secrets.SLACK_WEBHOOK_URL != ''
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "text": "⚠️ MetaMuses API Health Check Failed",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "⚠️ Health Check Alert"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Production API health check failed. Immediate attention required."
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Time:*\n$(date)"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Status:*\nUnhealthy"
+                    }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Logs"
+                      },
+                      "url": "https://api.metamuses.xyz/grafana"
+                    },
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Workflow"
+                      },
+                      "style": "danger",
+                      "url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+      - name: Send Discord alert
+        if: secrets.DISCORD_WEBHOOK != ''
+        run: |
+          curl -H "Content-Type: application/json" \
+            -d "{
+              \"embeds\": [{
+                \"title\": \"⚠️ Health Check Failed\",
+                \"description\": \"Production API health check failed\",
+                \"color\": 15158332,
+                \"fields\": [
+                  {
+                    \"name\": \"Environment\",
+                    \"value\": \"Production\",
+                    \"inline\": true
+                  },
+                  {
+                    \"name\": \"Time\",
+                    \"value\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",
+                    \"inline\": true
+                  }
+                ],
+                \"footer\": {
+                  \"text\": \"MetaMuses API Monitoring\"
+                }
+              }]
+            }" \
+            ${{ secrets.DISCORD_WEBHOOK }}
+
+      - name: Create incident issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 Production API Health Check Failed - ${new Date().toISOString()}`,
+              body: `## Health Check Failure
+
+              The automated health check for production API has failed.
+
+              **Time**: ${new Date().toISOString()}
+              **Endpoint**: https://api.metamuses.xyz/health
+              **Workflow**: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}
+
+              ### Immediate Actions Required
+              1. Check API logs: \`docker compose logs api\`
+              2. Check server resources: \`htop\`, \`docker stats\`
+              3. Verify database connections (Redis, Qdrant)
+              4. Consider rollback if issue persists
+
+              ### Links
+              - [Grafana Dashboard](https://api.metamuses.xyz/grafana)
+              - [Server SSH](https://${context.repo.owner}.github.io/runbook/ssh)
+              `,
+              labels: ['bug', 'production', 'urgent', 'health-check'],
+              assignees: ['${{ github.repository_owner }}']
+            });
