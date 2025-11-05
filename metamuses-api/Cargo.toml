@@ -63,6 +63,10 @@ path = "src/bin/server.rs"
 name = "metamuse-worker"
 path = "src/bin/worker.rs"
 
+[[bin]]
+name = "test-inference"
+path = "src/bin/test_inference.rs"
+
 [[bench]]
 name = "inference_bench"
 harness = false
