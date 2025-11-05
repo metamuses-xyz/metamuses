@@ -9,6 +9,7 @@ export default function Header() {
   const navItems = [
     { icon: "🏠", label: "Home", href: "/" },
     { icon: "🎨", label: "Mint Muse AI", href: "/mint" },
+    { icon: "💬", label: "Chat", href: "/chat" },
   ];
 
   return (
