@@ -167,41 +167,25 @@ impl InferenceEngine for CandleEngine {
             // Get model lock
             let mut model_guard = model.lock().unwrap();
 
-            // Autoregressive generation
+            // First pass: process all input tokens to build KV cache
+            let input_tensor = Tensor::new(tokens, &device)?.unsqueeze(0)?;
+            let _ = model_guard.forward(&input_tensor, 0)?;
+
+            // Autoregressive generation with KV cache
             for index in 0..max_new_tokens {
-                let input = Tensor::new(&generated_tokens[..], &device)?.unsqueeze(0)?;
-                let logits = model_guard.forward(&input, 0)?;
-
-                // Debug: Print shape after forward pass
-                if index == 0 {
-                    tracing::info!("   Initial logits shape: {:?}", logits.shape());
-                }
-
-                // Get logits for the last position
-                // Expected: [batch_size, seq_len, vocab_size] -> [vocab_size]
-                let logits_shape = logits.shape();
-                let dims = logits_shape.dims();
-
-                if index == 0 {
-                    tracing::info!("   Logits dims: {:?}", dims);
-                }
-
-                // Extract last position logits based on actual dimensions
-                let last_logits = if dims.len() == 3 {
-                    // [batch, seq, vocab] -> get [batch, -1, vocab] -> squeeze batch
-                    let seq_len = dims[1];
-                    logits.i((.., seq_len - 1, ..))? // Get last position across sequence
-                } else if dims.len() == 2 {
-                    // [seq, vocab] -> get last position
-                    let seq_len = dims[0];
-                    logits.i((seq_len - 1, ..))?
+                // Only pass the last generated token (KV cache will be reused)
+                let last_token = if index == 0 {
+                    tokens[tokens.len() - 1] // Last input token
                 } else {
-                    return Err(anyhow::anyhow!("Unexpected logits shape: {:?}", dims));
+                    generated_tokens[generated_tokens.len() - 1] // Last generated token
                 };
 
-                if index == 0 {
-                    tracing::info!("   Last logits shape: {:?}", last_logits.shape());
-                }
+                let input = Tensor::new(&[last_token], &device)?.unsqueeze(0)?;
+                let logits = model_guard.forward(&input, tokens.len() + index)?;
+
+                // Since we're only passing 1 token, logits should be [1, vocab_size]
+                // Just squeeze the batch dimension to get [vocab_size]
+                let last_logits = logits.squeeze(0)?;
 
                 // Apply temperature
                 let logits_temp = if temperature > 0.0 {
