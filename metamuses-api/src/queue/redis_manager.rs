@@ -25,7 +25,10 @@ impl RedisQueueManager {
         let client = Arc::new(Client::open(redis_url)?);
         let connection = ConnectionManager::new(client.as_ref().clone()).await?;
 
-        info!("Redis queue manager initialized with prefix: {}", queue_prefix);
+        info!(
+            "Redis queue manager initialized with prefix: {}",
+            queue_prefix
+        );
 
         Ok(Self {
             client,
@@ -40,7 +43,9 @@ impl RedisQueueManager {
 
         // Add to sorted set with score = timestamp (for FIFO within priority)
         let score = job.created_at as f64;
-        self.connection.zadd::<_, _, _, ()>(&queue_key, job_json.clone(), score).await?;
+        self.connection
+            .zadd::<_, _, _, ()>(&queue_key, job_json.clone(), score)
+            .await?;
 
         // Store job metadata with TTL
         let job_key = format!("{}:job:{}", self.queue_prefix, job.id);
@@ -50,7 +55,9 @@ impl RedisQueueManager {
 
         // Publish notification
         let channel = format!("{}:notifications:{}", self.queue_prefix, job.tier.as_str());
-        self.connection.publish::<_, _, ()>(channel, job.id.to_string()).await?;
+        self.connection
+            .publish::<_, _, ()>(channel, job.id.to_string())
+            .await?;
 
         info!("Enqueued job {} to queue {}", job.id, queue_key);
 
@@ -65,21 +72,25 @@ impl RedisQueueManager {
         let queue_key = self.get_queue_key(&tier, priority);
 
         // Get and remove the job with lowest score (oldest)
-        let result: Option<(String, f64)> = self.connection.zpopmin(&queue_key, 1).await?;
+        let result: Vec<(String, f64)> = self.connection.zpopmin(&queue_key, 1).await?;
 
-        match result {
-            Some((job_json, _)) => {
-                let job: InferenceJob = serde_json::from_str(&job_json)?;
-                info!("Dequeued job {} from queue {}", job.id, queue_key);
-                Ok(Some(job))
-            }
-            None => Ok(None),
+        if let Some((job_json, _)) = result.first() {
+            let job: InferenceJob = serde_json::from_str(job_json)?;
+            info!("Dequeued job {} from queue {}", job.id, queue_key);
+            Ok(Some(job))
+        } else {
+            Ok(None)
         }
     }
 
     pub async fn dequeue_any(&mut self, tier: ModelTier) -> Result<Option<InferenceJob>> {
         // Try to dequeue in priority order
-        for priority in [Priority::Critical, Priority::High, Priority::Normal, Priority::Low] {
+        for priority in [
+            Priority::Critical,
+            Priority::High,
+            Priority::Normal,
+            Priority::Low,
+        ] {
             if let Some(job) = self.dequeue(tier, priority).await? {
                 return Ok(Some(job));
             }
@@ -91,7 +102,12 @@ impl RedisQueueManager {
     pub async fn get_queue_depth(&mut self, tier: ModelTier) -> Result<usize> {
         let mut total = 0;
 
-        for priority in [Priority::Critical, Priority::High, Priority::Normal, Priority::Low] {
+        for priority in [
+            Priority::Critical,
+            Priority::High,
+            Priority::Normal,
+            Priority::Low,
+        ] {
             let queue_key = self.get_queue_key(&tier, priority);
             let count: usize = self.connection.zcard(&queue_key).await?;
             total += count;
@@ -105,16 +121,17 @@ impl RedisQueueManager {
         let mut by_tier = std::collections::HashMap::new();
         let mut total_queued = 0;
 
-        let tiers = vec![
-            ModelTier::Fast,
-            ModelTier::Medium,
-            ModelTier::Heavy,
-        ];
+        let tiers = vec![ModelTier::Fast, ModelTier::Medium, ModelTier::Heavy];
 
         for tier in tiers {
             let mut tier_total = 0;
 
-            for priority in [Priority::Critical, Priority::High, Priority::Normal, Priority::Low] {
+            for priority in [
+                Priority::Critical,
+                Priority::High,
+                Priority::Normal,
+                Priority::Low,
+            ] {
                 let queue_key = self.get_queue_key(&tier, priority);
                 let count: usize = self.connection.zcard(&queue_key).await.unwrap_or(0);
 
@@ -133,19 +150,28 @@ impl RedisQueueManager {
         })
     }
 
-    pub async fn store_result(&mut self, job_id: uuid::Uuid, result: &crate::types::InferenceResult) -> Result<()> {
+    pub async fn store_result(
+        &mut self,
+        job_id: uuid::Uuid,
+        result: &crate::types::InferenceResult,
+    ) -> Result<()> {
         let result_key = format!("{}:result:{}", self.queue_prefix, job_id);
         let result_json = serde_json::to_string(result)?;
 
         // Store result with TTL (10 minutes)
-        self.connection.set_ex::<_, _, ()>(&result_key, result_json, 600).await?;
+        self.connection
+            .set_ex::<_, _, ()>(&result_key, result_json, 600)
+            .await?;
 
         info!("Stored result for job {}", job_id);
 
         Ok(())
     }
 
-    pub async fn get_result(&mut self, job_id: uuid::Uuid) -> Result<Option<crate::types::InferenceResult>> {
+    pub async fn get_result(
+        &mut self,
+        job_id: uuid::Uuid,
+    ) -> Result<Option<crate::types::InferenceResult>> {
         let result_key = format!("{}:result:{}", self.queue_prefix, job_id);
 
         let result: Option<String> = self.connection.get(&result_key).await?;

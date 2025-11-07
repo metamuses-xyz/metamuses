@@ -7,7 +7,14 @@ edition = "2021"
 # Alith AI Framework
 # Note: Reduced features to avoid tokenizers version conflict
 # Can expand features once upstream fixes are available
-alith = { git = "https://github.com/0xLazAI/alith", features = ["ipfs", "llamacpp", "fastembed", "qdrant"] }
+alith = { git = "https://github.com/0xLazAI/alith", features = ["ipfs", "fastembed", "qdrant"] }
+
+# Candle ML framework for inference (replaced llama-cpp-2 due to Metal hang issues)
+candle-core = { version = "0.8", features = ["metal"] }
+candle-nn = { version = "0.8", features = ["metal"] }
+candle-transformers = { version = "0.8", features = ["metal"] }
+tokenizers = "0.21"
+hf-hub = "0.3"
 
 # Async Runtime
 tokio = { version = "1.47", features = ["full"] }
@@ -66,6 +73,10 @@ path = "src/bin/worker.rs"
 [[bin]]
 name = "test-inference"
 path = "src/bin/test_inference.rs"
+
+[[bin]]
+name = "test-candle"
+path = "src/bin/test_candle.rs"
 
 [[bench]]
 name = "inference_bench"
