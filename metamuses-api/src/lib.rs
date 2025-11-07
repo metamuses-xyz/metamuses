@@ -2,6 +2,13 @@
 pub mod config;
 pub mod types;
 
+// Data layer modules
+pub mod db;
+pub mod models;
+
+// Service layer modules
+pub mod services;
+
 // Inference modules
 pub mod inference;
 

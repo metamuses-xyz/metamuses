@@ -30,6 +30,9 @@ tower-http = { version = "0.6", features = ["cors", "trace"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 
+# Database
+sqlx = { version = "0.8", features = ["runtime-tokio", "postgres", "uuid", "chrono", "migrate"] }
+
 # Redis
 redis = { version = "0.27", features = ["tokio-comp", "connection-manager"] }
 
@@ -51,6 +54,7 @@ uuid = { version = "1.17", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
 dotenv = "0.15"
 lazy_static = "1.5"
+rand = "0.8"
 
 # Existing MetaMuse dependencies
 ethers = { version = "2.0", features = ["abigen", "rustls"] }
