@@ -35,15 +35,15 @@ pub fn get_model_registry() -> HashMap<ModelTier, Vec<ModelConfig>> {
     registry.insert(
         ModelTier::Fast,
         vec![
-            // Available: Qwen2.5 3B with Q4_K_M quantization (Candle compatible)
+            // Qwen2.5-3B-Instruct with Q4_K_M quantization (Candle 0.9 compatible)
             ModelConfig {
                 model_path: build_model_path("qwen2.5-3b-instruct-q4_k_m.gguf"),
                 model_name: "Qwen2.5-3B-Instruct".to_string(),
                 tier: ModelTier::Fast,
                 context_length: 32768,
                 temperature: 0.7,
-                top_p: 0.8, // HuggingFace recommended: Temperature=0.7, TopP=0.8
-                max_tokens: 2048,
+                top_p: 0.8,
+                max_tokens: 256, // Optimized for faster responses with KV cache
                 num_threads: Some(8),
                 gpu_layers: None, // Full GPU acceleration with Metal
             },

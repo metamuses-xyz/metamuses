@@ -10,9 +10,9 @@ edition = "2021"
 alith = { git = "https://github.com/0xLazAI/alith", features = ["ipfs", "fastembed", "qdrant"] }
 
 # Candle ML framework for inference (replaced llama-cpp-2 due to Metal hang issues)
-candle-core = { version = "0.8", features = ["metal"] }
-candle-nn = { version = "0.8", features = ["metal"] }
-candle-transformers = { version = "0.8", features = ["metal"] }
+candle-core = { version = "0.9", features = ["metal"] }
+candle-nn = { version = "0.9", features = ["metal"] }
+candle-transformers = { version = "0.9", features = ["metal"] }
 tokenizers = "0.21"
 hf-hub = "0.3"
 
