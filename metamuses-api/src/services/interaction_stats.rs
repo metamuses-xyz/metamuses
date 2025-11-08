@@ -204,7 +204,7 @@ impl InteractionStatsService {
 }
 
 /// Summary of all interactions across levels
-#[derive(Debug, Clone, sqlx::FromRow, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, Default, sqlx::FromRow, serde::Serialize, serde::Deserialize)]
 pub struct InteractionSummary {
     pub total_messages: i32,
     pub creative_interactions: i32,
