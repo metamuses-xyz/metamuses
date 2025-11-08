@@ -22,6 +22,7 @@ pub struct CompanionAppState {
     pub router: Arc<IntelligentRouter>,
     pub companion_service: Arc<CompanionService>,
     pub memory_service: Arc<MemoryService>,
+    pub interaction_stats_service: Arc<crate::services::InteractionStatsService>,
     pub start_time: std::time::Instant,
     pub metrics: Arc<tokio::sync::RwLock<CompanionChatMetrics>>,
 }
@@ -113,14 +114,25 @@ pub async fn companion_chat_handler(
         )));
     }
 
-    // STEP 3: Build conversation context
+    // STEP 3: Build conversation context with semantic search
     let context = state
         .memory_service
-        .build_context(companion.id, &req.user_address, 10)
+        .build_context_with_query(
+            companion.id,
+            &req.user_address,
+            &req.query, // Use query for semantic search to find relevant memories
+            20,         // Increased from 10 to get more context
+        )
         .await
         .map_err(|e| AppError::InternalError(format!("Failed to build context: {}", e)))?;
 
     let is_first_conversation = context.is_first_conversation();
+
+    info!(
+        "Context built: {} messages, {} facts",
+        context.messages.len(),
+        context.facts.len()
+    );
 
     // STEP 4: Generate personality-adapted system prompt
     let system_prompt = PersonalityEngine::generate_system_prompt(&companion);
@@ -213,6 +225,34 @@ pub async fn companion_chat_handler(
         .map_err(|e| error!("Failed to store assistant message: {}", e))
         .ok();
 
+    // STEP 9.5: Track personality trait evolution
+    use crate::services::PersonalityEngine;
+    let current_traits = crate::models::Traits::from(&companion);
+    let trait_adjustments =
+        PersonalityEngine::calculate_trait_evolution(&req.query, &result.content, &current_traits);
+
+    info!(
+        "Trait evolution calculated - creativity:{}, wisdom:{}, humor:{}, empathy:{}, logic:{}",
+        trait_adjustments.creativity,
+        trait_adjustments.wisdom,
+        trait_adjustments.humor,
+        trait_adjustments.empathy,
+        trait_adjustments.logic
+    );
+
+    // Update interaction stats for this level
+    state
+        .interaction_stats_service
+        .update_stats(
+            companion.id,
+            &req.user_address,
+            companion.level,
+            &trait_adjustments,
+        )
+        .await
+        .map_err(|e| error!("Failed to update interaction stats: {}", e))
+        .ok();
+
     // STEP 10: Award XP
     const XP_PER_MESSAGE: i64 = 10;
     let updated_companion = state
@@ -224,6 +264,52 @@ pub async fn companion_chat_handler(
 
     let level_up = updated_companion.level > companion.level;
     let xp_gained = XP_PER_MESSAGE;
+
+    // STEP 10.5: Apply personality evolution on level-up
+    let mut final_companion = updated_companion.clone();
+    if level_up {
+        info!(
+            "Companion {} leveled up from {} to {}! Applying personality evolution...",
+            final_companion.name, companion.level, final_companion.level
+        );
+
+        // Get interaction stats from previous level
+        if let Ok(Some(stats_row)) = state
+            .interaction_stats_service
+            .get_stats(companion.id, &req.user_address, companion.level)
+            .await
+        {
+            let interaction_stats =
+                crate::services::InteractionStatsService::to_interaction_stats(&stats_row);
+
+            // Apply trait evolution
+            PersonalityEngine::evolve_traits_on_levelup(&mut final_companion, &interaction_stats);
+
+            // Save updated traits to database
+            let evolved_traits = crate::models::Traits {
+                creativity: final_companion.creativity as u8,
+                wisdom: final_companion.wisdom as u8,
+                humor: final_companion.humor as u8,
+                empathy: final_companion.empathy as u8,
+                logic: final_companion.logic as u8,
+            };
+
+            let _ = state
+                .companion_service
+                .update_traits(final_companion.id, &evolved_traits)
+                .await
+                .map_err(|e| error!("Failed to save evolved traits: {}", e));
+
+            info!(
+                "Personality evolved! New traits - creativity:{}, wisdom:{}, humor:{}, empathy:{}, logic:{}",
+                final_companion.creativity,
+                final_companion.wisdom,
+                final_companion.humor,
+                final_companion.empathy,
+                final_companion.logic
+            );
+        }
+    }
 
     // Store interaction
     let interaction = Interaction::new(
