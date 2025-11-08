@@ -55,6 +55,7 @@ chrono = { version = "0.4", features = ["serde"] }
 dotenv = "0.15"
 lazy_static = "1.5"
 rand = "0.8"
+regex = "1.11"
 
 # Existing MetaMuse dependencies
 ethers = { version = "2.0", features = ["abigen", "rustls"] }
@@ -77,10 +78,6 @@ path = "src/bin/worker.rs"
 [[bin]]
 name = "test-inference"
 path = "src/bin/test_inference.rs"
-
-[[bin]]
-name = "test-candle"
-path = "src/bin/test_candle.rs"
 
 [[bench]]
 name = "inference_bench"

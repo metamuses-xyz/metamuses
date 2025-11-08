@@ -197,6 +197,151 @@ impl PersonalityEngine {
             logic: traits.logic,
         }
     }
+
+    /// Calculate trait adjustments based on message content and context
+    /// Returns (trait_name, adjustment_value) pairs
+    pub fn calculate_trait_evolution(
+        user_message: &str,
+        ai_response: &str,
+        current_traits: &Traits,
+    ) -> TraitAdjustments {
+        let mut adjustments = TraitAdjustments::default();
+
+        let user_lower = user_message.to_lowercase();
+        let response_lower = ai_response.to_lowercase();
+
+        // Creativity: Triggered by creative requests, imaginative discussions
+        if user_lower.contains("creative")
+            || user_lower.contains("imagine")
+            || user_lower.contains("idea")
+            || user_lower.contains("design")
+            || user_lower.contains("art")
+        {
+            adjustments.creativity = 1;
+        }
+
+        // Wisdom: Triggered by philosophical questions, advice requests
+        if user_lower.contains("why")
+            || user_lower.contains("advice")
+            || user_lower.contains("should i")
+            || user_lower.contains("wisdom")
+            || user_lower.contains("meaning")
+            || user_lower.contains("purpose")
+        {
+            adjustments.wisdom = 1;
+        }
+
+        // Humor: Triggered by jokes, playful interactions
+        if user_lower.contains("joke")
+            || user_lower.contains("funny")
+            || user_lower.contains("lol")
+            || user_lower.contains("haha")
+            || response_lower.contains("😄")
+            || response_lower.contains("😊")
+        {
+            adjustments.humor = 1;
+        }
+
+        // Empathy: Triggered by emotional sharing, feelings
+        if user_lower.contains("feel")
+            || user_lower.contains("sad")
+            || user_lower.contains("happy")
+            || user_lower.contains("worried")
+            || user_lower.contains("excited")
+            || user_lower.contains("scared")
+            || user_lower.contains("love")
+        {
+            adjustments.empathy = 1;
+        }
+
+        // Logic: Triggered by technical questions, problem-solving
+        if user_lower.contains("how to")
+            || user_lower.contains("explain")
+            || user_lower.contains("calculate")
+            || user_lower.contains("solve")
+            || user_lower.contains("analyze")
+            || user_lower.contains("code")
+            || user_lower.contains("algorithm")
+        {
+            adjustments.logic = 1;
+        }
+
+        // Apply diminishing returns for already-high traits
+        // If a trait is above 80, reduce the adjustment
+        if current_traits.creativity > 80 {
+            adjustments.creativity = adjustments.creativity / 2;
+        }
+        if current_traits.wisdom > 80 {
+            adjustments.wisdom = adjustments.wisdom / 2;
+        }
+        if current_traits.humor > 80 {
+            adjustments.humor = adjustments.humor / 2;
+        }
+        if current_traits.empathy > 80 {
+            adjustments.empathy = adjustments.empathy / 2;
+        }
+        if current_traits.logic > 80 {
+            adjustments.logic = adjustments.logic / 2;
+        }
+
+        adjustments
+    }
+
+    /// Apply trait evolution on level up
+    /// Major trait shifts happen when leveling up, based on conversation history
+    pub fn evolve_traits_on_levelup(
+        companion: &mut Companion,
+        interaction_stats: &InteractionStats,
+    ) {
+        // On level up, apply accumulated micro-adjustments
+        // This creates meaningful personality evolution over time
+
+        // Calculate trait boosts based on interaction patterns
+        let total_interactions = interaction_stats.total_messages as f32;
+        if total_interactions == 0.0 {
+            return;
+        }
+
+        // Creativity boost from creative interactions
+        let creativity_ratio = interaction_stats.creative_interactions as f32 / total_interactions;
+        if creativity_ratio > 0.3 {
+            companion.creativity = (companion.creativity + 2).min(95);
+        }
+
+        // Wisdom boost from advice-seeking
+        let wisdom_ratio = interaction_stats.wisdom_interactions as f32 / total_interactions;
+        if wisdom_ratio > 0.3 {
+            companion.wisdom = (companion.wisdom + 2).min(95);
+        }
+
+        // Humor boost from playful interactions
+        let humor_ratio = interaction_stats.humor_interactions as f32 / total_interactions;
+        if humor_ratio > 0.3 {
+            companion.humor = (companion.humor + 2).min(95);
+        }
+
+        // Empathy boost from emotional sharing
+        let empathy_ratio = interaction_stats.empathy_interactions as f32 / total_interactions;
+        if empathy_ratio > 0.3 {
+            companion.empathy = (companion.empathy + 2).min(95);
+        }
+
+        // Logic boost from technical discussions
+        let logic_ratio = interaction_stats.logic_interactions as f32 / total_interactions;
+        if logic_ratio > 0.3 {
+            companion.logic = (companion.logic + 2).min(95);
+        }
+
+        tracing::info!(
+            "Companion {} evolved: creativity={}, wisdom={}, humor={}, empathy={}, logic={}",
+            companion.name,
+            companion.creativity,
+            companion.wisdom,
+            companion.humor,
+            companion.empathy,
+            companion.logic
+        );
+    }
 }
 
 /// Personality summary for display
@@ -210,6 +355,27 @@ pub struct PersonalitySummary {
     pub humor: u8,
     pub empathy: u8,
     pub logic: u8,
+}
+
+/// Trait adjustments from a single interaction
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct TraitAdjustments {
+    pub creativity: i16,
+    pub wisdom: i16,
+    pub humor: i16,
+    pub empathy: i16,
+    pub logic: i16,
+}
+
+/// Interaction statistics for trait evolution
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct InteractionStats {
+    pub total_messages: usize,
+    pub creative_interactions: usize,
+    pub wisdom_interactions: usize,
+    pub humor_interactions: usize,
+    pub empathy_interactions: usize,
+    pub logic_interactions: usize,
 }
 
 #[cfg(test)]
