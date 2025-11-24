@@ -10,7 +10,7 @@ export default function Header() {
     { icon: "🏠", label: "Home", href: "/" },
     { icon: "🎨", label: "Mint Muse AI", href: "/mint" },
     { icon: "💬", label: "Chat", href: "/chat" },
-    { icon: "📊", label: "Dashboard", href: "/dashboard" },
+    // { icon: "📊", label: "Dashboard", href: "/dashboard" },
   ];
 
   return (
