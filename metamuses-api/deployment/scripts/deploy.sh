@@ -97,11 +97,33 @@ create_backup() {
     fi
 }
 
+ensure_directories() {
+    log "Ensuring required directories exist..."
+
+    # Create data directories if they don't exist
+    sudo mkdir -p /mnt/data/{postgres,redis,qdrant,prometheus,grafana}
+    sudo mkdir -p /opt/metamuses/logs/{api,worker}
+
+    # Set PostgreSQL directory permissions (PostgreSQL runs as user 70 in alpine)
+    sudo chmod 700 /mnt/data/postgres
+    sudo chown -R 70:70 /mnt/data/postgres
+
+    # Set proper ownership for other directories
+    sudo chown -R $(whoami):$(whoami) /mnt/data/redis /mnt/data/qdrant
+    sudo chown -R 65534:65534 /mnt/data/prometheus
+    sudo chown -R 472:472 /mnt/data/grafana
+    sudo chown -R $(whoami):$(whoami) /opt/metamuses/logs
+
+    log "✓ Directories configured"
+}
+
 build_images() {
     log "Building Docker images..."
 
     cd "$APP_DIR"
-    docker compose -f deployment/docker/docker-compose.production.yml build --no-cache api
+
+    # Build both API server and worker images
+    docker compose -f deployment/docker/docker-compose.production.yml build --no-cache api worker
 
     log "✓ Docker images built successfully"
 }
@@ -110,7 +132,7 @@ stop_services() {
     log "Stopping current services..."
 
     cd "$APP_DIR"
-    docker compose -f deployment/docker/docker-compose.production.yml stop api || true
+    docker compose -f deployment/docker/docker-compose.production.yml stop api worker || true
 
     log "✓ Services stopped"
 }
@@ -150,7 +172,7 @@ rollback() {
     warn "Rolling back to previous version..."
 
     cd "$APP_DIR"
-    docker compose -f deployment/docker/docker-compose.production.yml down api
+    docker compose -f deployment/docker/docker-compose.production.yml down api worker
     # Restore from backup would go here if needed
     docker compose -f deployment/docker/docker-compose.production.yml up -d
 
@@ -174,8 +196,11 @@ show_status() {
     echo ""
     docker compose -f deployment/docker/docker-compose.production.yml ps
     echo ""
-    log "Service logs (last 20 lines):"
-    docker compose -f deployment/docker/docker-compose.production.yml logs --tail=20 api
+    log "API Server logs (last 10 lines):"
+    docker compose -f deployment/docker/docker-compose.production.yml logs --tail=10 api
+    echo ""
+    log "Worker logs (last 10 lines):"
+    docker compose -f deployment/docker/docker-compose.production.yml logs --tail=10 worker
 }
 
 # ============================================================================
@@ -192,29 +217,32 @@ main() {
     # Step 1: Check prerequisites
     check_prerequisites
 
-    # Step 2: Create backup
+    # Step 2: Ensure directories exist with correct permissions
+    ensure_directories
+
+    # Step 3: Create backup
     create_backup
 
-    # Step 3: Build images
+    # Step 4: Build images
     build_images
 
-    # Step 4: Stop current services
+    # Step 5: Stop current services
     stop_services
 
-    # Step 5: Start new services
+    # Step 6: Start new services
     start_services
 
-    # Step 6: Health check
+    # Step 7: Health check
     if ! health_check; then
         error "Health check failed!"
         rollback
         exit 1
     fi
 
-    # Step 7: Cleanup
+    # Step 8: Cleanup
     cleanup
 
-    # Step 8: Show status
+    # Step 9: Show status
     show_status
 
     log ""
@@ -223,14 +251,21 @@ main() {
     log "=========================================="
     log ""
     log "Services are now running at:"
-    log "  - API: http://localhost:8080"
-    log "  - Health: http://localhost:8080/health"
-    log "  - Metrics: http://localhost:8080/metrics"
-    log "  - Prometheus: http://localhost:9090"
-    log "  - Grafana: http://localhost:3000"
+    log "  - API Server:  http://localhost:8080"
+    log "  - Health:      http://localhost:8080/health"
+    log "  - Metrics:     http://localhost:8080/metrics"
+    log "  - PostgreSQL:  localhost:5432"
+    log "  - Redis:       localhost:6379"
+    log "  - Qdrant:      localhost:6333"
+    log "  - Prometheus:  http://localhost:9090"
+    log "  - Grafana:     http://localhost:3000"
     log ""
     log "Check logs with:"
     log "  docker compose -f deployment/docker/docker-compose.production.yml logs -f api"
+    log "  docker compose -f deployment/docker/docker-compose.production.yml logs -f worker"
+    log ""
+    log "Scale workers with:"
+    log "  docker compose -f deployment/docker/docker-compose.production.yml up -d --scale worker=3"
     log ""
 }
 

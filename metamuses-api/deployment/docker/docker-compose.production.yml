@@ -3,9 +3,56 @@ version: '3.8'
 # ============================================================================
 # MetaMuses API - Production Docker Compose
 # https://api.metamuses.xyz
+#
+# Services:
+#   - postgres    : PostgreSQL 16 database
+#   - redis       : Redis 7 queue manager
+#   - qdrant      : Vector database for semantic caching
+#   - api         : MetaMuses API server
+#   - worker      : Background AI inference worker
+#   - prometheus  : Metrics collection
+#   - grafana     : Monitoring dashboard
 # ============================================================================
 
 services:
+  # ==========================================================================
+  # PostgreSQL - Primary Database
+  # ==========================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: metamuses-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-metamuse}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme}
+      - POSTGRES_DB=${POSTGRES_DB:-metamuses}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"
+    networks:
+      - metamuses-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-metamuse} -d ${POSTGRES_DB:-metamuses}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
   # ==========================================================================
   # Redis - Queue Manager
   # ==========================================================================
@@ -17,7 +64,7 @@ services:
       redis-server
       --appendonly yes
       --appendfsync everysec
-      --maxmemory 2gb
+      --maxmemory 512mb
       --maxmemory-policy allkeys-lru
       --requirepass ${REDIS_PASSWORD:-changeme}
     volumes:
@@ -27,7 +74,7 @@ services:
     networks:
       - metamuses-network
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-changeme}", "ping"]
       interval: 10s
       timeout: 3s
       retries: 3
@@ -40,11 +87,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
-          memory: 2G
+          cpus: '0.5'
+          memory: 512M
         reservations:
-          cpus: '1'
-          memory: 1G
+          cpus: '0.25'
+          memory: 256M
 
   # ==========================================================================
   # Qdrant - Vector Database for Semantic Caching
@@ -79,30 +126,33 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '4'
-          memory: 4G
+          cpus: '1'
+          memory: 1G
         reservations:
-          cpus: '2'
-          memory: 2G
+          cpus: '0.5'
+          memory: 512M
 
   # ==========================================================================
-  # MetaMuses API - Main Application
+  # MetaMuses API - Main Application Server
   # ==========================================================================
   api:
     build:
       context: ../..
       dockerfile: deployment/docker/Dockerfile
+      target: server
     image: metamuses-api:latest
     container_name: metamuses-api
     restart: unless-stopped
     depends_on:
+      postgres:
+        condition: service_healthy
       redis:
         condition: service_healthy
       qdrant:
         condition: service_healthy
     volumes:
       - /mnt/models:/models:ro  # Read-only model files
-      - ./logs:/app/logs
+      - api_logs:/app/logs
     ports:
       - "127.0.0.1:8080:8080"
     networks:
@@ -111,6 +161,9 @@ services:
       # Server
       - HOST=0.0.0.0
       - PORT=8080
+
+      # Database
+      - DATABASE_URL=postgres://${POSTGRES_USER:-metamuse}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-metamuses}
 
       # Redis
       - REDIS_URL=redis://:${REDIS_PASSWORD:-changeme}@redis:6379
@@ -126,7 +179,7 @@ services:
       - ENABLE_MEDIUM_TIER=${ENABLE_MEDIUM_TIER:-true}
       - ENABLE_HEAVY_TIER=${ENABLE_HEAVY_TIER:-false}
 
-      # Worker Pools
+      # Worker Pools (for in-process workers)
       - FAST_TIER_WORKERS=${FAST_TIER_WORKERS:-10}
       - MEDIUM_TIER_WORKERS=${MEDIUM_TIER_WORKERS:-5}
       - HEAVY_TIER_WORKERS=${HEAVY_TIER_WORKERS:-2}
@@ -158,11 +211,81 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '14'
-          memory: 20G
+          cpus: '2'
+          memory: 2G
         reservations:
-          cpus: '8'
-          memory: 16G
+          cpus: '1'
+          memory: 1G
+
+  # ==========================================================================
+  # MetaMuses Worker - Background AI Inference Worker
+  # ==========================================================================
+  worker:
+    build:
+      context: ../..
+      dockerfile: deployment/docker/Dockerfile
+      target: worker
+    image: metamuses-worker:latest
+    container_name: metamuses-worker
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+    volumes:
+      - /mnt/models:/models:ro  # Read-only model files
+      - worker_logs:/app/logs
+    networks:
+      - metamuses-network
+    environment:
+      # Database
+      - DATABASE_URL=postgres://${POSTGRES_USER:-metamuse}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-metamuses}
+
+      # Redis
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-changeme}@redis:6379
+      - REDIS_QUEUE_PREFIX=metamuse
+
+      # Qdrant
+      - QDRANT_URL=http://qdrant:6334
+      - QDRANT_API_KEY=${QDRANT_API_KEY:-}
+
+      # Models
+      - MODELS_DIR=/models
+      - ENABLE_FAST_TIER=${ENABLE_FAST_TIER:-true}
+      - ENABLE_MEDIUM_TIER=${ENABLE_MEDIUM_TIER:-true}
+      - ENABLE_HEAVY_TIER=${ENABLE_HEAVY_TIER:-false}
+
+      # Worker Configuration
+      - WORKER_POLL_INTERVAL_MS=${WORKER_POLL_INTERVAL_MS:-100}
+      - MAX_TOKENS=${MAX_TOKENS:-256}
+      - TEMPERATURE=${TEMPERATURE:-0.7}
+
+      # Semantic Cache
+      - ENABLE_SEMANTIC_CACHE=${ENABLE_SEMANTIC_CACHE:-true}
+      - CACHE_SIMILARITY_THRESHOLD=${CACHE_SIMILARITY_THRESHOLD:-0.95}
+      - CACHE_TTL_HOURS=${CACHE_TTL_HOURS:-24}
+
+      # Logging
+      - RUST_LOG=${RUST_LOG:-info}
+      - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 6G
+    # Worker needs the most resources for AI inference
+    # Model loading requires ~3-4GB RAM, inference needs additional headroom
 
   # ==========================================================================
   # Prometheus - Metrics Collection
@@ -198,11 +321,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
-          memory: 2G
+          cpus: '0.5'
+          memory: 512M
         reservations:
-          cpus: '1'
-          memory: 1G
+          cpus: '0.25'
+          memory: 256M
 
   # ==========================================================================
   # Grafana - Monitoring Dashboard
@@ -242,11 +365,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
-          memory: 1G
+          cpus: '0.5'
+          memory: 256M
         reservations:
-          cpus: '1'
-          memory: 512M
+          cpus: '0.25'
+          memory: 128M
 
 # ============================================================================
 # Networks
@@ -262,6 +385,13 @@ networks:
 # Volumes
 # ============================================================================
 volumes:
+  postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /mnt/data/postgres
+
   redis_data:
     driver: local
     driver_opts:
@@ -289,3 +419,17 @@ volumes:
       type: none
       o: bind
       device: /mnt/data/grafana
+
+  api_logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/metamuses/logs/api
+
+  worker_logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/metamuses/logs/worker
