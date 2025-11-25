@@ -91,9 +91,9 @@ impl Config {
                 .parse()?,
 
             openai_api_key: env::var("OPENAI_API_KEY").ok(),
-            rpc_url: env::var("RPC_URL")?,
-            private_key: env::var("PRIVATE_KEY")?,
-            ipfs_jwt_token: env::var("IPFS_JWT_TOKEN")?,
+            rpc_url: env::var("RPC_URL").unwrap_or_else(|_| "".to_string()),
+            private_key: env::var("PRIVATE_KEY").unwrap_or_else(|_| "".to_string()),
+            ipfs_jwt_token: env::var("IPFS_JWT_TOKEN").unwrap_or_else(|_| "".to_string()),
         })
     }
 }

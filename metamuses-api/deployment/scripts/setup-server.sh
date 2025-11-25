@@ -134,14 +134,18 @@ docker compose version
 # 9. Setup Directory Structure
 # ============================================================================
 log "Creating directory structure..."
-mkdir -p /opt/metamuses/{config,logs,backups}
+mkdir -p /opt/metamuses/{config,logs/api,logs/worker,backups}
 mkdir -p /mnt/models
-mkdir -p /mnt/data/{redis,qdrant,prometheus,grafana}
+mkdir -p /mnt/data/{postgres,redis,qdrant,prometheus,grafana}
 
 # Set ownership
 chown -R deploy:deploy /opt/metamuses
 chown -R deploy:deploy /mnt/models
 chown -R deploy:deploy /mnt/data
+
+# Set permissions for PostgreSQL data directory (PostgreSQL runs as user 70)
+chmod 700 /mnt/data/postgres
+chown -R 70:70 /mnt/data/postgres
 
 log "Directory structure created"
 
