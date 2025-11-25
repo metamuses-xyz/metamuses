@@ -6,8 +6,9 @@
 
 # ============================================================================
 # Stage 1: Build Stage
+# Using nightly for edition2024 support (required by alith dependency)
 # ============================================================================
-FROM rust:1.82-slim AS builder
+FROM rustlang/rust:nightly-slim AS builder
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y \
@@ -37,6 +38,7 @@ RUN mkdir -p src/bin && \
 # Copy actual source code
 COPY src ./src
 COPY migrations ./migrations
+COPY benches ./benches
 
 # Build both release binaries with optimizations
 # Using SQLX_OFFLINE=true to skip compile-time database checks
@@ -47,8 +49,9 @@ RUN cargo build --release --bin metamuse-server --bin metamuse-worker && \
 
 # ============================================================================
 # Stage 2: Runtime Stage (Server)
+# Using debian:sid-slim for GLIBC 2.39 compatibility with rust nightly
 # ============================================================================
-FROM debian:bookworm-slim AS server
+FROM debian:sid-slim AS server
 
 # Install runtime dependencies
 RUN apt-get update && apt-get install -y \
@@ -87,8 +90,9 @@ CMD ["/app/metamuse-server"]
 
 # ============================================================================
 # Stage 3: Runtime Stage (Worker)
+# Using debian:sid-slim for GLIBC 2.39 compatibility with rust nightly
 # ============================================================================
-FROM debian:bookworm-slim AS worker
+FROM debian:sid-slim AS worker
 
 # Install runtime dependencies
 RUN apt-get update && apt-get install -y \

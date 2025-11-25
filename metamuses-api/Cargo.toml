@@ -5,14 +5,16 @@ edition = "2021"
 
 [dependencies]
 # Alith AI Framework
-# Note: Reduced features to avoid tokenizers version conflict
-# Can expand features once upstream fixes are available
-alith = { git = "https://github.com/0xLazAI/alith", features = ["ipfs", "fastembed", "qdrant"] }
+# Note: Using default-features = false to avoid llama-cpp-2 which has ARM64 build issues
+# The llama-cpp-2 crate has c_char type mismatch on ARM64 Linux (u8 vs i8)
+alith = { git = "https://github.com/0xLazAI/alith", default-features = false, features = ["ipfs", "fastembed", "qdrant"] }
 
 # Candle ML framework for inference (replaced llama-cpp-2 due to Metal hang issues)
-candle-core = { version = "0.9", features = ["metal"] }
-candle-nn = { version = "0.9", features = ["metal"] }
-candle-transformers = { version = "0.9", features = ["metal"] }
+# Note: Metal feature removed for Linux ARM64 compatibility (objc_exception build error)
+# Metal is only available on macOS - use CPU inference on Linux
+candle-core = "0.9"
+candle-nn = "0.9"
+candle-transformers = "0.9"
 tokenizers = "0.21"
 hf-hub = "0.3"
 
