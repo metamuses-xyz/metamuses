@@ -15,7 +15,7 @@ export default function Footer() {
             <p className="text-gray-400 mb-6">
               Building the future of AI companions on blockchain technology.
             </p>
-            <div className="flex space-x-4">
+            {/*<div className="flex space-x-4">
               {["🐦", "📘", "💼", "📸"].map((emoji, index) => (
                 <div
                   key={index}
@@ -24,17 +24,31 @@ export default function Footer() {
                   {emoji}
                 </div>
               ))}
-            </div>
+            </div>*/}
           </div>
 
           {[
             {
               title: "Product",
-              links: ["Features", "Documentation"],
+              links: [
+                { name: "Features", href: "#" },
+                {
+                  name: "Documentation",
+                  href: "http://metamuses.gitbook.io/docs/",
+                  external: true,
+                },
+              ],
             },
             {
               title: "Resources",
-              links: ["Community"],
+              links: [
+                // { name: "Community", href: "#" },
+                {
+                  name: "Discord",
+                  href: "https://discord.gg/EN58SSmF",
+                  external: true,
+                },
+              ],
             },
           ].map((section, index) => (
             <div key={index}>
@@ -43,10 +57,12 @@ export default function Footer() {
                 {section.links.map((link, linkIndex) => (
                   <li key={linkIndex}>
                     <a
-                      href="#"
+                      href={link.href}
+                      target={link.external ? "_blank" : undefined}
+                      rel={link.external ? "noopener noreferrer" : undefined}
                       className="text-gray-400 hover:text-white transition-colors"
                     >
-                      {link}
+                      {link.name}
                     </a>
                   </li>
                 ))}
