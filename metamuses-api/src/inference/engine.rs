@@ -6,10 +6,15 @@ use std::sync::Arc;
 use std::sync::Mutex;
 use tokenizers::Tokenizer;
 
+use crate::types::ChatMessage;
+
 #[async_trait]
 pub trait InferenceEngine: Send + Sync {
-    /// Generate text from prompt
+    /// Generate text from prompt (legacy - simple string prompt)
     async fn generate(&self, prompt: &str) -> Result<String>;
+
+    /// Generate text from full conversation context (system prompt + messages)
+    async fn generate_with_context(&self, context: &[ChatMessage]) -> Result<String>;
 
     /// Get model name
     fn model_name(&self) -> &str;
@@ -118,11 +123,35 @@ impl CandleEngine {
     }
 
     fn format_chat_prompt(&self, user_message: &str) -> String {
-        // Qwen2.5/Qwen3 chat format
+        // Qwen2.5/Qwen3 chat format - fallback for simple prompts
         format!(
-            "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\n{}<|im_end|>\n<|im_start|>assistant\n",
+            "<|im_start|>system\nYou are a helpful, friendly assistant.<|im_end|>\n<|im_start|>user\n{}<|im_end|>\n<|im_start|>assistant\n",
             user_message
         )
+    }
+
+    /// Format full conversation context into Qwen chat format
+    fn format_conversation(&self, context: &[ChatMessage]) -> String {
+        let mut formatted = String::new();
+
+        for message in context {
+            let role = match message.role.as_str() {
+                "system" => "system",
+                "user" => "user",
+                "assistant" => "assistant",
+                _ => "user", // Default to user for unknown roles
+            };
+
+            formatted.push_str(&format!(
+                "<|im_start|>{}\n{}<|im_end|>\n",
+                role, message.content
+            ));
+        }
+
+        // Add assistant prompt to start generation
+        formatted.push_str("<|im_start|>assistant\n");
+
+        formatted
     }
 }
 
@@ -136,6 +165,39 @@ impl InferenceEngine for CandleEngine {
         let formatted_prompt = self.format_chat_prompt(&prompt_owned);
         let generation_count = Arc::clone(&self.generation_count);
 
+        Self::generate_internal(tokenizer, model, device, formatted_prompt, generation_count).await
+    }
+
+    async fn generate_with_context(&self, context: &[ChatMessage]) -> Result<String> {
+        let tokenizer = Arc::clone(&self.tokenizer);
+        let model = Arc::clone(&self.model);
+        let device = self.device.clone();
+        let formatted_prompt = self.format_conversation(context);
+        let generation_count = Arc::clone(&self.generation_count);
+
+        tracing::info!("📝 Using full conversation context ({} messages)", context.len());
+
+        Self::generate_internal(tokenizer, model, device, formatted_prompt, generation_count).await
+    }
+
+    fn model_name(&self) -> &str {
+        &self.model_name
+    }
+
+    fn tier(&self) -> crate::types::ModelTier {
+        self.tier
+    }
+}
+
+impl CandleEngine {
+    /// Internal generation function shared by both generate methods
+    async fn generate_internal(
+        tokenizer: Arc<Tokenizer>,
+        model: Arc<Mutex<ModelWeights>>,
+        device: Device,
+        formatted_prompt: String,
+        generation_count: Arc<Mutex<usize>>,
+    ) -> Result<String> {
         tokio::task::spawn_blocking(move || {
             // Increment generation counter
             let count = {
@@ -154,12 +216,17 @@ impl InferenceEngine for CandleEngine {
             let tokens = encoding.get_ids();
             tracing::info!("   Input tokens: {}", tokens.len());
 
-            // Prepare input tensor
-            let input_tokens = Tensor::new(tokens, &device)?.unsqueeze(0)?;
+            // Check if context is too long
+            if tokens.len() > 4096 {
+                tracing::warn!("   ⚠️ Context length ({}) exceeds 4096, truncating...", tokens.len());
+            }
 
-            // Generation parameters
+            // Prepare input tensor
+            let _input_tokens = Tensor::new(tokens, &device)?.unsqueeze(0)?;
+
+            // Generation parameters - slightly higher temperature for more personality
             let max_new_tokens = 512;
-            let temperature = 0.7;
+            let temperature = 0.8; // Slightly higher for more creative/emotional responses
             let mut generated_tokens = tokens.to_vec();
 
             tracing::info!("🎯 Generating response (max {} tokens)...", max_new_tokens);
@@ -199,8 +266,9 @@ impl InferenceEngine for CandleEngine {
                 let next_token = probs.argmax(0)?.to_scalar::<u32>()?;
 
                 // Check for EOS token (assuming 151643 is EOS for Qwen, adjust if needed)
-                if next_token == 151643 || next_token == 151645 {
-                    tracing::info!("   Stopped at EOS token (generated {} tokens)", index);
+                // Also check for <|im_end|> token which signals end of assistant response
+                if next_token == 151643 || next_token == 151645 || next_token == 151644 {
+                    tracing::info!("   Stopped at EOS/im_end token (generated {} tokens)", index);
                     break;
                 }
 
@@ -218,6 +286,14 @@ impl InferenceEngine for CandleEngine {
                 .decode(response_tokens, true)
                 .map_err(|e| anyhow::anyhow!("Decoding failed: {}", e))?;
 
+            // Clean up response - remove any trailing special tokens
+            let response = response
+                .trim()
+                .trim_end_matches("<|im_end|>")
+                .trim_end_matches("<|endoftext|>")
+                .trim()
+                .to_string();
+
             tracing::info!(
                 "✅ Response generated ({} tokens, {} chars)",
                 response_tokens.len(),
@@ -227,14 +303,6 @@ impl InferenceEngine for CandleEngine {
             Ok::<String, anyhow::Error>(response)
         })
         .await?
-    }
-
-    fn model_name(&self) -> &str {
-        &self.model_name
-    }
-
-    fn tier(&self) -> crate::types::ModelTier {
-        self.tier
     }
 }
 

@@ -1,7 +1,7 @@
 // Worker Pool Binary
 // Processes inference jobs from Redis queue
 
-use metamuses_api::inference::CandleEngine;
+use metamuses_api::inference::{CandleEngine, InferenceEngine};
 use metamuses_api::types::Domain;
 use metamuses_api::*;
 use std::sync::Arc;
@@ -107,24 +107,36 @@ async fn main() -> anyhow::Result<()> {
                 error_count = 0; // Reset error count on success
                 info!("📥 Processing job {} from user {}", job.id, job.user_id);
                 info!("   Query: {}", job.query);
+                info!("   Context messages: {}", job.context.len());
 
-                // Process the job
+                // Process the job - use context-aware generation if context is provided
                 let start = std::time::Instant::now();
-                match engine.generate(&job.query).await {
+
+                let generation_result = if !job.context.is_empty() {
+                    // Use full conversation context (includes system prompt + history)
+                    info!("🎭 Using companion personality context");
+                    engine.generate_with_context(&job.context).await
+                } else {
+                    // Fallback to simple generation
+                    info!("📝 Using simple query generation");
+                    engine.generate(&job.query).await
+                };
+
+                match generation_result {
                     Ok(response) => {
                         let latency_ms = start.elapsed().as_millis() as u64;
 
                         info!("✅ Generated response in {}ms", latency_ms);
                         info!(
                             "   Response preview: {}...",
-                            response.chars().take(80).collect::<String>()
+                            response.chars().take(100).collect::<String>()
                         );
 
                         // Create result
                         let result = InferenceResult {
                             request_id: job.id,
                             content: response,
-                            model_name: "Qwen3-4B-Instruct".to_string(),
+                            model_name: "Qwen2.5-3B-Instruct".to_string(),
                             tier: ModelTier::Fast,
                             latency_ms,
                             from_cache: false,
@@ -150,7 +162,7 @@ async fn main() -> anyhow::Result<()> {
                         let result = InferenceResult {
                             request_id: job.id,
                             content: format!("Error: {}", e),
-                            model_name: "Qwen3-4B-Instruct".to_string(),
+                            model_name: "Qwen2.5-3B-Instruct".to_string(),
                             tier: ModelTier::Fast,
                             latency_ms: start.elapsed().as_millis() as u64,
                             from_cache: false,
