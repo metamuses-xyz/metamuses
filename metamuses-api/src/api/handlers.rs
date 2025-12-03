@@ -2,6 +2,7 @@
 
 use super::types::*;
 use crate::routing::IntelligentRouter;
+use crate::services::build_context_with_personality;
 use crate::types::{InferenceRequest, ModelTier};
 use axum::{
     extract::State,
@@ -51,16 +52,25 @@ pub async fn chat_handler(
 
     // Validate request
     if req.query.trim().is_empty() {
-        return Err(AppError::BadRequest(
-            "Query cannot be empty".to_string(),
-        ));
+        return Err(AppError::BadRequest("Query cannot be empty".to_string()));
     }
 
     if req.user_address.is_empty() {
-        return Err(AppError::BadRequest(
-            "User address is required".to_string(),
-        ));
+        return Err(AppError::BadRequest("User address is required".to_string()));
     }
+
+    // Build context with personality if provided
+    let context = if let Some(personality) = &req.companion_personality {
+        info!("Using companion personality: {}", personality.name);
+        // Build personality-driven context
+        build_context_with_personality(personality, &req.query)
+    } else if !req.context.is_empty() {
+        // Use provided context
+        req.context.clone()
+    } else {
+        // No context
+        vec![]
+    };
 
     // Create inference request
     let request_id = Uuid::new_v4();
@@ -69,7 +79,7 @@ pub async fn chat_handler(
         user_address: req.user_address.clone(),
         muse_id: req.muse_id,
         user_query: req.query.clone(),
-        context: req.context.clone(),
+        context,
         priority: req.priority,
         personality_traits: None,
         created_at: chrono::Utc::now().timestamp(),
@@ -139,9 +149,18 @@ pub async fn health_handler(
     let router = &state.router;
     let mut queue_manager = router.queue_manager.write().await;
 
-    let fast_depth = queue_manager.get_queue_depth(ModelTier::Fast).await.unwrap_or(0);
-    let medium_depth = queue_manager.get_queue_depth(ModelTier::Medium).await.unwrap_or(0);
-    let heavy_depth = queue_manager.get_queue_depth(ModelTier::Heavy).await.unwrap_or(0);
+    let fast_depth = queue_manager
+        .get_queue_depth(ModelTier::Fast)
+        .await
+        .unwrap_or(0);
+    let medium_depth = queue_manager
+        .get_queue_depth(ModelTier::Medium)
+        .await
+        .unwrap_or(0);
+    let heavy_depth = queue_manager
+        .get_queue_depth(ModelTier::Heavy)
+        .await
+        .unwrap_or(0);
 
     drop(queue_manager);
 
