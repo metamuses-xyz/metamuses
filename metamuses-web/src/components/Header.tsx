@@ -11,6 +11,12 @@ export default function Header() {
     { icon: "🎨", label: "Mint Muse AI", href: "/mint" },
     { icon: "💬", label: "Chat", href: "/chat" },
     { icon: "🔌", label: "Plugins", href: "/plugins" },
+    // {
+    //   icon: "💬",
+    //   label: "Discord",
+    //   href: "https://discord.gg/EN58SSmF",
+    //   external: true,
+    // },
     // { icon: "📊", label: "Dashboard", href: "/dashboard" },
   ];
 
@@ -37,6 +43,8 @@ export default function Header() {
             <a
               key={index}
               href={item.href}
+              target={item.external ? "_blank" : undefined}
+              rel={item.external ? "noopener noreferrer" : undefined}
               className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all hover:bg-white/5 ${
                 isActive ? "text-white bg-white/10" : "hover:text-white"
               }`}

@@ -9,6 +9,16 @@ use uuid::Uuid;
 // ============================================================================
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CompanionPersonality {
+    pub name: String,
+    pub description: String,
+    pub creativity: u8,
+    pub wisdom: u8,
+    pub humor: u8,
+    pub empathy: u8,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChatRequest {
     /// User's wallet address (for authentication)
     pub user_address: String,
@@ -26,6 +36,10 @@ pub struct ChatRequest {
     /// Request priority (defaults to Normal)
     #[serde(default)]
     pub priority: Priority,
+
+    /// Companion personality for customized responses
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub companion_personality: Option<CompanionPersonality>,
 
     /// Optional personality traits for specialized domain
     #[serde(skip_serializing_if = "Option::is_none")]

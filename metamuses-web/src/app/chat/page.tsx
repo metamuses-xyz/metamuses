@@ -359,11 +359,19 @@ export default function ChatPage() {
     setIsTyping(true);
 
     try {
-      // Call real API
+      // Call real API with companion personality
       const aiResponse = await sendMessage(
         content,
         parseInt(selectedCompanion.id), // muse_id
         address, // user's wallet address
+        {
+          name: selectedCompanion.name,
+          description: selectedCompanion.description,
+          creativity: selectedCompanion.personality.creativity,
+          wisdom: selectedCompanion.personality.wisdom,
+          humor: selectedCompanion.personality.humor,
+          empathy: selectedCompanion.personality.empathy,
+        },
       );
 
       const aiMessage: Message = {

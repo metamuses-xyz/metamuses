@@ -1,8 +1,17 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 interface ChatMessage {
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
+}
+
+interface CompanionPersonality {
+  name: string;
+  description: string;
+  creativity: number;
+  wisdom: number;
+  humor: number;
+  empathy: number;
 }
 
 interface ChatRequest {
@@ -10,7 +19,8 @@ interface ChatRequest {
   muse_id: number;
   query: string;
   context?: ChatMessage[];
-  force_tier?: 'fast' | 'medium' | 'heavy';
+  force_tier?: "fast" | "medium" | "heavy";
+  companion_personality?: CompanionPersonality;
 }
 
 interface ChatResponse {
@@ -25,13 +35,18 @@ interface ChatResponse {
 }
 
 interface UseChatAPIReturn {
-  sendMessage: (message: string, museId: number, userAddress: string) => Promise<string>;
+  sendMessage: (
+    message: string,
+    museId: number,
+    userAddress: string,
+    personality?: CompanionPersonality,
+  ) => Promise<string>;
   isLoading: boolean;
   error: string | null;
   lastResponse: ChatResponse | null;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081";
 
 export function useChatAPI(): UseChatAPIReturn {
   const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +56,8 @@ export function useChatAPI(): UseChatAPIReturn {
   const sendMessage = async (
     message: string,
     museId: number,
-    userAddress: string
+    userAddress: string,
+    personality?: CompanionPersonality,
   ): Promise<string> => {
     setIsLoading(true);
     setError(null);
@@ -51,12 +67,13 @@ export function useChatAPI(): UseChatAPIReturn {
         user_address: userAddress,
         muse_id: museId,
         query: message,
+        companion_personality: personality,
       };
 
       const response = await fetch(`${API_BASE_URL}/chat`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(request),
       });
@@ -64,7 +81,7 @@ export function useChatAPI(): UseChatAPIReturn {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
-          errorData.message || `HTTP error! status: ${response.status}`
+          errorData.message || `HTTP error! status: ${response.status}`,
         );
       }
 
@@ -72,7 +89,8 @@ export function useChatAPI(): UseChatAPIReturn {
       setLastResponse(data);
       return data.response;
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      const errorMessage =
+        err instanceof Error ? err.message : "Unknown error occurred";
       setError(errorMessage);
       throw new Error(errorMessage);
     } finally {

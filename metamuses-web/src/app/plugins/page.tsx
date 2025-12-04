@@ -112,8 +112,10 @@ const mockPlugins: Plugin[] = [
   {
     id: "1",
     name: "Code Assistant Pro",
-    description: "Advanced code generation and debugging capabilities for your AI companion",
-    longDescription: "Transform your Muse into a powerful coding partner with support for 50+ programming languages, real-time debugging, and intelligent code suggestions.",
+    description:
+      "Advanced code generation and debugging capabilities for your AI companion",
+    longDescription:
+      "Transform your Muse into a powerful coding partner with support for 50+ programming languages, real-time debugging, and intelligent code suggestions.",
     author: "MetaMuse Labs",
     authorAvatar: "M",
     category: "Developer Tools",
@@ -128,14 +130,20 @@ const mockPlugins: Plugin[] = [
     isVerified: true,
     isNew: false,
     tags: ["coding", "debugging", "productivity"],
-    features: ["50+ language support", "Real-time debugging", "Code explanations", "Git integration"],
+    features: [
+      "50+ language support",
+      "Real-time debugging",
+      "Code explanations",
+      "Git integration",
+    ],
     lastUpdated: "2024-01-15",
   },
   {
     id: "2",
     name: "Creative Writer",
     description: "Enhance storytelling with advanced narrative generation",
-    longDescription: "Unlock your Muse's creative potential with advanced story generation, character development, and world-building tools. Perfect for authors and storytellers.",
+    longDescription:
+      "Unlock your Muse's creative potential with advanced story generation, character development, and world-building tools. Perfect for authors and storytellers.",
     author: "Story Forge",
     authorAvatar: "S",
     category: "Creativity",
@@ -150,14 +158,20 @@ const mockPlugins: Plugin[] = [
     isVerified: true,
     isNew: false,
     tags: ["writing", "stories", "creativity"],
-    features: ["Story generation", "Character profiles", "Plot outlines", "Style adaptation"],
+    features: [
+      "Story generation",
+      "Character profiles",
+      "Plot outlines",
+      "Style adaptation",
+    ],
     lastUpdated: "2024-01-10",
   },
   {
     id: "3",
     name: "Data Analyst",
     description: "Advanced data analysis and visualization capabilities",
-    longDescription: "Turn your Muse into a data science expert with powerful analysis tools, chart generation, and statistical insights powered by machine learning.",
+    longDescription:
+      "Turn your Muse into a data science expert with powerful analysis tools, chart generation, and statistical insights powered by machine learning.",
     author: "DataMuse",
     authorAvatar: "D",
     category: "Analytics",
@@ -172,14 +186,20 @@ const mockPlugins: Plugin[] = [
     isVerified: true,
     isNew: true,
     tags: ["data", "analytics", "charts"],
-    features: ["Chart generation", "Statistical analysis", "Data cleaning", "Report generation"],
+    features: [
+      "Chart generation",
+      "Statistical analysis",
+      "Data cleaning",
+      "Report generation",
+    ],
     lastUpdated: "2024-01-18",
   },
   {
     id: "4",
     name: "Language Tutor",
     description: "Learn any language with personalized AI tutoring",
-    longDescription: "Master new languages with your AI companion as a personal tutor. Supports 30+ languages with grammar lessons, pronunciation guides, and conversational practice.",
+    longDescription:
+      "Master new languages with your AI companion as a personal tutor. Supports 30+ languages with grammar lessons, pronunciation guides, and conversational practice.",
     author: "LinguaAI",
     authorAvatar: "L",
     category: "Education",
@@ -194,14 +214,20 @@ const mockPlugins: Plugin[] = [
     isVerified: true,
     isNew: false,
     tags: ["language", "education", "learning"],
-    features: ["30+ languages", "Pronunciation guides", "Grammar lessons", "Conversation practice"],
+    features: [
+      "30+ languages",
+      "Pronunciation guides",
+      "Grammar lessons",
+      "Conversation practice",
+    ],
     lastUpdated: "2024-01-12",
   },
   {
     id: "5",
     name: "Crypto Advisor",
     description: "Real-time crypto analysis and portfolio management",
-    longDescription: "Get expert cryptocurrency insights with real-time market analysis, portfolio tracking, and trading signals. Powered by advanced AI algorithms.",
+    longDescription:
+      "Get expert cryptocurrency insights with real-time market analysis, portfolio tracking, and trading signals. Powered by advanced AI algorithms.",
     author: "CryptoMuse",
     authorAvatar: "C",
     category: "Finance",
@@ -216,14 +242,20 @@ const mockPlugins: Plugin[] = [
     isVerified: false,
     isNew: true,
     tags: ["crypto", "trading", "finance"],
-    features: ["Market analysis", "Portfolio tracking", "Price alerts", "Trading signals"],
+    features: [
+      "Market analysis",
+      "Portfolio tracking",
+      "Price alerts",
+      "Trading signals",
+    ],
     lastUpdated: "2024-01-20",
   },
   {
     id: "6",
     name: "Health Coach",
     description: "Personalized fitness and nutrition guidance",
-    longDescription: "Transform your wellness journey with AI-powered health coaching. Get personalized workout plans, nutrition advice, and mental health support.",
+    longDescription:
+      "Transform your wellness journey with AI-powered health coaching. Get personalized workout plans, nutrition advice, and mental health support.",
     author: "WellnessAI",
     authorAvatar: "W",
     category: "Health",
@@ -238,14 +270,20 @@ const mockPlugins: Plugin[] = [
     isVerified: true,
     isNew: false,
     tags: ["health", "fitness", "nutrition"],
-    features: ["Workout plans", "Nutrition tracking", "Meal planning", "Progress tracking"],
+    features: [
+      "Workout plans",
+      "Nutrition tracking",
+      "Meal planning",
+      "Progress tracking",
+    ],
     lastUpdated: "2024-01-08",
   },
   {
     id: "7",
     name: "Music Composer",
     description: "AI-powered music creation and composition",
-    longDescription: "Create beautiful music with your AI companion. Generate melodies, harmonies, and full compositions in various genres and styles.",
+    longDescription:
+      "Create beautiful music with your AI companion. Generate melodies, harmonies, and full compositions in various genres and styles.",
     author: "SonicMuse",
     authorAvatar: "S",
     category: "Creativity",
@@ -260,14 +298,20 @@ const mockPlugins: Plugin[] = [
     isVerified: true,
     isNew: false,
     tags: ["music", "composition", "audio"],
-    features: ["Melody generation", "Chord progressions", "MIDI export", "Genre styles"],
+    features: [
+      "Melody generation",
+      "Chord progressions",
+      "MIDI export",
+      "Genre styles",
+    ],
     lastUpdated: "2024-01-05",
   },
   {
     id: "8",
     name: "Research Assistant",
     description: "Academic research and citation management",
-    longDescription: "Accelerate your research with AI-powered literature review, citation management, and paper summarization tools.",
+    longDescription:
+      "Accelerate your research with AI-powered literature review, citation management, and paper summarization tools.",
     author: "AcademiaAI",
     authorAvatar: "A",
     category: "Education",
@@ -282,14 +326,20 @@ const mockPlugins: Plugin[] = [
     isVerified: true,
     isNew: false,
     tags: ["research", "academic", "citations"],
-    features: ["Paper summaries", "Citation management", "Literature search", "Bibliography export"],
+    features: [
+      "Paper summaries",
+      "Citation management",
+      "Literature search",
+      "Bibliography export",
+    ],
     lastUpdated: "2024-01-14",
   },
   {
     id: "9",
     name: "Game Master",
     description: "RPG campaign management and storytelling",
-    longDescription: "The ultimate tool for tabletop RPG enthusiasts. Create campaigns, manage NPCs, generate encounters, and bring your fantasy worlds to life.",
+    longDescription:
+      "The ultimate tool for tabletop RPG enthusiasts. Create campaigns, manage NPCs, generate encounters, and bring your fantasy worlds to life.",
     author: "DiceMuse",
     authorAvatar: "D",
     category: "Gaming",
@@ -304,14 +354,20 @@ const mockPlugins: Plugin[] = [
     isVerified: false,
     isNew: true,
     tags: ["gaming", "rpg", "storytelling"],
-    features: ["Campaign builder", "NPC generator", "Encounter creator", "Dice roller"],
+    features: [
+      "Campaign builder",
+      "NPC generator",
+      "Encounter creator",
+      "Dice roller",
+    ],
     lastUpdated: "2024-01-19",
   },
   {
     id: "10",
     name: "Legal Advisor",
     description: "AI-powered legal document analysis and drafting",
-    longDescription: "Get expert legal assistance with document analysis, contract drafting, and legal research. Perfect for professionals and businesses.",
+    longDescription:
+      "Get expert legal assistance with document analysis, contract drafting, and legal research. Perfect for professionals and businesses.",
     author: "LexMuse",
     authorAvatar: "L",
     category: "Professional",
@@ -326,14 +382,20 @@ const mockPlugins: Plugin[] = [
     isVerified: true,
     isNew: false,
     tags: ["legal", "contracts", "business"],
-    features: ["Document analysis", "Contract drafting", "Legal research", "Compliance checks"],
+    features: [
+      "Document analysis",
+      "Contract drafting",
+      "Legal research",
+      "Compliance checks",
+    ],
     lastUpdated: "2024-01-11",
   },
   {
     id: "11",
     name: "Social Media Manager",
     description: "AI-powered content creation and scheduling",
-    longDescription: "Supercharge your social media presence with AI-generated content, hashtag optimization, and cross-platform scheduling.",
+    longDescription:
+      "Supercharge your social media presence with AI-generated content, hashtag optimization, and cross-platform scheduling.",
     author: "SocialMuse",
     authorAvatar: "S",
     category: "Marketing",
@@ -348,14 +410,20 @@ const mockPlugins: Plugin[] = [
     isVerified: true,
     isNew: false,
     tags: ["social", "marketing", "content"],
-    features: ["Content generation", "Hashtag optimization", "Post scheduling", "Analytics"],
+    features: [
+      "Content generation",
+      "Hashtag optimization",
+      "Post scheduling",
+      "Analytics",
+    ],
     lastUpdated: "2024-01-16",
   },
   {
     id: "12",
     name: "Art Generator",
     description: "Create stunning visual art with AI assistance",
-    longDescription: "Turn your ideas into beautiful artwork with AI-powered image generation, style transfer, and creative tools.",
+    longDescription:
+      "Turn your ideas into beautiful artwork with AI-powered image generation, style transfer, and creative tools.",
     author: "VisualMuse",
     authorAvatar: "V",
     category: "Creativity",
@@ -370,22 +438,63 @@ const mockPlugins: Plugin[] = [
     isVerified: true,
     isNew: true,
     tags: ["art", "images", "creative"],
-    features: ["Image generation", "Style transfer", "Art editing", "High resolution"],
+    features: [
+      "Image generation",
+      "Style transfer",
+      "Art editing",
+      "High resolution",
+    ],
     lastUpdated: "2024-01-21",
   },
 ];
 
 const categories = [
   { name: "All", icon: "🌐", count: mockPlugins.length },
-  { name: "Developer Tools", icon: "💻", count: mockPlugins.filter(p => p.category === "Developer Tools").length },
-  { name: "Creativity", icon: "🎨", count: mockPlugins.filter(p => p.category === "Creativity").length },
-  { name: "Education", icon: "📚", count: mockPlugins.filter(p => p.category === "Education").length },
-  { name: "Analytics", icon: "📊", count: mockPlugins.filter(p => p.category === "Analytics").length },
-  { name: "Finance", icon: "💰", count: mockPlugins.filter(p => p.category === "Finance").length },
-  { name: "Health", icon: "🏋️", count: mockPlugins.filter(p => p.category === "Health").length },
-  { name: "Gaming", icon: "🎲", count: mockPlugins.filter(p => p.category === "Gaming").length },
-  { name: "Professional", icon: "💼", count: mockPlugins.filter(p => p.category === "Professional").length },
-  { name: "Marketing", icon: "📱", count: mockPlugins.filter(p => p.category === "Marketing").length },
+  {
+    name: "Developer Tools",
+    icon: "💻",
+    count: mockPlugins.filter((p) => p.category === "Developer Tools").length,
+  },
+  {
+    name: "Creativity",
+    icon: "🎨",
+    count: mockPlugins.filter((p) => p.category === "Creativity").length,
+  },
+  {
+    name: "Education",
+    icon: "📚",
+    count: mockPlugins.filter((p) => p.category === "Education").length,
+  },
+  {
+    name: "Analytics",
+    icon: "📊",
+    count: mockPlugins.filter((p) => p.category === "Analytics").length,
+  },
+  {
+    name: "Finance",
+    icon: "💰",
+    count: mockPlugins.filter((p) => p.category === "Finance").length,
+  },
+  {
+    name: "Health",
+    icon: "🏋️",
+    count: mockPlugins.filter((p) => p.category === "Health").length,
+  },
+  {
+    name: "Gaming",
+    icon: "🎲",
+    count: mockPlugins.filter((p) => p.category === "Gaming").length,
+  },
+  {
+    name: "Professional",
+    icon: "💼",
+    count: mockPlugins.filter((p) => p.category === "Professional").length,
+  },
+  {
+    name: "Marketing",
+    icon: "📱",
+    count: mockPlugins.filter((p) => p.category === "Marketing").length,
+  },
 ];
 
 // Plugin Card Component
@@ -487,9 +596,7 @@ const PluginCard = ({
               <span>{formatDownloads(plugin.downloads)}</span>
             </div>
           </div>
-          <span className="text-gray-500 text-xs">
-            {plugin.category}
-          </span>
+          <span className="text-gray-500 text-xs">{plugin.category}</span>
         </div>
 
         {/* Price & Install Button */}
@@ -498,7 +605,9 @@ const PluginCard = ({
             {plugin.price === 0 ? (
               <span className="text-green-400 font-bold">Free</span>
             ) : (
-              <span className="text-white font-bold">${plugin.price.toFixed(2)}</span>
+              <span className="text-white font-bold">
+                ${plugin.price.toFixed(2)}
+              </span>
             )}
           </div>
           <button
@@ -556,9 +665,7 @@ const FeaturedPluginCard = ({ plugin }: { plugin: Plugin }) => {
             <div className="text-gray-400">
               {plugin.downloads.toLocaleString()} downloads
             </div>
-            <div className="text-gray-400">
-              by {plugin.author}
-            </div>
+            <div className="text-gray-400">by {plugin.author}</div>
           </div>
         </div>
         <div className="flex flex-col items-center space-y-4">
@@ -566,7 +673,9 @@ const FeaturedPluginCard = ({ plugin }: { plugin: Plugin }) => {
             {plugin.price === 0 ? (
               <span className="text-2xl font-bold text-green-400">Free</span>
             ) : (
-              <span className="text-2xl font-bold text-white">${plugin.price.toFixed(2)}</span>
+              <span className="text-2xl font-bold text-white">
+                ${plugin.price.toFixed(2)}
+              </span>
             )}
           </div>
           <button className="neural-button px-8 py-3 text-white font-bold rounded-xl hover:scale-105 transition-transform">
@@ -607,8 +716,11 @@ export default function PluginsPage() {
   // Filter and sort plugins
   const filteredPlugins = plugins
     .filter((plugin) => {
-      if (searchTerm && !plugin.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-          !plugin.description.toLowerCase().includes(searchTerm.toLowerCase())) {
+      if (
+        searchTerm &&
+        !plugin.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        !plugin.description.toLowerCase().includes(searchTerm.toLowerCase())
+      ) {
         return false;
       }
       if (selectedCategory !== "All" && plugin.category !== selectedCategory) {
@@ -629,7 +741,10 @@ export default function PluginsPage() {
         case "rating":
           return b.rating - a.rating;
         case "newest":
-          return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
+          return (
+            new Date(b.lastUpdated).getTime() -
+            new Date(a.lastUpdated).getTime()
+          );
         case "price-low":
           return a.price - b.price;
         case "price-high":
@@ -639,7 +754,7 @@ export default function PluginsPage() {
       }
     });
 
-  const featuredPlugin = plugins.find(p => p.id === "4"); // Language Tutor as featured
+  const featuredPlugin = plugins.find((p) => p.id === "4"); // Language Tutor as featured
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
@@ -668,32 +783,37 @@ export default function PluginsPage() {
           </h1>
 
           <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Discover powerful plugins to extend your AI companion's capabilities.
-            From coding assistance to creative tools, find the perfect plugins for your needs.
+            Discover powerful plugins to extend your AI companion's
+            capabilities. From coding assistance to creative tools, find the
+            perfect plugins for your needs.
           </p>
         </div>
 
         {/* Stats Bar */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
           <div className="neural-card rounded-xl p-4 text-center">
-            <div className="text-3xl font-bold text-white">{plugins.length}</div>
+            <div className="text-3xl font-bold text-white">
+              {plugins.length}
+            </div>
             <div className="text-gray-400 text-sm">Total Plugins</div>
           </div>
           <div className="neural-card rounded-xl p-4 text-center">
             <div className="text-3xl font-bold text-green-400">
-              {plugins.filter(p => p.price === 0).length}
+              {plugins.filter((p) => p.price === 0).length}
             </div>
             <div className="text-gray-400 text-sm">Free Plugins</div>
           </div>
           <div className="neural-card rounded-xl p-4 text-center">
             <div className="text-3xl font-bold text-purple-400">
-              {plugins.filter(p => p.isVerified).length}
+              {plugins.filter((p) => p.isVerified).length}
             </div>
             <div className="text-gray-400 text-sm">Verified</div>
           </div>
           <div className="neural-card rounded-xl p-4 text-center">
             <div className="text-3xl font-bold text-yellow-400">
-              {(plugins.reduce((sum, p) => sum + p.rating, 0) / plugins.length).toFixed(1)}
+              {(
+                plugins.reduce((sum, p) => sum + p.rating, 0) / plugins.length
+              ).toFixed(1)}
             </div>
             <div className="text-gray-400 text-sm">Avg Rating</div>
           </div>
@@ -791,9 +911,12 @@ export default function PluginsPage() {
                 <div className="w-24 h-24 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
                   🔌
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-4">No Plugins Found</h3>
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  No Plugins Found
+                </h3>
                 <p className="text-gray-400 mb-8">
-                  Try adjusting your search filters or browse different categories
+                  Try adjusting your search filters or browse different
+                  categories
                 </p>
                 <button
                   onClick={() => {
@@ -810,7 +933,11 @@ export default function PluginsPage() {
               <>
                 <div className="flex items-center justify-between mb-6">
                   <p className="text-gray-400">
-                    Showing <span className="text-white font-semibold">{filteredPlugins.length}</span> plugins
+                    Showing{" "}
+                    <span className="text-white font-semibold">
+                      {filteredPlugins.length}
+                    </span>{" "}
+                    plugins
                   </p>
                 </div>
                 <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -842,17 +969,28 @@ export default function PluginsPage() {
               </h2>
 
               <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-                Join our developer community and build plugins that enhance the MetaMuse ecosystem.
-                Earn rewards and help shape the future of AI companions.
+                Join our developer community and build plugins that enhance the
+                MetaMuse ecosystem. Earn rewards and help shape the future of AI
+                companions.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="neural-button px-8 py-4 text-white font-bold rounded-xl hover:scale-105 transition-transform">
+                <a
+                  href="http://metamuses.gitbook.io/docs/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="neural-button px-8 py-4 text-white font-bold rounded-xl hover:scale-105 transition-transform inline-block"
+                >
                   📖 Read Developer Docs
-                </button>
-                <button className="px-8 py-4 border border-purple-500/30 text-purple-300 font-semibold rounded-xl hover:bg-purple-500/10 transition-all">
+                </a>
+                <a
+                  href="https://discord.gg/EN58SSmF"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-8 py-4 border border-purple-500/30 text-purple-300 font-semibold rounded-xl hover:bg-purple-500/10 transition-all inline-block"
+                >
                   💬 Join Discord
-                </button>
+                </a>
               </div>
             </div>
           </div>
