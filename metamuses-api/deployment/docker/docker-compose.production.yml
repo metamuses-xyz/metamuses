@@ -254,6 +254,7 @@ services:
       - RPC_URL=${RPC_URL}
       - PRIVATE_KEY=${PRIVATE_KEY}
       - IPFS_JWT_TOKEN=${IPFS_JWT_TOKEN}
+      - CONTRACT_ADDRESS=${CONTRACT_ADDRESS:-0xE7612c29d2e73db07c7a4245741b38D2beB36308}
 
       # Logging
       - RUST_LOG=${RUST_LOG:-info}

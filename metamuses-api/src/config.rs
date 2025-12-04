@@ -8,6 +8,9 @@ pub struct Config {
     pub host: String,
     pub port: u16,
 
+    // Database
+    pub database_url: String,
+
     // Redis
     pub redis_url: String,
     pub redis_queue_prefix: String,
@@ -15,6 +18,9 @@ pub struct Config {
     // Qdrant
     pub qdrant_url: String,
     pub qdrant_api_key: Option<String>,
+
+    // Contract
+    pub contract_address: String,
 
     // Models
     pub models_dir: String,
@@ -56,6 +62,9 @@ impl Config {
                 .unwrap_or_else(|_| "8080".to_string())
                 .parse()?,
 
+            database_url: env::var("DATABASE_URL")
+                .unwrap_or_else(|_| "postgres://metamuse:changeme@localhost:5432/metamuses".to_string()),
+
             redis_url: env::var("REDIS_URL")
                 .unwrap_or_else(|_| "redis://localhost:6379".to_string()),
             redis_queue_prefix: env::var("REDIS_QUEUE_PREFIX")
@@ -64,6 +73,9 @@ impl Config {
             qdrant_url: env::var("QDRANT_URL")
                 .unwrap_or_else(|_| "http://localhost:6334".to_string()),
             qdrant_api_key: env::var("QDRANT_API_KEY").ok(),
+
+            contract_address: env::var("CONTRACT_ADDRESS")
+                .unwrap_or_else(|_| "0xE7612c29d2e73db07c7a4245741b38D2beB36308".to_string()),
 
             models_dir: env::var("MODELS_DIR")
                 .unwrap_or_else(|_| "/models".to_string()),

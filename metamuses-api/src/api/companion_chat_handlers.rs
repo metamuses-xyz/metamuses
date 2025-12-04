@@ -100,19 +100,8 @@ pub async fn companion_chat_handler(
         companion.name, companion.level
     );
 
-    // STEP 2: Verify ownership
-    let is_owner = state
-        .companion_service
-        .verify_ownership(&req.user_address, req.muse_id as i64)
-        .await
-        .map_err(|e| AppError::InternalError(format!("Failed to verify ownership: {}", e)))?;
-
-    if !is_owner {
-        return Err(AppError::Unauthorized(format!(
-            "User {} does not own NFT {}",
-            req.user_address, req.muse_id
-        )));
-    }
+    // STEP 2: Ownership verification removed - allow anyone to chat
+    // NFT ownership is no longer required for chatting
 
     // STEP 3: Build conversation context with semantic search
     let context = state

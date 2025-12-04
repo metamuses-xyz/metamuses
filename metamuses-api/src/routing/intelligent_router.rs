@@ -10,14 +10,14 @@ use tracing::{info, warn};
 use uuid::Uuid;
 
 pub struct IntelligentRouter {
-    cache: Arc<SemanticCache>,
+    cache: Option<Arc<SemanticCache>>,
     pub queue_manager: Arc<RwLock<RedisQueueManager>>,
     complexity_analyzer: ComplexityAnalyzer,
 }
 
 impl IntelligentRouter {
     pub fn new(
-        cache: Arc<SemanticCache>,
+        cache: Option<Arc<SemanticCache>>,
         queue_manager: Arc<RwLock<RedisQueueManager>>,
     ) -> Self {
         Self {
@@ -31,19 +31,21 @@ impl IntelligentRouter {
         &self,
         request: InferenceRequest,
     ) -> Result<InferenceResult> {
-        // 1. Check semantic cache
-        if let Ok(Some(cached)) = self.cache.get_similar(&request.user_query, 0.95).await {
-            info!("Cache hit for query: {}", request.user_query);
+        // 1. Check semantic cache (if available)
+        if let Some(cache) = &self.cache {
+            if let Ok(Some(cached)) = cache.get_similar(&request.user_query, 0.95).await {
+                info!("Cache hit for query: {}", request.user_query);
 
-            return Ok(InferenceResult {
-                request_id: request.id,
-                content: cached,
-                model_name: "cache".to_string(),
-                tier: ModelTier::Fast,
-                latency_ms: 5,
-                from_cache: true,
-                tokens_generated: None,
-            });
+                return Ok(InferenceResult {
+                    request_id: request.id,
+                    content: cached,
+                    model_name: "cache".to_string(),
+                    tier: ModelTier::Fast,
+                    latency_ms: 5,
+                    from_cache: true,
+                    tokens_generated: None,
+                });
+            }
         }
 
         // 2. Analyze query complexity
@@ -80,9 +82,11 @@ impl IntelligentRouter {
             .wait_for_result(request.id, Duration::from_secs(job.timeout_secs))
             .await?;
 
-        // 7. Cache result
-        if let Err(e) = self.cache.set(&request.user_query, &result.content).await {
-            warn!("Failed to cache result: {}", e);
+        // 7. Cache result (if cache available)
+        if let Some(cache) = &self.cache {
+            if let Err(e) = cache.set(&request.user_query, &result.content).await {
+                warn!("Failed to cache result: {}", e);
+            }
         }
 
         Ok(result)
