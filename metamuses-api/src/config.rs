@@ -37,6 +37,13 @@ pub struct Config {
     pub rpc_url: String,
     pub private_key: String,
     pub ipfs_jwt_token: String,
+
+    // Worker Process Configuration (for multi-process deployment)
+    pub worker_id: usize,           // Worker instance ID (0, 1, 2, 3)
+    pub total_workers: usize,       // Total number of worker processes
+    pub threads_per_worker: usize,  // CPU threads per worker (for llama.cpp)
+    pub batch_size: usize,          // Batch size for prompt processing
+    pub context_size: usize,        // Context window size (n_ctx)
 }
 
 impl Config {
@@ -94,6 +101,25 @@ impl Config {
             rpc_url: env::var("RPC_URL").unwrap_or_else(|_| "".to_string()),
             private_key: env::var("PRIVATE_KEY").unwrap_or_else(|_| "".to_string()),
             ipfs_jwt_token: env::var("IPFS_JWT_TOKEN").unwrap_or_else(|_| "".to_string()),
+
+            // Worker process configuration
+            // For 16 CPUs with 4 workers: each worker gets 4 threads
+            // For 16 CPUs with 2 workers: each worker gets 8 threads
+            worker_id: env::var("WORKER_ID")
+                .unwrap_or_else(|_| "0".to_string())
+                .parse()?,
+            total_workers: env::var("TOTAL_WORKERS")
+                .unwrap_or_else(|_| "4".to_string())
+                .parse()?,
+            threads_per_worker: env::var("THREADS_PER_WORKER")
+                .unwrap_or_else(|_| "4".to_string())
+                .parse()?,
+            batch_size: env::var("BATCH_SIZE")
+                .unwrap_or_else(|_| "512".to_string())
+                .parse()?,
+            context_size: env::var("CONTEXT_SIZE")
+                .unwrap_or_else(|_| "2048".to_string())
+                .parse()?,
         })
     }
 }

@@ -1,0 +1,42 @@
+[Unit]
+Description=MetaMuses API Server
+After=network.target redis.service
+Wants=redis.service
+
+[Service]
+Type=simple
+User=metamuse
+Group=metamuse
+WorkingDirectory=/opt/metamuses-api
+
+# Server configuration
+Environment=HOST=0.0.0.0
+Environment=PORT=8081
+Environment=REDIS_URL=redis://127.0.0.1:6379
+Environment=REDIS_QUEUE_PREFIX=metamuse
+Environment=MODELS_DIR=/opt/metamuses-api/models
+
+# Disable semantic cache for now
+Environment=ENABLE_SEMANTIC_CACHE=false
+
+# Log configuration
+Environment=RUST_LOG=info
+
+ExecStart=/opt/metamuses-api/bin/metamuse-server
+
+# Restart configuration
+Restart=always
+RestartSec=5
+StartLimitBurst=5
+StartLimitIntervalSec=60
+
+# Resource limits
+LimitNOFILE=65536
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=metamuse-server
+
+[Install]
+WantedBy=multi-user.target

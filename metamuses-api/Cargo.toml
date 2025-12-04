@@ -9,14 +9,22 @@ edition = "2021"
 # The llama-cpp-2 crate has c_char type mismatch on ARM64 Linux (u8 vs i8)
 alith = { git = "https://github.com/0xLazAI/alith", default-features = false, features = ["ipfs", "fastembed", "qdrant"] }
 
-# Candle ML framework for inference (replaced llama-cpp-2 due to Metal hang issues)
-# Note: Metal feature removed for Linux ARM64 compatibility (objc_exception build error)
-# Metal is only available on macOS - use CPU inference on Linux
-candle-core = "0.9"
-candle-nn = "0.9"
-candle-transformers = "0.9"
+# llama.cpp Rust bindings - significantly faster than Candle for inference
+# Platform-specific features are configured in target sections below
+llama_cpp = "0.3"
+
+# Keep Candle as fallback (optional, can be removed if not needed)
+candle-core = { version = "0.9", optional = true }
+candle-nn = { version = "0.9", optional = true }
+candle-transformers = { version = "0.9", optional = true }
+
+# Tokenizers for text processing
 tokenizers = "0.21"
 hf-hub = "0.3"
+
+# Thread pool for parallel computation
+rayon = "1.10"
+num_cpus = "1.16"
 
 # Async Runtime
 tokio = { version = "1.47", features = ["full"] }
@@ -84,3 +92,17 @@ path = "src/bin/test_inference.rs"
 [[bench]]
 name = "inference_bench"
 harness = false
+
+[features]
+default = ["llama-cpp"]
+llama-cpp = []
+candle = ["candle-core", "candle-nn", "candle-transformers"]
+
+# Platform-specific dependencies (must be at the end)
+[target.'cfg(target_os = "macos")'.dependencies]
+# Metal GPU acceleration for Apple Silicon
+llama_cpp = { version = "0.3", features = ["metal"] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+# CPU-only for Linux (works on ARM64 and x86_64)
+llama_cpp = { version = "0.3" }

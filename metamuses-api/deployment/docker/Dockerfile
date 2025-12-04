@@ -1,16 +1,17 @@
 # ============================================================================
 # MetaMuses API - Production Dockerfile
 # Multi-stage build for optimized image size and security
-# Builds both server and worker binaries
+# Supports both x86_64 and ARM64 (aarch64) architectures
 # ============================================================================
 
 # ============================================================================
 # Stage 1: Build Stage
-# Using nightly for edition2024 support (required by alith dependency)
+# Using Rust nightly for edition2024 support (required by alith dependency)
+# Multi-arch support (x86_64 + ARM64)
 # ============================================================================
-FROM rustlang/rust:nightly-slim AS builder
+FROM rustlang/rust:nightly-bookworm-slim AS builder
 
-# Install build dependencies
+# Install build dependencies for llama.cpp and other native libraries
 RUN apt-get update && apt-get install -y \
     pkg-config \
     libssl-dev \
@@ -18,6 +19,8 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     protobuf-compiler \
     libclang-dev \
+    clang \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 # Create app directory
@@ -32,6 +35,7 @@ RUN mkdir -p src/bin && \
     echo "fn main() {}" > src/lib.rs && \
     echo "fn main() {}" > src/bin/server.rs && \
     echo "fn main() {}" > src/bin/worker.rs && \
+    echo "fn main() {}" > src/bin/test_inference.rs && \
     cargo build --release 2>/dev/null || true && \
     rm -rf src
 
@@ -43,21 +47,25 @@ COPY benches ./benches
 # Build both release binaries with optimizations
 # Using SQLX_OFFLINE=true to skip compile-time database checks
 ENV SQLX_OFFLINE=true
+
+# Set optimal build flags for the target architecture
+# ARM64 will use NEON/SVE, x86_64 will use AVX2
 RUN cargo build --release --bin metamuse-server --bin metamuse-worker && \
     strip target/release/metamuse-server && \
     strip target/release/metamuse-worker
 
 # ============================================================================
 # Stage 2: Runtime Stage (Server)
-# Using debian:sid-slim for GLIBC 2.39 compatibility with rust nightly
+# Using debian:bookworm-slim for GLIBC compatibility
 # ============================================================================
-FROM debian:sid-slim AS server
+FROM debian:bookworm-slim AS server
 
 # Install runtime dependencies
 RUN apt-get update && apt-get install -y \
     ca-certificates \
     libssl3 \
     curl \
+    libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
@@ -90,15 +98,16 @@ CMD ["/app/metamuse-server"]
 
 # ============================================================================
 # Stage 3: Runtime Stage (Worker)
-# Using debian:sid-slim for GLIBC 2.39 compatibility with rust nightly
+# Optimized for AI inference with llama.cpp
 # ============================================================================
-FROM debian:sid-slim AS worker
+FROM debian:bookworm-slim AS worker
 
-# Install runtime dependencies
+# Install runtime dependencies including OpenMP for parallel inference
 RUN apt-get update && apt-get install -y \
     ca-certificates \
     libssl3 \
     curl \
+    libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
@@ -115,9 +124,15 @@ COPY --from=builder --chown=metamuse:metamuse /app/target/release/metamuse-worke
 USER metamuse
 WORKDIR /app
 
-# Set environment variables
+# Set environment variables for worker
+# These can be overridden by docker-compose
 ENV RUST_LOG=info \
-    RUST_BACKTRACE=1
+    RUST_BACKTRACE=1 \
+    WORKER_ID=0 \
+    TOTAL_WORKERS=1 \
+    THREADS_PER_WORKER=4 \
+    BATCH_SIZE=512 \
+    CONTEXT_SIZE=2048
 
 # Run the worker
 CMD ["/app/metamuse-worker"]

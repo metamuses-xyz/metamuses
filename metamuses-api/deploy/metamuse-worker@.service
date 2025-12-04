@@ -1,0 +1,49 @@
+[Unit]
+Description=MetaMuses AI Inference Worker %i
+After=network.target redis.service
+Wants=redis.service
+
+[Service]
+Type=simple
+User=metamuse
+Group=metamuse
+WorkingDirectory=/opt/metamuses-api
+
+# Worker instance configuration
+# %i is the instance number (0, 1, 2, 3)
+Environment=WORKER_ID=%i
+Environment=TOTAL_WORKERS=4
+Environment=THREADS_PER_WORKER=4
+Environment=BATCH_SIZE=512
+Environment=CONTEXT_SIZE=2048
+
+# Model and Redis configuration
+Environment=MODELS_DIR=/opt/metamuses-api/models
+Environment=REDIS_URL=redis://127.0.0.1:6379
+Environment=REDIS_QUEUE_PREFIX=metamuse
+
+# Disable semantic cache for now
+Environment=ENABLE_SEMANTIC_CACHE=false
+
+# Log configuration
+Environment=RUST_LOG=info
+
+ExecStart=/opt/metamuses-api/bin/metamuse-worker
+
+# Restart configuration
+Restart=always
+RestartSec=5
+StartLimitBurst=5
+StartLimitIntervalSec=60
+
+# Resource limits
+LimitNOFILE=65536
+MemoryMax=8G
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=metamuse-worker-%i
+
+[Install]
+WantedBy=multi-user.target

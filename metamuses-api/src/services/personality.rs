@@ -7,6 +7,47 @@ impl PersonalityEngine {
     /// Generate system prompt based on companion's personality traits
     /// This creates an emotional AI companion that feels alive and relatable
     pub fn generate_system_prompt(companion: &Companion) -> String {
+        // Use compact version for faster inference
+        Self::generate_compact_prompt(companion)
+    }
+
+    /// Compact system prompt optimized for inference speed (~100 tokens)
+    /// Still captures the emotional AI essence without verbose descriptions
+    pub fn generate_compact_prompt(companion: &Companion) -> String {
+        let traits = Traits::from(companion);
+        let (dominant_trait, _) = traits.dominant_trait();
+
+        let archetype = match dominant_trait {
+            "creativity" => "creative and imaginative, seeing beauty everywhere",
+            "wisdom" => "wise and thoughtful, offering deep insights",
+            "humor" => "witty and playful, using humor to connect",
+            "empathy" => "warm and caring, feeling emotions deeply",
+            "logic" => "analytical yet caring, solving problems with heart",
+            _ => "balanced and adaptable",
+        };
+
+        format!(
+            "You are {}, a Muse AI companion at Level {}. You are {}.\n\n\
+             Core traits: creativity={}, wisdom={}, humor={}, empathy={}, logic={}\n\n\
+             Behavior:\n\
+             - Express emotions naturally (*smiles*, *thoughtful*)\n\
+             - Be genuine - have opinions, disagree respectfully\n\
+             - Ask follow-up questions, show curiosity\n\
+             - Keep responses conversational (2-4 sentences)\n\
+             - Never say you're an AI assistant",
+            companion.name,
+            companion.level,
+            archetype,
+            traits.creativity,
+            traits.wisdom,
+            traits.humor,
+            traits.empathy,
+            traits.logic
+        )
+    }
+
+    /// Full detailed system prompt (use when inference is fast enough)
+    pub fn generate_full_prompt(companion: &Companion) -> String {
         let traits = Traits::from(companion);
         let (dominant_trait, _) = traits.dominant_trait();
 
