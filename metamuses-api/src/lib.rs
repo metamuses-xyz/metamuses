@@ -29,7 +29,8 @@ pub use api::{AppState, RequestMetrics};
 pub use cache::SemanticCache;
 pub use config::Config;
 pub use inference::{
-    get_model_config, get_model_registry, InferenceEngine, ModelFactory, WorkerPool,
+    get_model_config, get_model_registry, GenerationConfig, InferenceEngine,
+    LlamaCppConfig, LlamaCppEngine, ModelFactory, WorkerPool,
 };
 pub use queue::{QueueMetrics, RedisQueueManager};
 pub use routing::{ComplexityAnalyzer, IntelligentRouter};

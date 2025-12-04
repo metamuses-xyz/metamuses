@@ -520,8 +520,8 @@ export default function ChatPage() {
           </div>
 
           {/* Chat Area */}
-          <div className="lg:col-span-3">
-            <div className="neural-card rounded-2xl h-full flex flex-col">
+          <div className="lg:col-span-3 overflow-hidden">
+            <div className="neural-card rounded-2xl h-full flex flex-col overflow-hidden">
               {/* Chat Header */}
               {selectedCompanion && (
                 <div className="p-6 border-b border-gray-700/50">
@@ -573,7 +573,7 @@ export default function ChatPage() {
               )}
 
               {/* Messages Area */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-4">
+              <div className="flex-1 overflow-y-auto p-6 space-y-4 min-h-20 scroll-smooth">
                 {/* API Error Display */}
                 {apiError && (
                   <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">

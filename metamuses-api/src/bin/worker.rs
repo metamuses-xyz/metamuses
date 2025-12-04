@@ -1,7 +1,8 @@
 // Worker Pool Binary
 // Processes inference jobs from Redis queue
+// Supports multi-process deployment for CPU utilization
 
-use metamuses_api::inference::{CandleEngine, InferenceEngine};
+use metamuses_api::inference::{GenerationConfig, InferenceEngine, LlamaCppConfig, LlamaCppEngine};
 use metamuses_api::types::Domain;
 use metamuses_api::*;
 use std::sync::Arc;
@@ -13,14 +14,19 @@ async fn main() -> anyhow::Result<()> {
     // Initialize tracing
     tracing_subscriber::fmt::init();
 
+    // Load configuration
+    let config = Config::from_env()?;
+
     info!("╔════════════════════════════════════════╗");
     info!("║   MetaMuses AI Inference Worker       ║");
     info!("║              v0.1.0                    ║");
+    info!("╠════════════════════════════════════════╣");
+    info!("║  Worker ID: {}/{}                       ║", config.worker_id, config.total_workers);
+    info!("║  Threads: {} | Batch: {} | Ctx: {}   ║",
+        config.threads_per_worker, config.batch_size, config.context_size);
     info!("╚════════════════════════════════════════╝");
 
-    // Load configuration
     info!("Loading configuration...");
-    let config = Config::from_env()?;
     info!("✓ Configuration loaded");
 
     // Connect to Redis
@@ -30,7 +36,7 @@ async fn main() -> anyhow::Result<()> {
     ));
     info!("✓ Redis connection established");
 
-    // Initialize inference engine for fast tier
+    // Initialize inference engine with worker-specific configuration
     info!("Initializing inference engine...");
     info!("Model directory: {}", config.models_dir);
     let model_path = format!("{}/qwen2.5-3b-instruct-q4_k_m.gguf", config.models_dir);
@@ -45,15 +51,49 @@ async fn main() -> anyhow::Result<()> {
     info!("Model file found, beginning initialization...");
     info!("This may take 30-60 seconds for model loading...");
 
-    let engine = match CandleEngine::new(
+    // Configure llama.cpp for this worker instance
+    let llama_config = LlamaCppConfig {
+        threads: config.threads_per_worker,
+        batch_size: config.batch_size,
+        context_size: config.context_size,
+    };
+
+    // Get max tokens from environment or use default
+    // Reduced to 32 for faster responses on CPU (~4s target)
+    // 32 tokens @ 7 tok/s = ~4.5s generation + ~2s prefill = ~6.5s total
+    let max_tokens = std::env::var("MAX_TOKENS")
+        .ok()
+        .and_then(|v| v.parse().ok())
+        .unwrap_or(32);
+
+    let gen_config = GenerationConfig {
+        max_new_tokens: max_tokens,
+        temperature: 0.7,
+        top_p: 0.9,
+        repetition_penalty: 1.1,
+        stop_sequences: vec![
+            "<|im_end|>".to_string(),
+            "<|endoftext|>".to_string(),
+        ],
+    };
+
+    info!("   Max tokens: {} (set MAX_TOKENS env to override)", max_tokens);
+
+    let engine = match LlamaCppEngine::new_with_full_config(
         &model_path,
         "Qwen2.5-3B-Instruct".to_string(),
         ModelTier::Fast,
+        gen_config,
+        llama_config,
     )
     .await
     {
         Ok(engine) => {
             info!("✓ Inference engine initialized successfully!");
+            #[cfg(target_os = "macos")]
+            info!("   Backend: llama.cpp with Metal GPU acceleration");
+            #[cfg(target_os = "linux")]
+            info!("   Backend: llama.cpp CPU ({} threads)", config.threads_per_worker);
             engine
         }
         Err(e) => {
@@ -63,7 +103,7 @@ async fn main() -> anyhow::Result<()> {
     };
 
     info!("");
-    info!("⚡ Worker ready! Listening for jobs...");
+    info!("⚡ Worker {} ready! Listening for jobs...", config.worker_id);
     info!("");
 
     // Main worker loop
