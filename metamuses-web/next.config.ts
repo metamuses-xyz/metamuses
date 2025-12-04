@@ -5,15 +5,15 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Turbopack configuration (enabled by default in Next.js 16)
+  // Simple Turbopack configuration for Next.js 16
   turbopack: {
     resolveAlias: {
       // Handle async-storage polyfill for MetaMask SDK
       "@react-native-async-storage/async-storage": "react-native-async-storage",
     },
   },
-  // Webpack fallback for production builds (when not using Turbopack)
-  webpack: (config, { isServer }) => {
+  // Webpack configuration (fallback for production)
+  webpack: (config, { isServer, dev }) => {
     // Add polyfills for browser APIs in server-side rendering
     if (!isServer) {
       config.resolve.fallback = {
@@ -38,6 +38,15 @@ const nextConfig: NextConfig = {
       ...config.resolve.alias,
       "@react-native-async-storage/async-storage": "react-native-async-storage",
     };
+
+    // Exclude problematic modules from client bundle in production
+    if (!isServer) {
+      config.externals = config.externals || [];
+      config.externals.push({
+        'pino': 'commonjs pino',
+        'thread-stream': 'commonjs thread-stream',
+      });
+    }
 
     return config;
   },
