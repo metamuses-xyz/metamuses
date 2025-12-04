@@ -294,6 +294,39 @@ impl CandleEngine {
         let eos_tokens = self.eos_tokens.clone();
         let config = config.clone();
 
+        Self::generate_internal(tokenizer, model, device, formatted_prompt, generation_count).await
+    }
+
+    async fn generate_with_context(&self, context: &[ChatMessage]) -> Result<String> {
+        let tokenizer = Arc::clone(&self.tokenizer);
+        let model = Arc::clone(&self.model);
+        let device = self.device.clone();
+        let formatted_prompt = self.format_conversation(context);
+        let generation_count = Arc::clone(&self.generation_count);
+
+        tracing::info!("📝 Using full conversation context ({} messages)", context.len());
+
+        Self::generate_internal(tokenizer, model, device, formatted_prompt, generation_count).await
+    }
+
+    fn model_name(&self) -> &str {
+        &self.model_name
+    }
+
+    fn tier(&self) -> crate::types::ModelTier {
+        self.tier
+    }
+}
+
+impl CandleEngine {
+    /// Internal generation function shared by both generate methods
+    async fn generate_internal(
+        tokenizer: Arc<Tokenizer>,
+        model: Arc<Mutex<ModelWeights>>,
+        device: Device,
+        formatted_prompt: String,
+        generation_count: Arc<Mutex<usize>>,
+    ) -> Result<String> {
         tokio::task::spawn_blocking(move || {
             let start_time = std::time::Instant::now();
 
