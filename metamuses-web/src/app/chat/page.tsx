@@ -267,6 +267,48 @@ export default function ChatPage() {
   // Derived state
   const walletConnected = isConnected;
 
+  // LocalStorage helpers for chat history
+  const CHAT_STORAGE_KEY = "metamuses_chat_history";
+
+  const getChatHistory = (companionId: string): Message[] => {
+    if (typeof window === "undefined") return [];
+    try {
+      const stored = localStorage.getItem(`${CHAT_STORAGE_KEY}_${companionId}`);
+      if (!stored) return [];
+      const parsed = JSON.parse(stored);
+      // Convert timestamp strings back to Date objects
+      return parsed.map((msg: Message & { timestamp: string }) => ({
+        ...msg,
+        timestamp: new Date(msg.timestamp),
+      }));
+    } catch {
+      return [];
+    }
+  };
+
+  const saveChatHistory = (companionId: string, messages: Message[]) => {
+    if (typeof window === "undefined") return;
+    try {
+      // Keep last 100 messages per companion to avoid storage limits
+      const toSave = messages.slice(-100);
+      localStorage.setItem(
+        `${CHAT_STORAGE_KEY}_${companionId}`,
+        JSON.stringify(toSave)
+      );
+    } catch (e) {
+      console.warn("Failed to save chat history:", e);
+    }
+  };
+
+  const clearChatHistory = (companionId: string) => {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.removeItem(`${CHAT_STORAGE_KEY}_${companionId}`);
+    } catch (e) {
+      console.warn("Failed to clear chat history:", e);
+    }
+  };
+
   // Mock AI Companions
   const companions: AICompanion[] = [
     {
@@ -319,21 +361,39 @@ export default function ChatPage() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    // Auto-select first companion
-    if (companions.length > 0 && !selectedCompanion) {
-      setSelectedCompanion(companions[0]);
-      // Add welcome message
+  // Load chat history when companion changes
+  const loadCompanionChat = (companion: AICompanion) => {
+    const cachedMessages = getChatHistory(companion.id);
+    if (cachedMessages.length > 0) {
+      setMessages(cachedMessages);
+    } else {
+      // Add welcome message for new conversations
       setMessages([
         {
-          id: "welcome",
-          content: `Hello! I'm ${companions[0].name}. ${companions[0].description}. How can I assist you today?`,
+          id: "welcome-" + companion.id,
+          content: `Hello! I'm ${companion.name}. ${companion.description}. How can I assist you today?`,
           sender: "ai",
           timestamp: new Date(),
         },
       ]);
     }
+  };
+
+  useEffect(() => {
+    // Auto-select first companion and load its history
+    if (companions.length > 0 && !selectedCompanion) {
+      const firstCompanion = companions[0];
+      setSelectedCompanion(firstCompanion);
+      loadCompanionChat(firstCompanion);
+    }
   }, []);
+
+  // Save messages to localStorage when they change
+  useEffect(() => {
+    if (selectedCompanion && messages.length > 0) {
+      saveChatHistory(selectedCompanion.id, messages);
+    }
+  }, [messages, selectedCompanion]);
 
   useEffect(() => {
     scrollToBottom();
@@ -466,14 +526,7 @@ export default function ChatPage() {
                     isSelected={selectedCompanion?.id === companion.id}
                     onClick={() => {
                       setSelectedCompanion(companion);
-                      setMessages([
-                        {
-                          id: "welcome-" + companion.id,
-                          content: `Hello! I'm ${companion.name}. ${companion.description}. How can I assist you today?`,
-                          sender: "ai",
-                          timestamp: new Date(),
-                        },
-                      ]);
+                      loadCompanionChat(companion);
                     }}
                   />
                 ))}
@@ -525,49 +578,69 @@ export default function ChatPage() {
               {/* Chat Header */}
               {selectedCompanion && (
                 <div className="p-6 border-b border-gray-700/50">
-                  <div className="flex items-center space-x-4">
-                    <div
-                      className={`w-16 h-16 rounded-full bg-gradient-to-br ${selectedCompanion.avatar.gradient} flex items-center justify-center text-2xl font-bold text-white relative`}
-                    >
-                      {selectedCompanion.avatar.emoji}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
                       <div
-                        className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-gray-800 ${
-                          selectedCompanion.status === "online"
-                            ? "bg-green-500"
-                            : selectedCompanion.status === "thinking"
-                              ? "bg-yellow-500 animate-pulse"
-                              : "bg-gray-500"
-                        }`}
-                      />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-white">
-                        {selectedCompanion.name}
-                      </h3>
-                      <p className="text-gray-400 text-sm">
-                        {selectedCompanion.description}
-                      </p>
-                      <div className="flex items-center space-x-4 mt-2">
-                        {Object.entries(selectedCompanion.personality).map(
-                          ([trait, value]) => (
-                            <div
-                              key={trait}
-                              className="flex items-center space-x-1"
-                            >
-                              <span className="text-xs text-gray-500 capitalize">
-                                {trait}
-                              </span>
-                              <div className="w-8 h-1 bg-gray-700 rounded-full overflow-hidden">
-                                <div
-                                  className="h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-full"
-                                  style={{ width: `${value}%` }}
-                                />
+                        className={`w-16 h-16 rounded-full bg-gradient-to-br ${selectedCompanion.avatar.gradient} flex items-center justify-center text-2xl font-bold text-white relative`}
+                      >
+                        {selectedCompanion.avatar.emoji}
+                        <div
+                          className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-gray-800 ${
+                            selectedCompanion.status === "online"
+                              ? "bg-green-500"
+                              : selectedCompanion.status === "thinking"
+                                ? "bg-yellow-500 animate-pulse"
+                                : "bg-gray-500"
+                          }`}
+                        />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold text-white">
+                          {selectedCompanion.name}
+                        </h3>
+                        <p className="text-gray-400 text-sm">
+                          {selectedCompanion.description}
+                        </p>
+                        <div className="flex items-center space-x-4 mt-2">
+                          {Object.entries(selectedCompanion.personality).map(
+                            ([trait, value]) => (
+                              <div
+                                key={trait}
+                                className="flex items-center space-x-1"
+                              >
+                                <span className="text-xs text-gray-500 capitalize">
+                                  {trait}
+                                </span>
+                                <div className="w-8 h-1 bg-gray-700 rounded-full overflow-hidden">
+                                  <div
+                                    className="h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-full"
+                                    style={{ width: `${value}%` }}
+                                  />
+                                </div>
                               </div>
-                            </div>
-                          ),
-                        )}
+                            ),
+                          )}
+                        </div>
                       </div>
                     </div>
+                    {/* Clear Chat Button */}
+                    <button
+                      onClick={() => {
+                        clearChatHistory(selectedCompanion.id);
+                        setMessages([
+                          {
+                            id: "welcome-" + selectedCompanion.id + "-" + Date.now(),
+                            content: `Hello! I'm ${selectedCompanion.name}. ${selectedCompanion.description}. How can I assist you today?`,
+                            sender: "ai",
+                            timestamp: new Date(),
+                          },
+                        ]);
+                      }}
+                      className="px-4 py-2 text-sm bg-gray-800/50 border border-gray-600 rounded-lg text-gray-300 hover:bg-red-600/20 hover:border-red-500/50 hover:text-red-400 transition-all duration-200"
+                      title="Clear chat history"
+                    >
+                      Clear Chat
+                    </button>
                   </div>
                 </div>
               )}
