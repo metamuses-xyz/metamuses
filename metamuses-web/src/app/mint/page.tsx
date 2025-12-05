@@ -6,6 +6,7 @@ import { useMuseAIContract } from "@/hooks/useMuseAI";
 import { useGaslessMint } from "@/hooks/useGaslessMint";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Image from "next/image";
 
 // Neural Network Background
 const NeuralNetwork = () => {
@@ -172,8 +173,15 @@ const MuseAINFT = ({
         <div className="relative z-10">
           {/* NFT Avatar */}
           <div className="text-center mb-8">
-            <div className="w-48 h-48 rounded-full bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500 mx-auto mb-6 flex items-center justify-center shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-110 relative">
-              <span className="text-8xl font-bold text-white">🤖</span>
+            <div className="w-48 h-48 rounded-full bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500 mx-auto mb-6 flex items-center justify-center shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-110 relative p-4">
+              <Image
+                src="/metamuses_logo_2.png"
+                alt="MetaMuses Logo"
+                width={160}
+                height={160}
+                className="object-contain"
+                priority
+              />
 
               {/* Animated rings */}
               <div className="absolute inset-0 rounded-full border-4 border-purple-400 animate-pulse opacity-50" />
@@ -434,9 +442,9 @@ export default function MintPage() {
     tokenId: mintTokenId,
   } = useGaslessMint();
 
-  // Campaign end date - get from contract mintEndTime or use default
-  const campaignEndDate = new Date();
-  campaignEndDate.setDate(campaignEndDate.getDate() + 90);
+  // Campaign end date - 90 days from December 5, 2025
+  const campaignEndDate = new Date('2025-12-05');
+  campaignEndDate.setDate(campaignEndDate.getDate() + 90); // March 5, 2026
 
   useEffect(() => {
     // Simulate initial loading
@@ -600,7 +608,8 @@ export default function MintPage() {
                   Congratulations!
                 </h3>
                 <p className="text-gray-300 mb-6">
-                  Your Muse AI NFT has been successfully minted! No gas fees paid!
+                  Your Muse AI NFT has been successfully minted! No gas fees
+                  paid!
                 </p>
                 {mintTokenId && (
                   <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-lg p-4 mb-4 border border-purple-500/30">
@@ -616,7 +625,10 @@ export default function MintPage() {
                       Transaction Hash:
                     </p>
                     <a
-                      href={mintExplorerUrl || `https://hyperion-testnet-explorer.metisdevops.link/tx/${mintTxHash}`}
+                      href={
+                        mintExplorerUrl ||
+                        `https://hyperion-testnet-explorer.metisdevops.link/tx/${mintTxHash}`
+                      }
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-xs text-purple-400 hover:text-purple-300 font-mono break-all underline hover:underline-offset-4 transition-all"

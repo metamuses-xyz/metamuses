@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function Header() {
   const pathname = usePathname();
@@ -24,8 +25,15 @@ export default function Header() {
     <nav className="relative z-20 flex items-center justify-between p-6 max-w-7xl mx-auto backdrop-blur-sm">
       <div className="flex items-center space-x-3">
         <div className="relative">
-          <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center font-bold text-white shadow-lg">
-            M
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg overflow-hidden">
+            <Image
+              src="/metamuses_logo_2.png"
+              alt="MetaMuses Logo"
+              width={48}
+              height={48}
+              className="object-contain"
+              priority
+            />
           </div>
           <div className="pulse-ring w-12 h-12 top-0 left-0"></div>
         </div>

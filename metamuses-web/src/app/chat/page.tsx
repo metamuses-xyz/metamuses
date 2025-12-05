@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useChatAPI, checkAPIHealth } from "@/hooks/useChatAPI";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 // Neural Network Background (reused from mint page)
 const NeuralNetwork = () => {
@@ -476,40 +477,10 @@ export default function ChatPage() {
       </div>
 
       {/* Navigation */}
-      <nav className="relative z-20 flex items-center justify-between p-6 max-w-7xl mx-auto">
-        <Link href="/" className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center font-bold text-white">
-            M
-          </div>
-          <div>
-            <span className="text-2xl font-bold hero-gradient-text">
-              MetaMuse
-            </span>
-            <div className="text-xs text-gray-400 font-mono">AI Chat</div>
-          </div>
-        </Link>
-
-        <div className="flex items-center space-x-4">
-          <ConnectButton />
-
-          <Link
-            href="/mint"
-            className="px-6 py-3 border border-gray-600 text-gray-300 font-semibold rounded-xl hover:bg-gray-700 transition-all"
-          >
-            🎯 Mint NFT
-          </Link>
-
-          <Link
-            href="/"
-            className="px-6 py-3 border border-gray-600 text-gray-300 font-semibold rounded-xl hover:bg-gray-700 transition-all"
-          >
-            ← Back to Home
-          </Link>
-        </div>
-      </nav>
+      <Header />
 
       {/* Main Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 py-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 py-8 pb-0">
         <div className="grid lg:grid-cols-4 gap-8 h-[calc(100vh-200px)]">
           {/* Sidebar - AI Companions */}
           <div className="lg:col-span-1">
@@ -737,6 +708,9 @@ export default function ChatPage() {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
