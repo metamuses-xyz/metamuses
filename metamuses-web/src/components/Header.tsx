@@ -11,6 +11,7 @@ export default function Header() {
     { icon: "🎨", label: "Mint Muse AI", href: "/mint" },
     { icon: "💬", label: "Chat", href: "/chat" },
     { icon: "🔌", label: "Plugins", href: "/plugins" },
+    { icon: "👥", label: "Discord", href: "https://discord.gg/eBrDRvPet2" },
     // {
     //   icon: "💬",
     //   label: "Discord",

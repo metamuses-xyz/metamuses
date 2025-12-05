@@ -318,6 +318,7 @@ impl CandleEngine {
     }
 }
 
+#[cfg(feature = "candle")]
 impl CandleEngine {
     /// Internal generation function shared by both generate methods
     async fn generate_internal(
