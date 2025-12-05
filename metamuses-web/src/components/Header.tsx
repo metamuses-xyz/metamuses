@@ -2,23 +2,22 @@
 
 import { usePathname } from "next/navigation";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useState } from "react";
 
 export default function Header() {
   const pathname = usePathname();
+  const [showSocialsDropdown, setShowSocialsDropdown] = useState(false);
 
   const navItems = [
     { icon: "🏠", label: "Home", href: "/" },
     { icon: "🎨", label: "Mint Muse AI", href: "/mint" },
     { icon: "💬", label: "Chat", href: "/chat" },
     { icon: "🔌", label: "Plugins", href: "/plugins" },
+  ];
+
+  const socialLinks = [
     { icon: "👥", label: "Discord", href: "https://discord.gg/eBrDRvPet2" },
-    // {
-    //   icon: "💬",
-    //   label: "Discord",
-    //   href: "https://discord.gg/EN58SSmF",
-    //   external: true,
-    // },
-    // { icon: "📊", label: "Dashboard", href: "/dashboard" },
+    { icon: "𝕏", label: "X", href: "https://x.com/metamuses_xyz" },
   ];
 
   return (
@@ -44,8 +43,6 @@ export default function Header() {
             <a
               key={index}
               href={item.href}
-              target={item.external ? "_blank" : undefined}
-              rel={item.external ? "noopener noreferrer" : undefined}
               className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all hover:bg-white/5 ${
                 isActive ? "text-white bg-white/10" : "hover:text-white"
               }`}
@@ -55,6 +52,36 @@ export default function Header() {
             </a>
           );
         })}
+
+        {/* Socials Dropdown */}
+        <div
+          className="relative"
+          onMouseEnter={() => setShowSocialsDropdown(true)}
+          onMouseLeave={() => setShowSocialsDropdown(false)}
+        >
+          <button className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-all hover:bg-white/5 hover:text-white">
+            <span>🌐</span>
+            <span>Socials</span>
+            <span className="text-xs">▼</span>
+          </button>
+
+          {showSocialsDropdown && (
+            <div className="absolute top-full right-0 mt-2 w-48 bg-gray-900/95 backdrop-blur-sm border border-gray-800 rounded-lg shadow-xl overflow-hidden">
+              {socialLinks.map((social, index) => (
+                <a
+                  key={index}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-3 px-4 py-3 hover:bg-white/5 transition-colors text-gray-300 hover:text-white"
+                >
+                  <span>{social.icon}</span>
+                  <span>{social.label}</span>
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <ConnectButton />
