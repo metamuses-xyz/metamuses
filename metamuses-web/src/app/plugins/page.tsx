@@ -984,7 +984,7 @@ export default function PluginsPage() {
                   📖 Read Developer Docs
                 </a>
                 <a
-                  href="https://discord.gg/EN58SSmF"
+                  href="https://discord.gg/eBrDRvPet2"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-8 py-4 border border-purple-500/30 text-purple-300 font-semibold rounded-xl hover:bg-purple-500/10 transition-all inline-block"

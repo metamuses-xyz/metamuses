@@ -45,7 +45,7 @@ export default function Footer() {
                 // { name: "Community", href: "#" },
                 {
                   name: "Discord",
-                  href: "https://discord.gg/EN58SSmF",
+                  href: "https://discord.gg/eBrDRvPet2",
                   external: true,
                 },
               ],
