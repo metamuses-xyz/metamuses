@@ -7,9 +7,11 @@ use metamuses_api::{
         companion_chat_handlers::{companion_chat_handler, CompanionAppState, CompanionChatMetrics},
         middleware::{add_request_id, cors_layer, request_logger},
         mint_handlers::{gasless_mint_handler, get_nonce_handler, MintAppState},
+        points_handlers::{points_routes, PointsAppState},
     },
     cache::SemanticCache,
     config::Config,
+    points::{LeaderboardService, PointsService},
     queue::RedisQueueManager,
     routing::IntelligentRouter,
     services::{CompanionService, InteractionStatsService, MemoryService},
@@ -161,6 +163,12 @@ async fn main() -> anyhow::Result<()> {
     let interaction_stats_service = Arc::new(InteractionStatsService::new(pool.clone()));
     info!("✓ Interaction stats service initialized");
 
+    // Points and leaderboard services
+    info!("Initializing points system...");
+    let points_service = Arc::new(PointsService::new(pool.clone()));
+    let leaderboard_service = Arc::new(LeaderboardService::new(pool.clone()));
+    info!("✓ Points system initialized");
+
     // Create companion app state (for all handlers)
     let app_state = CompanionAppState {
         router: router.clone(),
@@ -183,6 +191,12 @@ async fn main() -> anyhow::Result<()> {
     .await?;
     info!("✓ Gasless mint service initialized");
 
+    // Create points app state
+    let points_state = PointsAppState {
+        points_service,
+        leaderboard_service,
+    };
+
     info!("Building API routes...");
 
     // Build the router with companion chat handler
@@ -202,6 +216,8 @@ async fn main() -> anyhow::Result<()> {
                 .route("/api/mint/gasless", post(gasless_mint_handler))
                 .with_state(mint_state)
         )
+        // Merge points routes
+        .merge(points_routes(points_state))
         // Add middleware
         .layer(middleware::from_fn(request_logger))
         .layer(middleware::from_fn(add_request_id))
@@ -223,12 +239,18 @@ async fn main() -> anyhow::Result<()> {
     info!("🚀 Server running on http://{}", addr);
     info!("");
     info!("Available endpoints:");
-    info!("  • GET  /health           - Health check");
-    info!("  • GET  /metrics          - System metrics");
-    info!("  • POST /chat             - Chat with AI companion (with memory)");
-    info!("  • POST /api/mint/nonce   - Get nonce for gasless minting");
-    info!("  • POST /api/mint/gasless - Gasless NFT minting");
-    info!("  • GET  /ws               - WebSocket streaming");
+    info!("  • GET  /health                              - Health check");
+    info!("  • GET  /metrics                             - System metrics");
+    info!("  • POST /chat                                - Chat with AI companion (with memory)");
+    info!("  • POST /api/mint/nonce                      - Get nonce for gasless minting");
+    info!("  • POST /api/mint/gasless                    - Gasless NFT minting");
+    info!("  • POST /api/points/checkin/:address         - Daily check-in");
+    info!("  • GET  /api/points/user/:address            - Get user points");
+    info!("  • GET  /api/points/user/:address/history    - Get task history");
+    info!("  • GET  /api/leaderboard/global              - Global leaderboard");
+    info!("  • GET  /api/leaderboard/user/:address       - User rank");
+    info!("  • GET  /api/leaderboard/around/:address     - Leaderboard around user");
+    info!("  • GET  /ws                                  - WebSocket streaming");
     info!("");
     info!("Memory System:");
     info!("  • Short-term: Redis (last 20 messages, 24h TTL)");
@@ -239,9 +261,11 @@ async fn main() -> anyhow::Result<()> {
     info!("  • EIP-712 signature verification");
     info!("  • Replay protection with nonces");
     info!("");
-    info!("Memory System:");
-    info!("  • Short-term: Redis (last 20 messages, 24h TTL)");
-    info!("  • Long-term:  PostgreSQL (permanent storage)");
+    info!("Points & Leaderboard System:");
+    info!("  • Daily check-in with streak bonuses (1.0x → 2.0x)");
+    info!("  • Modular task system for extensibility");
+    info!("  • Global rankings and competitive leaderboards");
+    info!("  • Audit trail with transaction history");
     info!("");
     info!("⚡ Ready to accept connections!");
 

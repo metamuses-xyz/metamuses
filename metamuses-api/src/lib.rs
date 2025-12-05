@@ -9,6 +9,9 @@ pub mod models;
 // Service layer modules
 pub mod services;
 
+// Points system modules
+pub mod points;
+
 // Inference modules
 pub mod inference;
 
