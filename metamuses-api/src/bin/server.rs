@@ -239,6 +239,10 @@ async fn main() -> anyhow::Result<()> {
     info!("  • EIP-712 signature verification");
     info!("  • Replay protection with nonces");
     info!("");
+    info!("Memory System:");
+    info!("  • Short-term: Redis (last 20 messages, 24h TTL)");
+    info!("  • Long-term:  PostgreSQL (permanent storage)");
+    info!("");
     info!("⚡ Ready to accept connections!");
 
     // Start the server
