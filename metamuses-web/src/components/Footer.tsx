@@ -48,6 +48,11 @@ export default function Footer() {
                   href: "https://discord.gg/eBrDRvPet2",
                   external: true,
                 },
+                {
+                  name: "X (Twitter)",
+                  href: "https://x.com/metamuses_xyz",
+                  external: true,
+                },
               ],
             },
           ].map((section, index) => (
