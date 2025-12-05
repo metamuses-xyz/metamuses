@@ -1,0 +1,61 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO twitter_verifications (user_address, twitter_handle, signature, message, is_valid)\n            VALUES ($1, $2, $3, $4, true)\n            ON CONFLICT (user_address) DO UPDATE\n            SET twitter_handle = $2, signature = $3, message = $4, verified_at = NOW(), is_valid = true\n            RETURNING id, user_address, twitter_handle, signature, message, verified_at, is_valid\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "user_address",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "twitter_handle",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "signature",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "message",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "verified_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 6,
+        "name": "is_valid",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Varchar",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "b54d2cd363820c0b686d9808a67f3a6e72afe575d9570bc92ef270877669e10b"
+}

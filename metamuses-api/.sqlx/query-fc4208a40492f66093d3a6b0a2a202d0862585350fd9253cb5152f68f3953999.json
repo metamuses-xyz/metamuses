@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE user_points SET current_streak = $1, longest_streak = GREATEST(longest_streak, $1), last_checkin_date = $2 WHERE user_address = $3",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Date",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "fc4208a40492f66093d3a6b0a2a202d0862585350fd9253cb5152f68f3953999"
+}

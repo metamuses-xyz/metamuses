@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO twitter_task_completions (user_address, task_type, twitter_handle, verification_id)\n            VALUES ($1, $2, $3, $4)\n            ON CONFLICT (user_address, task_type) DO NOTHING\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "937c762caad11bd1e602eeb9c5b14bcb37041ee20f92186df1052e95521907a0"
+}

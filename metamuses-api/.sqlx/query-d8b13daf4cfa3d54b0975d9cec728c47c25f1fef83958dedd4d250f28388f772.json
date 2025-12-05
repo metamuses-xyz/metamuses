@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                    INSERT INTO user_streaks (user_address, current_streak, longest_streak, last_checkin_date, streak_started_at, total_checkins)\n                    VALUES ($1, 1, 1, $2, $2, 1)\n                    ON CONFLICT (user_address) DO UPDATE SET\n                        current_streak = 1,\n                        longest_streak = GREATEST(user_streaks.longest_streak, 1),\n                        last_checkin_date = $2,\n                        streak_started_at = $2,\n                        total_checkins = user_streaks.total_checkins + 1,\n                        updated_at = NOW()\n                    ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Date"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "d8b13daf4cfa3d54b0975d9cec728c47c25f1fef83958dedd4d250f28388f772"
+}

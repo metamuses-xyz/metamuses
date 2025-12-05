@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                    UPDATE user_streaks SET\n                        current_streak = 1,\n                        last_checkin_date = $1,\n                        streak_started_at = $1,\n                        total_checkins = total_checkins + 1,\n                        updated_at = NOW()\n                    WHERE user_address = $2\n                    ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Date",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "38620c9ddfaad9d73630df72bd9cb77febdc6462882453ecffff8ff3c698b225"
+}

@@ -1,0 +1,59 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                tc.id,\n                tc.user_address,\n                tc.task_type,\n                tc.points_awarded,\n                tc.multiplier::DOUBLE PRECISION as \"multiplier!\",\n                tc.metadata,\n                tc.completed_at\n            FROM task_completions tc\n            WHERE tc.user_address = $1\n            ORDER BY tc.completed_at DESC\n            LIMIT $2\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "user_address",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "task_type",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "points_awarded",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "multiplier!",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 5,
+        "name": "metadata",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 6,
+        "name": "completed_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      null,
+      true,
+      true
+    ]
+  },
+  "hash": "7e671f5f531665c7fdd303cdf0f85e32fac437473d24cdb075911302737421e1"
+}

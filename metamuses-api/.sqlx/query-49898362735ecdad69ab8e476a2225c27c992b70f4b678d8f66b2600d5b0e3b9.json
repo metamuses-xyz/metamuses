@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM leaderboard_cache WHERE leaderboard_type = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "49898362735ecdad69ab8e476a2225c27c992b70f4b678d8f66b2600d5b0e3b9"
+}
