@@ -346,6 +346,56 @@ export default function PointsPage() {
                     </Link>
                   </div>
                 </div>
+
+                {/* Follow Twitter */}
+                <div className="p-4 rounded-lg border-2 bg-gray-800/50 border-gray-700">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-2xl">𝕏</span>
+                      <span className="font-semibold text-white">Follow on Twitter</span>
+                    </div>
+                    <span className="text-blue-400 font-bold">+150 pts</span>
+                  </div>
+                  <p className="text-gray-400 text-sm mb-2">
+                    Follow @metamuses_xyz on Twitter/X
+                  </p>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-500">One-time</span>
+                    <a
+                      href="https://x.com/metamuses_xyz"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:underline"
+                    >
+                      Follow now →
+                    </a>
+                  </div>
+                </div>
+
+                {/* Retweet Post */}
+                <div className="p-4 rounded-lg border-2 bg-gray-800/50 border-gray-700">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-2xl">🔄</span>
+                      <span className="font-semibold text-white">Retweet Post</span>
+                    </div>
+                    <span className="text-green-400 font-bold">+100 pts</span>
+                  </div>
+                  <p className="text-gray-400 text-sm mb-2">
+                    Retweet our latest post on Twitter/X
+                  </p>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-500">One-time</span>
+                    <a
+                      href="https://x.com/metamuses_xyz"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-400 hover:underline"
+                    >
+                      Retweet →
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
 

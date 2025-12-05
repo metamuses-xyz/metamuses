@@ -122,5 +122,7 @@ INSERT INTO tasks (task_type, name, description, base_points, config) VALUES
     ('complete_profile', 'Complete Profile', 'Fill out your user profile', 200, '{"one_time": true}'),
     ('invite_friend', 'Invite a Friend', 'Invite a friend to join MetaMuses', 300, '{"repeatable": true}'),
     ('win_weekly_challenge', 'Win Weekly Challenge', 'Win the weekly challenge competition', 1000, '{"one_time_per_week": true}'),
-    ('achieve_30_day_streak', 'Achieve 30 Day Streak', 'Maintain a 30-day consecutive check-in streak', 2000, '{"one_time": true, "required_streak": 30}')
+    ('achieve_30_day_streak', 'Achieve 30 Day Streak', 'Maintain a 30-day consecutive check-in streak', 2000, '{"one_time": true, "required_streak": 30}'),
+    ('follow_twitter', 'Follow on Twitter', 'Follow @metamuses_xyz on Twitter/X', 150, '{"one_time": true, "twitter_handle": "metamuses_xyz"}'),
+    ('retweet_post', 'Retweet Post', 'Retweet our latest post on Twitter/X', 100, '{"repeatable": false, "twitter_handle": "metamuses_xyz"}'  )
 ON CONFLICT (task_type) DO NOTHING;
