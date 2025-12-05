@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useAccount } from "wagmi";
 import { useMuseAIContract } from "@/hooks/useMuseAI";
+import { useGaslessMint } from "@/hooks/useGaslessMint";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -304,17 +305,14 @@ const MuseAINFT = ({
           </div>
 
           {/* Price Display */}
-          {/* <div className="text-center mb-8" data-oid="dksbqcz">
-                                         <div
-                                           className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400 mb-2"
-                                           data-oid="jk_izz3"
-                                         >
-                                           FREE
-                                         </div>
-                                         <div className="text-gray-400 text-lg" data-oid="8r5ph67">
-                                           No gas fees • No hidden costs • Limited time only
-                                         </div>
-                                        </div> */}
+          <div className="text-center mb-8">
+            <div className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400 mb-2">
+              FREE
+            </div>
+            <div className="text-gray-400 text-lg">
+              No gas fees • No hidden costs • Just sign & mint!
+            </div>
+          </div>
 
           {/* Minting Status */}
           {isMinting && (
@@ -413,24 +411,28 @@ export default function MintPage() {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Get contract data and functions
+  // Get contract data
   const {
     maxSupply,
     currentTokenId,
     remaining,
     isMintingActive,
-    mint,
-    isPending,
-    isConfirming,
-    isConfirmed,
-    error,
-    hash,
     refetchCurrentTokenId,
     useHasMinted,
   } = useMuseAIContract();
 
   // Check if user has minted
   const { data: userHasMinted } = useHasMinted(address);
+
+  // Gasless minting hook
+  const {
+    mint: gaslessMint,
+    isLoading: isMinting,
+    error: mintError,
+    txHash: mintTxHash,
+    explorerUrl: mintExplorerUrl,
+    tokenId: mintTokenId,
+  } = useGaslessMint();
 
   // Campaign end date - get from contract mintEndTime or use default
   const campaignEndDate = new Date();
@@ -445,19 +447,19 @@ export default function MintPage() {
 
   // Handle mint success
   useEffect(() => {
-    if (isConfirmed) {
+    if (mintTxHash) {
       setShowSuccessModal(true);
       refetchCurrentTokenId();
     }
-  }, [isConfirmed, refetchCurrentTokenId]);
+  }, [mintTxHash, refetchCurrentTokenId]);
 
   // Handle mint error
   useEffect(() => {
-    if (error) {
-      setErrorMessage(error.message || "Failed to mint NFT");
+    if (mintError) {
+      setErrorMessage(mintError);
       setShowErrorModal(true);
     }
-  }, [error]);
+  }, [mintError]);
 
   const handleMint = async () => {
     if (!isConnected) {
@@ -490,11 +492,14 @@ export default function MintPage() {
       return;
     }
 
-    // Call the mint function
-    mint(address);
+    // Call gasless mint (no gas fees!)
+    try {
+      await gaslessMint();
+    } catch (err) {
+      // Error is already set in the hook
+      console.error("Mint failed:", err);
+    }
   };
-
-  const isMinting = isPending || isConfirming;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
@@ -595,20 +600,28 @@ export default function MintPage() {
                   Congratulations!
                 </h3>
                 <p className="text-gray-300 mb-6">
-                  Your Muse AI NFT has been successfully minted!
+                  Your Muse AI NFT has been successfully minted! No gas fees paid!
                 </p>
-                {hash && (
+                {mintTokenId && (
+                  <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-lg p-4 mb-4 border border-purple-500/30">
+                    <p className="text-sm text-gray-400 mb-1">Token ID:</p>
+                    <p className="text-2xl font-bold text-purple-300">
+                      #{mintTokenId}
+                    </p>
+                  </div>
+                )}
+                {mintTxHash && (
                   <div className="bg-gray-800/50 rounded-lg p-4 mb-6">
                     <p className="text-sm text-gray-400 mb-2">
                       Transaction Hash:
                     </p>
                     <a
-                      href={`https://hyperion-testnet-explorer.metisdevops.link/tx/${hash}`}
+                      href={mintExplorerUrl || `https://hyperion-testnet-explorer.metisdevops.link/tx/${mintTxHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-xs text-purple-400 hover:text-purple-300 font-mono break-all underline hover:underline-offset-4 transition-all"
                     >
-                      {hash}
+                      {mintTxHash}
                     </a>
                   </div>
                 )}
@@ -690,7 +703,7 @@ export default function MintPage() {
             {[
               {
                 q: "Is this really free?",
-                a: "Yes! This is a completely free mint campaign. You only pay network gas fees.",
+                a: "Yes! This is a completely FREE mint with ZERO gas fees. Just sign the message with your wallet!",
               },
               {
                 q: "How many can I mint?",
