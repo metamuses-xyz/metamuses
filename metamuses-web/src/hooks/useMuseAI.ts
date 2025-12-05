@@ -54,6 +54,26 @@ export function useMuseAIContract() {
     });
   };
 
+  // Get user's NFT balance
+  const useBalance = (address?: `0x${string}`) => {
+    return useReadContract({
+      address: MUSE_AI_ADDRESS,
+      abi: MUSE_AI_ABI,
+      functionName: "balanceOf",
+      args: address ? [address] : undefined,
+    });
+  };
+
+  // Get all token IDs owned by user
+  const useTokensOfOwner = (address?: `0x${string}`) => {
+    return useReadContract({
+      address: MUSE_AI_ADDRESS,
+      abi: MUSE_AI_ABI,
+      functionName: "tokensOfOwner",
+      args: address ? [address] : undefined,
+    });
+  };
+
   return {
     // Contract data
     maxSupply: maxSupply ? Number(maxSupply) : 5000,
@@ -74,5 +94,7 @@ export function useMuseAIContract() {
 
     // Hooks
     useHasMinted,
+    useBalance,
+    useTokensOfOwner,
   };
 }

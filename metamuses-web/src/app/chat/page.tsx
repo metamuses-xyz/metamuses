@@ -4,8 +4,10 @@ import { useState, useEffect, useRef } from "react";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useChatAPI, checkAPIHealth } from "@/hooks/useChatAPI";
+import { useMuseAIContract } from "@/hooks/useMuseAI";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Link from "next/link";
 
 // Neural Network Background (reused from mint page)
 const NeuralNetwork = () => {
@@ -256,6 +258,15 @@ export default function ChatPage() {
     lastResponse,
   } = useChatAPI();
 
+  // NFT ownership check
+  const { useBalance, useTokensOfOwner } = useMuseAIContract();
+  const { data: nftBalance } = useBalance(address);
+  const { data: ownedTokens } = useTokensOfOwner(address);
+
+  // Check if user owns any NFTs
+  const hasNFT = nftBalance ? Number(nftBalance) > 0 : false;
+  const tokenIds = ownedTokens as bigint[] | undefined;
+
   // State
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
@@ -406,7 +417,7 @@ export default function ChatPage() {
 
   const handleSendMessage = async (messageContent?: string) => {
     const content = messageContent || inputMessage.trim();
-    if (!content || !selectedCompanion || !address) return;
+    if (!content || !selectedCompanion || !address || !hasNFT) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -511,6 +522,23 @@ export default function ChatPage() {
                   <p className="text-xs text-gray-400">
                     Connect your wallet to chat with AI companions
                   </p>
+                </div>
+              )}
+
+              {walletConnected && !hasNFT && (
+                <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4 text-center">
+                  <div className="text-purple-400 text-sm mb-2 font-semibold">
+                    🎨 NFT Required
+                  </div>
+                  <p className="text-xs text-gray-400 mb-3">
+                    You need to own a MuseAI NFT to chat with companions
+                  </p>
+                  <Link
+                    href="/mint"
+                    className="inline-block px-4 py-2 text-xs neural-button text-white rounded-lg transition-all duration-200"
+                  >
+                    Mint Your First NFT →
+                  </Link>
                 </div>
               )}
 
@@ -646,6 +674,27 @@ export default function ChatPage() {
                       <ConnectButton />
                     </div>
                   </div>
+                ) : !hasNFT ? (
+                  <div className="text-center py-20">
+                    <div className="text-6xl mb-4">🎨</div>
+                    <h3 className="text-2xl font-bold text-white mb-4">
+                      Mint Your First NFT
+                    </h3>
+                    <p className="text-gray-400 mb-4">
+                      You need to own a MuseAI NFT to unlock chat with AI companions
+                    </p>
+                    <p className="text-gray-500 text-sm mb-8">
+                      Each NFT gives you access to a unique AI companion with its own personality
+                    </p>
+                    <div className="flex justify-center">
+                      <Link
+                        href="/mint"
+                        className="neural-button px-8 py-3 text-white rounded-xl font-semibold transition-all duration-200 hover:scale-105"
+                      >
+                        Mint NFT Now →
+                      </Link>
+                    </div>
+                  </div>
                 ) : messages.length === 0 ? (
                   <div className="text-center py-20">
                     <div className="text-6xl mb-4">💬</div>
@@ -668,7 +717,7 @@ export default function ChatPage() {
               </div>
 
               {/* Input Area */}
-              {walletConnected && selectedCompanion && (
+              {walletConnected && hasNFT && selectedCompanion && (
                 <div className="p-6 border-t border-gray-700/50">
                   {messages.length <= 1 && (
                     <SuggestedPrompts onPromptClick={handleSendMessage} />
