@@ -10,6 +10,7 @@ contract MuseAITest is Test {
     address public owner = address(1);
     address public user1 = address(2);
     address public user2 = address(3);
+    address public backendMinter = address(999);
 
     string public baseURI = "https://api.metamuses.io/metadata/";
     uint256 public startTime;
@@ -20,7 +21,7 @@ contract MuseAITest is Test {
         endTime = block.timestamp + 30 days;
 
         vm.prank(owner);
-        museai = new MuseAI(baseURI, startTime, endTime);
+        museai = new MuseAI(baseURI, startTime, endTime, backendMinter);
     }
 
     function test_Deployment() public view {
@@ -31,24 +32,21 @@ contract MuseAITest is Test {
         assertEq(museai.mintEndTime(), endTime);
     }
 
-    function test_Mint() public {
-        vm.prank(user1);
-        museai.mint(user1);
+    function test_AdminMint() public {
+        vm.prank(owner);
+        museai.adminMint(user1);
 
         assertEq(museai.balanceOf(user1), 1);
         assertEq(museai.ownerOf(0), user1);
         assertEq(museai.getCurrentTokenId(), 1);
-        assertTrue(museai.hasMinted(user1));
+        // Note: adminMint does NOT set hasMinted
+        assertFalse(museai.hasMinted(user1));
     }
 
-    function test_MintOnlyOncePerWallet() public {
+    function test_AdminMintOnlyOwner() public {
         vm.prank(user1);
-        museai.mint(user1);
-
-        // Try to mint again with same address
-        vm.prank(user1);
-        vm.expectRevert("Address has already minted");
-        museai.mint(user1);
+        vm.expectRevert();
+        museai.adminMint(user1);
     }
 
     function test_BatchMint() public {
@@ -79,9 +77,9 @@ contract MuseAITest is Test {
         assertEq(museai.getCurrentTokenId(), 5000);
 
         // Try to mint one more - should fail
-        vm.prank(user2);
+        vm.prank(owner);
         vm.expectRevert("Max supply reached");
-        museai.mint(user2);
+        museai.adminMint(user2);
     }
 
     function test_BatchMintExceedsSupply() public {
@@ -90,26 +88,30 @@ contract MuseAITest is Test {
         museai.batchMint(user1, 5001);
     }
 
-    function test_MintBeforeStartTime() public {
+    function test_AdminMintBypassesTimeRestrictions() public {
         // Create new contract with future start time
         uint256 futureStart = block.timestamp + 1 days;
         uint256 futureEnd = futureStart + 30 days;
 
         vm.prank(owner);
-        MuseAI futureMuseAI = new MuseAI(baseURI, futureStart, futureEnd);
+        MuseAI futureMuseAI = new MuseAI(baseURI, futureStart, futureEnd, backendMinter);
 
-        vm.prank(user1);
-        vm.expectRevert("Minting has not started yet");
-        futureMuseAI.mint(user1);
+        // Admin can mint even before start time
+        vm.prank(owner);
+        futureMuseAI.adminMint(user1);
+
+        assertEq(futureMuseAI.balanceOf(user1), 1);
     }
 
-    function test_MintAfterEndTime() public {
+    function test_AdminMintAfterEndTime() public {
         // Fast forward past end time
         vm.warp(endTime + 1);
 
-        vm.prank(user1);
-        vm.expectRevert("Minting has ended");
-        museai.mint(user1);
+        // Admin can still mint after end time
+        vm.prank(owner);
+        museai.adminMint(user1);
+
+        assertEq(museai.balanceOf(user1), 1);
     }
 
     function test_IsMintingActive() public view {
@@ -127,8 +129,8 @@ contract MuseAITest is Test {
         vm.prank(owner);
         museai.setBaseURI(newBaseURI);
 
-        vm.prank(user1);
-        museai.mint(user1);
+        vm.prank(owner);
+        museai.adminMint(user1);
 
         string memory expectedURI = string(abi.encodePacked(newBaseURI, "0.json"));
         assertEq(museai.tokenURI(0), expectedURI);
@@ -167,8 +169,8 @@ contract MuseAITest is Test {
     }
 
     function test_TokenURI() public {
-        vm.prank(user1);
-        museai.mint(user1);
+        vm.prank(owner);
+        museai.adminMint(user1);
 
         string memory expectedURI = string(abi.encodePacked(baseURI, "0.json"));
         assertEq(museai.tokenURI(0), expectedURI);
@@ -206,8 +208,8 @@ contract MuseAITest is Test {
     }
 
     function test_TransferNFT() public {
-        vm.prank(user1);
-        museai.mint(user1);
+        vm.prank(owner);
+        museai.adminMint(user1);
 
         vm.prank(user1);
         museai.transferFrom(user1, user2, 0);
@@ -217,20 +219,18 @@ contract MuseAITest is Test {
         assertEq(museai.balanceOf(user2), 1);
     }
 
-    function test_MultipleUsersMint() public {
-        // User1 mints
-        vm.prank(user1);
-        museai.mint(user1);
+    function test_AdminMintMultipleToSameAddress() public {
+        // Admin can mint multiple NFTs to same address
+        vm.prank(owner);
+        museai.adminMint(user1);
 
-        // User2 mints
-        vm.prank(user2);
-        museai.mint(user2);
+        vm.prank(owner);
+        museai.adminMint(user1);
 
-        assertEq(museai.balanceOf(user1), 1);
-        assertEq(museai.balanceOf(user2), 1);
+        assertEq(museai.balanceOf(user1), 2);
         assertEq(museai.getCurrentTokenId(), 2);
-        assertTrue(museai.hasMinted(user1));
-        assertTrue(museai.hasMinted(user2));
+        // hasMinted should still be false since adminMint doesn't set it
+        assertFalse(museai.hasMinted(user1));
     }
 
     function testFuzz_MintMultiple(uint8 amount) public {

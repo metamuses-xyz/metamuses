@@ -5,7 +5,7 @@ import {Script} from "forge-std/Script.sol";
 import {MuseAI} from "../src/MuseAI.sol";
 import {console} from "forge-std/console.sol";
 
-contract DeployMuseAI is Script {
+contract DeployMuseAIGasless is Script {
     function run() external returns (MuseAI) {
         // Configuration
         string memory baseURI = vm.envString("BASE_URI");
@@ -23,12 +23,17 @@ contract DeployMuseAI is Script {
         vm.stopBroadcast();
 
         // Log deployment info
-        console.log("MuseAI deployed to:", address(museai));
+        console.log("========================================");
+        console.log("   MuseAI Gasless Minting Deployed    ");
+        console.log("========================================");
+        console.log("Contract Address:", address(museai));
         console.log("Base URI:", baseURI);
         console.log("Mint Start Time:", mintStartTime);
         console.log("Mint End Time:", mintEndTime);
         console.log("Backend Minter:", backendMinter);
         console.log("Owner:", museai.owner());
+        console.log("Chain ID:", block.chainid);
+        console.log("Domain Separator:", vm.toString(museai.DOMAIN_SEPARATOR()));
 
         return museai;
     }
