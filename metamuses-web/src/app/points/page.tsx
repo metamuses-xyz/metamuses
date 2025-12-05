@@ -5,24 +5,43 @@ import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { usePointsAPI, UserPoints } from "@/hooks/usePointsAPI";
 import { useLeaderboardAPI } from "@/hooks/useLeaderboardAPI";
+import { useTwitterVerification } from "@/hooks/useTwitterVerification";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 
 export default function PointsPage() {
   const { address, isConnected } = useAccount();
-  const { checkIn, getUserPoints, canCheckInToday, isLoading, error } = usePointsAPI();
+  const { checkIn, getUserPoints, canCheckInToday, isLoading, error } =
+    usePointsAPI();
   const { getUserRank } = useLeaderboardAPI();
+  const {
+    verifyTwitterHandle,
+    getVerification,
+    completeTwitterTask,
+    getUserCompletions,
+    isLoading: twitterLoading,
+    error: twitterError,
+  } = useTwitterVerification();
 
   const [userPoints, setUserPoints] = useState<UserPoints | null>(null);
   const [canCheckIn, setCanCheckIn] = useState(false);
   const [checkInSuccess, setCheckInSuccess] = useState(false);
   const [checkInError, setCheckInError] = useState<string | null>(null);
 
+  // Twitter verification state
+  const [twitterHandle, setTwitterHandle] = useState("");
+  const [isVerified, setIsVerified] = useState(false);
+  const [verifiedHandle, setVerifiedHandle] = useState<string | null>(null);
+  const [completedTasks, setCompletedTasks] = useState<string[]>([]);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [taskSuccess, setTaskSuccess] = useState<string | null>(null);
+
   // Load user points on mount and when address changes
   useEffect(() => {
     if (address) {
       loadUserPoints();
+      loadTwitterStatus();
     }
   }, [address]);
 
@@ -35,8 +54,62 @@ export default function PointsPage() {
       setCanCheckIn(canCheckInToday(points.last_checkin_date));
     } catch (err) {
       // User might not have points yet - that's okay
-      console.log('User has no points yet');
+      console.log("User has no points yet");
       setCanCheckIn(true);
+    }
+  };
+
+  const loadTwitterStatus = async () => {
+    try {
+      const verification = await getVerification();
+      if (verification) {
+        setIsVerified(true);
+        setVerifiedHandle(verification.twitter_handle);
+      }
+
+      const completions = await getUserCompletions();
+      setCompletedTasks(completions);
+    } catch (err) {
+      console.log("No Twitter verification yet");
+    }
+  };
+
+  const handleVerifyTwitter = async () => {
+    if (!twitterHandle.trim()) return;
+
+    try {
+      const result = await verifyTwitterHandle(twitterHandle.trim());
+      if (result && result.success) {
+        setIsVerified(true);
+        setVerifiedHandle(twitterHandle.trim());
+        setShowVerifyModal(false);
+        setTaskSuccess("Twitter handle verified successfully!");
+        setTimeout(() => setTaskSuccess(null), 3000);
+      }
+    } catch (err) {
+      console.error("Verification failed:", err);
+    }
+  };
+
+  const handleCompleteTask = async (
+    taskType: "follow_twitter" | "retweet_post",
+  ) => {
+    if (!isVerified) {
+      setShowVerifyModal(true);
+      return;
+    }
+
+    try {
+      const result = await completeTwitterTask(taskType);
+      if (result && result.success && result.points_awarded) {
+        setCompletedTasks([...completedTasks, taskType]);
+        setTaskSuccess(`✓ Earned ${result.points_awarded} points!`);
+        setTimeout(() => setTaskSuccess(null), 3000);
+        // Reload points
+        await loadUserPoints();
+      }
+    } catch (err) {
+      console.error("Task completion failed:", err);
     }
   };
 
@@ -56,25 +129,25 @@ export default function PointsPage() {
       // Clear success message after 3 seconds
       setTimeout(() => setCheckInSuccess(false), 3000);
     } catch (err) {
-      setCheckInError(err instanceof Error ? err.message : 'Check-in failed');
+      setCheckInError(err instanceof Error ? err.message : "Check-in failed");
     }
   };
 
   const getStreakEmoji = (streak: number) => {
-    if (streak >= 30) return '🔥💎';
-    if (streak >= 14) return '🔥✨';
-    if (streak >= 7) return '🔥⚡';
-    if (streak >= 3) return '🔥';
-    return '🌟';
+    if (streak >= 30) return "🔥💎";
+    if (streak >= 14) return "🔥✨";
+    if (streak >= 7) return "🔥⚡";
+    if (streak >= 3) return "🔥";
+    return "🌟";
   };
 
   const getStreakMessage = (streak: number) => {
-    if (streak >= 30) return 'Diamond Streak! You\'re unstoppable!';
-    if (streak >= 14) return 'Two weeks strong! Keep it up!';
-    if (streak >= 7) return 'One week streak! You\'re on fire!';
-    if (streak >= 3) return 'Building momentum!';
-    if (streak === 0) return 'Start your streak today!';
-    return 'Keep going!';
+    if (streak >= 30) return "Diamond Streak! You're unstoppable!";
+    if (streak >= 14) return "Two weeks strong! Keep it up!";
+    if (streak >= 7) return "One week streak! You're on fire!";
+    if (streak >= 3) return "Building momentum!";
+    if (streak === 0) return "Start your streak today!";
+    return "Keep going!";
   };
 
   return (
@@ -99,12 +172,86 @@ export default function PointsPage() {
               Connect Your Wallet
             </h2>
             <p className="text-gray-400 mb-8">
-              Connect your wallet to start earning points and building your streak
+              Connect your wallet to start earning points and building your
+              streak
             </p>
             <ConnectButton />
           </div>
         ) : (
           <div className="space-y-6">
+            {/* Success/Error Messages */}
+            {taskSuccess && (
+              <div className="neural-card p-4 bg-green-500/10 border-2 border-green-500/50">
+                <div className="flex items-center space-x-2 text-green-400">
+                  <span className="text-xl">✓</span>
+                  <span className="font-semibold">{taskSuccess}</span>
+                </div>
+              </div>
+            )}
+
+            {twitterError && (
+              <div className="neural-card p-4 bg-red-500/10 border-2 border-red-500/50">
+                <div className="flex items-center space-x-2 text-red-400">
+                  <span className="text-xl">⚠</span>
+                  <span className="font-semibold">{twitterError}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Twitter Verification Modal */}
+            {showVerifyModal && (
+              <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+                <div className="neural-card p-8 max-w-md w-full">
+                  <h2 className="text-2xl font-bold text-white mb-4">
+                    🔐 Verify Twitter Handle
+                  </h2>
+                  <p className="text-gray-400 mb-6">
+                    To claim Twitter task rewards, please verify your Twitter
+                    handle by signing a message with your wallet.
+                  </p>
+
+                  <div className="mb-6">
+                    <label className="block text-gray-300 mb-2">
+                      Twitter Handle
+                    </label>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-gray-400">@</span>
+                      <input
+                        type="text"
+                        value={twitterHandle}
+                        onChange={(e) => setTwitterHandle(e.target.value)}
+                        placeholder="metamuses_xyz"
+                        className="flex-1 bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 focus:border-purple-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex space-x-4">
+                    <button
+                      onClick={handleVerifyTwitter}
+                      disabled={twitterLoading || !twitterHandle.trim()}
+                      className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {twitterLoading ? "Verifying..." : "Sign & Verify"}
+                    </button>
+                    <button
+                      onClick={() => setShowVerifyModal(false)}
+                      disabled={twitterLoading}
+                      className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-lg font-semibold disabled:opacity-50"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+
+                  {twitterError && (
+                    <div className="mt-4 p-3 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400 text-sm">
+                      {twitterError}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Points Overview Cards */}
             <div className="grid md:grid-cols-4 gap-6">
               {/* Total Points */}
@@ -122,7 +269,7 @@ export default function PointsPage() {
               <div className="neural-card p-6 bg-gradient-to-br from-orange-900/50 to-red-900/50">
                 <div className="text-gray-400 text-sm mb-2">Current Streak</div>
                 <div className="text-4xl font-bold text-orange-400 mb-2 flex items-center">
-                  {getStreakEmoji(userPoints?.current_streak || 0)}{' '}
+                  {getStreakEmoji(userPoints?.current_streak || 0)}{" "}
                   {userPoints?.current_streak || 0}
                 </div>
                 <div className="text-orange-300 text-xs">
@@ -134,7 +281,7 @@ export default function PointsPage() {
               <div className="neural-card p-6 bg-gradient-to-br from-yellow-900/50 to-amber-900/50">
                 <div className="text-gray-400 text-sm mb-2">Your Rank</div>
                 <div className="text-4xl font-bold text-yellow-400 mb-2">
-                  #{userPoints?.rank?.toLocaleString() || '-'}
+                  #{userPoints?.rank?.toLocaleString() || "-"}
                 </div>
                 <Link
                   href="/leaderboard"
@@ -150,9 +297,7 @@ export default function PointsPage() {
                 <div className="text-4xl font-bold text-green-400 mb-2">
                   🏆 {userPoints?.longest_streak || 0}
                 </div>
-                <div className="text-green-300 text-sm">
-                  Personal Record
-                </div>
+                <div className="text-green-300 text-sm">Personal Record</div>
               </div>
             </div>
 
@@ -178,7 +323,11 @@ export default function PointsPage() {
                           +{Math.min(userPoints.current_streak * 10, 100)} pts
                         </span>
                         <span className="text-gray-400 text-sm">
-                          ({(1 + Math.min(userPoints.current_streak * 0.1, 1)).toFixed(1)}x multiplier)
+                          (
+                          {(
+                            1 + Math.min(userPoints.current_streak * 0.1, 1)
+                          ).toFixed(1)}
+                          x multiplier)
                         </span>
                       </div>
                     </div>
@@ -187,7 +336,10 @@ export default function PointsPage() {
                   {/* Last Check-in Info */}
                   {userPoints?.last_checkin_date && (
                     <div className="text-gray-400 text-sm mb-4">
-                      Last check-in: {new Date(userPoints.last_checkin_date).toLocaleDateString()}
+                      Last check-in:{" "}
+                      {new Date(
+                        userPoints.last_checkin_date,
+                      ).toLocaleDateString()}
                     </div>
                   )}
                 </div>
@@ -206,9 +358,7 @@ export default function PointsPage() {
                           Checking in...
                         </>
                       ) : (
-                        <>
-                          🎁 Check In Now!
-                        </>
+                        <>🎁 Check In Now!</>
                       )}
                     </button>
                   ) : (
@@ -268,15 +418,19 @@ export default function PointsPage() {
 
               <div className="grid md:grid-cols-2 gap-4">
                 {/* Daily Check-In */}
-                <div className={`p-4 rounded-lg border-2 ${
-                  canCheckIn
-                    ? 'bg-purple-500/10 border-purple-500/50'
-                    : 'bg-gray-800/50 border-gray-700'
-                }`}>
+                <div
+                  className={`p-4 rounded-lg border-2 ${
+                    canCheckIn
+                      ? "bg-purple-500/10 border-purple-500/50"
+                      : "bg-gray-800/50 border-gray-700"
+                  }`}
+                >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
                       <span className="text-2xl">📅</span>
-                      <span className="font-semibold text-white">Daily Check-In</span>
+                      <span className="font-semibold text-white">
+                        Daily Check-In
+                      </span>
                     </div>
                     <span className="text-purple-400 font-bold">+50 pts</span>
                   </div>
@@ -291,12 +445,65 @@ export default function PointsPage() {
                   </div>
                 </div>
 
+                {/* Follow Twitter */}
+                <div
+                  className={`p-4 rounded-lg border-2 ${
+                    completedTasks.includes("follow_twitter")
+                      ? "bg-green-500/10 border-green-500/50"
+                      : "bg-gray-800/50 border-gray-700"
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-2xl">𝕏</span>
+                      <span className="font-semibold text-white">
+                        Follow on Twitter
+                      </span>
+                    </div>
+                    <span className="text-blue-400 font-bold">+150 pts</span>
+                  </div>
+                  <p className="text-gray-400 text-sm mb-2">
+                    Follow @metamuses_xyz on Twitter/X
+                    {isVerified && ` (${verifiedHandle})`}
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-500">One-time</span>
+                      {completedTasks.includes("follow_twitter") ? (
+                        <span className="text-green-400">✓ Completed</span>
+                      ) : null}
+                    </div>
+                    {!completedTasks.includes("follow_twitter") && (
+                      <div className="flex gap-2">
+                        <a
+                          href="https://x.com/metamuses_xyz"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 text-center bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 px-3 py-2 rounded text-xs font-semibold transition-colors"
+                        >
+                          1. Follow on 𝕏
+                        </a>
+                        <button
+                          onClick={() => handleCompleteTask("follow_twitter")}
+                          disabled={twitterLoading || !isVerified}
+                          className="flex-1 bg-green-500/20 hover:bg-green-500/30 text-green-400 px-3 py-2 rounded text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                          title={!isVerified ? "Please verify your Twitter handle first" : "Claim your points"}
+                        >
+                          {twitterLoading ? "Claiming..." : "2. Claim Points"}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 {/* Chat 15 Minutes */}
                 <div className="p-4 rounded-lg border-2 bg-gray-800/50 border-gray-700">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
                       <span className="text-2xl">💬</span>
-                      <span className="font-semibold text-white">Chat 15 Minutes</span>
+                      <span className="font-semibold text-white">
+                        Chat 15 Minutes
+                      </span>
                     </div>
                     <span className="text-purple-400 font-bold">+100 pts</span>
                   </div>
@@ -314,7 +521,9 @@ export default function PointsPage() {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
                       <span className="text-2xl">✉️</span>
-                      <span className="font-semibold text-white">Send 10 Messages</span>
+                      <span className="font-semibold text-white">
+                        Send 10 Messages
+                      </span>
                     </div>
                     <span className="text-purple-400 font-bold">+75 pts</span>
                   </div>
@@ -328,7 +537,7 @@ export default function PointsPage() {
                 </div>
 
                 {/* Mint NFT */}
-                <div className="p-4 rounded-lg border-2 bg-gray-800/50 border-gray-700">
+                {/*<div className="p-4 rounded-lg border-2 bg-gray-800/50 border-gray-700">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
                       <span className="text-2xl">🎨</span>
@@ -341,39 +550,21 @@ export default function PointsPage() {
                   </p>
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-gray-500">One-time</span>
-                    <Link href="/mint" className="text-purple-400 hover:underline">
+                    <Link
+                      href="/mint"
+                      className="text-purple-400 hover:underline"
+                    >
                       Mint now →
                     </Link>
                   </div>
-                </div>
-
-                {/* Follow Twitter */}
-                <div className="p-4 rounded-lg border-2 bg-gray-800/50 border-gray-700">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-2xl">𝕏</span>
-                      <span className="font-semibold text-white">Follow on Twitter</span>
-                    </div>
-                    <span className="text-blue-400 font-bold">+150 pts</span>
-                  </div>
-                  <p className="text-gray-400 text-sm mb-2">
-                    Follow @metamuses_xyz on Twitter/X
-                  </p>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-gray-500">One-time</span>
-                    <a
-                      href="https://x.com/metamuses_xyz"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-400 hover:underline"
-                    >
-                      Follow now →
-                    </a>
-                  </div>
-                </div>
+                </div>*/}
 
                 {/* Retweet Post */}
-                <div className="p-4 rounded-lg border-2 bg-gray-800/50 border-gray-700">
+                {/*<div className={`p-4 rounded-lg border-2 ${
+                  completedTasks.includes('retweet_post')
+                    ? 'bg-green-500/10 border-green-500/50'
+                    : 'bg-gray-800/50 border-gray-700'
+                }`}>
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
                       <span className="text-2xl">🔄</span>
@@ -386,16 +577,22 @@ export default function PointsPage() {
                   </p>
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-gray-500">One-time</span>
-                    <a
-                      href="https://x.com/metamuses_xyz"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-green-400 hover:underline"
-                    >
-                      Retweet →
-                    </a>
+                    {completedTasks.includes('retweet_post') ? (
+                      <span className="text-green-400">✓ Completed</span>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          window.open('https://x.com/metamuses_xyz', '_blank');
+                          setTimeout(() => handleCompleteTask('retweet_post'), 1000);
+                        }}
+                        disabled={twitterLoading}
+                        className="text-green-400 hover:underline disabled:opacity-50"
+                      >
+                        {twitterLoading ? 'Processing...' : 'Retweet & Claim →'}
+                      </button>
+                    )}
                   </div>
-                </div>
+                </div>*/}
               </div>
             </div>
 

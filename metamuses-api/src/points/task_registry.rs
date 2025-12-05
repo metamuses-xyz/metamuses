@@ -1,7 +1,7 @@
 // Task Registry - Modular Task Management System
 // Central registry for all task types
 
-use crate::points::tasks::{DailyCheckInTask, Task};
+use crate::points::tasks::{DailyCheckInTask, FollowTwitterTask, RetweetPostTask, Task};
 use std::collections::HashMap;
 use std::sync::Arc;
 use sqlx::PgPool;
@@ -20,6 +20,10 @@ impl TaskRegistry {
         // Register all task types
         // Daily Check-In: 50 base points, +10 per streak day, max 100 bonus
         registry.register_task(Arc::new(DailyCheckInTask::new(pool.clone(), 50, 10, 100)));
+
+        // Twitter Social Tasks
+        registry.register_task(Arc::new(FollowTwitterTask::new(pool.clone(), 150)));
+        registry.register_task(Arc::new(RetweetPostTask::new(pool.clone(), 100)));
 
         // Easy to add more tasks here!
         // registry.register_task(Arc::new(ChatDurationTask::new(pool.clone(), 900, 100)));

@@ -107,6 +107,8 @@ pub trait Task: Send + Sync {
 // ============================================================================
 
 pub mod daily_checkin;
+pub mod twitter_tasks;
 
 // Re-export task implementations
 pub use daily_checkin::DailyCheckInTask;
+pub use twitter_tasks::{FollowTwitterTask, RetweetPostTask};

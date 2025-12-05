@@ -6,6 +6,7 @@ pub mod repository;
 pub mod task_registry;
 pub mod points_service;
 pub mod leaderboard_service;
+pub mod twitter_service;
 
 // Re-export main types
 pub use tasks::{Task, TaskCompletion, TaskConfig, UserPoints};
@@ -13,3 +14,4 @@ pub use repository::PointsRepository;
 pub use task_registry::TaskRegistry;
 pub use points_service::PointsService;
 pub use leaderboard_service::{LeaderboardService, LeaderboardEntry};
+pub use twitter_service::{TwitterVerificationService, TwitterVerification, VerifyTwitterRequest, CompleteTwitterTaskRequest};

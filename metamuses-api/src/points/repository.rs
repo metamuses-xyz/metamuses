@@ -181,6 +181,68 @@ impl PointsRepository {
         Ok(result.exists)
     }
 
+    /// Check if user has ever completed a task (for one-time tasks)
+    pub async fn has_completed_task(&self, user_address: &str, task_type: &str) -> Result<bool> {
+        let result = sqlx::query!(
+            r#"
+            SELECT EXISTS(
+                SELECT 1 FROM task_completions
+                WHERE user_address = $1
+                AND task_type = $2
+            ) as "exists!"
+            "#,
+            user_address,
+            task_type
+        )
+        .fetch_one(&self.pool)
+        .await
+        .context("Failed to check task completion")?;
+
+        Ok(result.exists)
+    }
+
+    /// Record a task completion and return the completion record
+    pub async fn record_task_completion(
+        &self,
+        user_address: &str,
+        task_type: &str,
+        points: i32,
+        multiplier: f64,
+        metadata: serde_json::Value,
+    ) -> Result<TaskCompletion> {
+        let record = sqlx::query!(
+            r#"
+            INSERT INTO task_completions (user_address, task_id, task_type, points_awarded, multiplier, metadata)
+            VALUES ($1,
+                    (SELECT id FROM tasks WHERE task_type = $2 LIMIT 1),
+                    $2,
+                    $3,
+                    $4::DOUBLE PRECISION,
+                    $5)
+            RETURNING id, user_address, task_type, points_awarded as "points_awarded!",
+                      multiplier::DOUBLE PRECISION as "multiplier!", metadata, completed_at as "completed_at!"
+            "#,
+            user_address,
+            task_type,
+            points,
+            multiplier,
+            metadata
+        )
+        .fetch_one(&self.pool)
+        .await
+        .context("Failed to record task completion")?;
+
+        Ok(TaskCompletion {
+            id: record.id,
+            user_address: record.user_address,
+            task_type: record.task_type,
+            points_awarded: record.points_awarded,
+            multiplier: record.multiplier,
+            metadata: record.metadata.unwrap_or(serde_json::json!({})),
+            completed_at: record.completed_at,
+        })
+    }
+
     /// Get task completions for user
     pub async fn get_task_completions(
         &self,

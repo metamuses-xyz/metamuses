@@ -8,10 +8,11 @@ use metamuses_api::{
         middleware::{add_request_id, cors_layer, request_logger},
         mint_handlers::{gasless_mint_handler, get_nonce_handler, MintAppState},
         points_handlers::{points_routes, PointsAppState},
+        twitter_handlers::{twitter_routes, TwitterAppState},
     },
     cache::SemanticCache,
     config::Config,
-    points::{LeaderboardService, PointsService},
+    points::{LeaderboardService, PointsService, TwitterVerificationService},
     queue::RedisQueueManager,
     routing::IntelligentRouter,
     services::{CompanionService, InteractionStatsService, MemoryService},
@@ -167,6 +168,7 @@ async fn main() -> anyhow::Result<()> {
     info!("Initializing points system...");
     let points_service = Arc::new(PointsService::new(pool.clone()));
     let leaderboard_service = Arc::new(LeaderboardService::new(pool.clone()));
+    let twitter_service = Arc::new(TwitterVerificationService::new(pool.clone()));
     info!("✓ Points system initialized");
 
     // Create companion app state (for all handlers)
@@ -193,8 +195,14 @@ async fn main() -> anyhow::Result<()> {
 
     // Create points app state
     let points_state = PointsAppState {
-        points_service,
+        points_service: points_service.clone(),
         leaderboard_service,
+    };
+
+    // Create twitter app state
+    let twitter_state = TwitterAppState {
+        twitter_service,
+        points_service,
     };
 
     info!("Building API routes...");
@@ -218,6 +226,8 @@ async fn main() -> anyhow::Result<()> {
         )
         // Merge points routes
         .merge(points_routes(points_state))
+        // Merge twitter routes
+        .merge(twitter_routes(twitter_state))
         // Add middleware
         .layer(middleware::from_fn(request_logger))
         .layer(middleware::from_fn(add_request_id))
@@ -250,6 +260,10 @@ async fn main() -> anyhow::Result<()> {
     info!("  • GET  /api/leaderboard/global              - Global leaderboard");
     info!("  • GET  /api/leaderboard/user/:address       - User rank");
     info!("  • GET  /api/leaderboard/around/:address     - Leaderboard around user");
+    info!("  • POST /api/twitter/verify                  - Verify Twitter handle");
+    info!("  • GET  /api/twitter/verification/:address   - Get Twitter verification");
+    info!("  • POST /api/twitter/complete                - Complete Twitter task");
+    info!("  • GET  /api/twitter/completions/:address    - Get user Twitter completions");
     info!("  • GET  /ws                                  - WebSocket streaming");
     info!("");
     info!("Memory System:");
