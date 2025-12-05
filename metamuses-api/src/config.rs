@@ -44,6 +44,11 @@ pub struct Config {
     pub private_key: String,
     pub ipfs_jwt_token: String,
 
+    // Gasless Minting Configuration
+    pub backend_private_key: String,
+    pub chain_id: u64,
+    pub explorer_base_url: String,
+
     // Worker Process Configuration (for multi-process deployment)
     pub worker_id: usize,           // Worker instance ID (0, 1, 2, 3)
     pub total_workers: usize,       // Total number of worker processes
@@ -110,9 +115,19 @@ impl Config {
                 .parse()?,
 
             openai_api_key: env::var("OPENAI_API_KEY").ok(),
-            rpc_url: env::var("RPC_URL").unwrap_or_else(|_| "".to_string()),
+            rpc_url: env::var("RPC_URL")
+                .unwrap_or_else(|_| "https://hyperion-testnet.metisdevops.link".to_string()),
             private_key: env::var("PRIVATE_KEY").unwrap_or_else(|_| "".to_string()),
             ipfs_jwt_token: env::var("IPFS_JWT_TOKEN").unwrap_or_else(|_| "".to_string()),
+
+            // Gasless minting config
+            backend_private_key: env::var("BACKEND_PRIVATE_KEY")
+                .unwrap_or_else(|_| "".to_string()),
+            chain_id: env::var("CHAIN_ID")
+                .unwrap_or_else(|_| "133717".to_string())
+                .parse()?,
+            explorer_base_url: env::var("EXPLORER_BASE_URL")
+                .unwrap_or_else(|_| "https://hyperion-testnet-explorer.metisdevops.link".to_string()),
 
             // Worker process configuration
             // For 16 CPUs with 4 workers: each worker gets 4 threads

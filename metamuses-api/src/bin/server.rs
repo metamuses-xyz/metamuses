@@ -6,6 +6,7 @@ use metamuses_api::{
     api::{
         companion_chat_handlers::{companion_chat_handler, CompanionAppState, CompanionChatMetrics},
         middleware::{add_request_id, cors_layer, request_logger},
+        mint_handlers::{gasless_mint_handler, get_nonce_handler, MintAppState},
     },
     cache::SemanticCache,
     config::Config,
@@ -170,6 +171,18 @@ async fn main() -> anyhow::Result<()> {
         metrics: Arc::new(RwLock::new(CompanionChatMetrics::default())),
     };
 
+    // Create mint app state (for gasless minting)
+    info!("Initializing gasless mint service...");
+    let mint_state = MintAppState::new(
+        config.contract_address.parse()?,
+        config.rpc_url.clone(),
+        config.backend_private_key.clone(),
+        config.chain_id,
+        config.explorer_base_url.clone(),
+    )
+    .await?;
+    info!("✓ Gasless mint service initialized");
+
     info!("Building API routes...");
 
     // Build the router with companion chat handler
@@ -181,6 +194,14 @@ async fn main() -> anyhow::Result<()> {
         // Companion chat endpoint with memory system
         .route("/chat", post(companion_chat_handler))
         .with_state(app_state)
+        // Merge mint routes
+        .merge(
+            Router::new()
+                // Gasless mint endpoints
+                .route("/api/mint/nonce", post(get_nonce_handler))
+                .route("/api/mint/gasless", post(gasless_mint_handler))
+                .with_state(mint_state)
+        )
         // Add middleware
         .layer(middleware::from_fn(request_logger))
         .layer(middleware::from_fn(add_request_id))
@@ -202,10 +223,21 @@ async fn main() -> anyhow::Result<()> {
     info!("🚀 Server running on http://{}", addr);
     info!("");
     info!("Available endpoints:");
-    info!("  • GET  /health      - Health check");
-    info!("  • GET  /metrics     - System metrics");
-    info!("  • POST /chat        - Chat with AI companion (with memory)");
-    info!("  • GET  /ws          - WebSocket streaming");
+    info!("  • GET  /health           - Health check");
+    info!("  • GET  /metrics          - System metrics");
+    info!("  • POST /chat             - Chat with AI companion (with memory)");
+    info!("  • POST /api/mint/nonce   - Get nonce for gasless minting");
+    info!("  • POST /api/mint/gasless - Gasless NFT minting");
+    info!("  • GET  /ws               - WebSocket streaming");
+    info!("");
+    info!("Memory System:");
+    info!("  • Short-term: Redis (last 20 messages, 24h TTL)");
+    info!("  • Long-term:  PostgreSQL (permanent storage)");
+    info!("");
+    info!("Gasless Minting:");
+    info!("  • Backend subsidizes gas fees");
+    info!("  • EIP-712 signature verification");
+    info!("  • Replay protection with nonces");
     info!("");
     info!("Memory System:");
     info!("  • Short-term: Redis (last 20 messages, 24h TTL)");

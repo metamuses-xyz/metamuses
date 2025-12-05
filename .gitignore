@@ -33,3 +33,7 @@ qdrant_storage/
 *.bin
 *.safetensors
 /metamuse-api
+/metamuses-api/.fastembed_cache
+*.log
+/metamuses-api/models
+metamuses-api/deployment/scripts/deploy-api.sh
