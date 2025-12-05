@@ -83,8 +83,10 @@ export default function PointsPage() {
         setIsVerified(true);
         setVerifiedHandle(twitterHandle.trim());
         setShowVerifyModal(false);
-        setTaskSuccess("Twitter handle verified successfully!");
-        setTimeout(() => setTaskSuccess(null), 3000);
+        setTaskSuccess("✓ Twitter handle verified! You can now claim points.");
+        setTimeout(() => setTaskSuccess(null), 5000);
+        // Reload Twitter status to update UI
+        await loadTwitterStatus();
       }
     } catch (err) {
       console.error("Verification failed:", err);
@@ -464,7 +466,11 @@ export default function PointsPage() {
                   </div>
                   <p className="text-gray-400 text-sm mb-2">
                     Follow @metamuses_xyz on Twitter/X
-                    {isVerified && ` (${verifiedHandle})`}
+                    {isVerified && (
+                      <span className="text-green-400 ml-2">
+                        ✓ Verified as @{verifiedHandle}
+                      </span>
+                    )}
                   </p>
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center justify-between text-xs">
@@ -474,24 +480,51 @@ export default function PointsPage() {
                       ) : null}
                     </div>
                     {!completedTasks.includes("follow_twitter") && (
-                      <div className="flex gap-2">
-                        <a
-                          href="https://x.com/metamuses_xyz"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1 text-center bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 px-3 py-2 rounded text-xs font-semibold transition-colors"
-                        >
-                          1. Follow on 𝕏
-                        </a>
-                        <button
-                          onClick={() => handleCompleteTask("follow_twitter")}
-                          disabled={twitterLoading || !isVerified}
-                          className="flex-1 bg-green-500/20 hover:bg-green-500/30 text-green-400 px-3 py-2 rounded text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                          title={!isVerified ? "Please verify your Twitter handle first" : "Claim your points"}
-                        >
-                          {twitterLoading ? "Claiming..." : "2. Claim Points"}
-                        </button>
-                      </div>
+                      <>
+                        {!isVerified && (
+                          <div className="text-xs text-yellow-400 bg-yellow-500/10 border border-yellow-500/30 rounded px-2 py-1 mb-1">
+                            ⚠ You must verify your Twitter handle before claiming points
+                          </div>
+                        )}
+                        <div className="flex gap-2">
+                          {!isVerified ? (
+                            <>
+                              <a
+                                href="https://x.com/metamuses_xyz"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1 text-center bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 px-3 py-2 rounded text-xs font-semibold transition-colors"
+                              >
+                                1. Follow on 𝕏
+                              </a>
+                              <button
+                                onClick={() => setShowVerifyModal(true)}
+                                className="flex-1 bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 px-3 py-2 rounded text-xs font-semibold transition-colors"
+                              >
+                                2. Verify Handle
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <a
+                                href="https://x.com/metamuses_xyz"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1 text-center bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 px-3 py-2 rounded text-xs font-semibold transition-colors"
+                              >
+                                1. Follow on 𝕏
+                              </a>
+                              <button
+                                onClick={() => handleCompleteTask("follow_twitter")}
+                                disabled={twitterLoading}
+                                className="flex-1 bg-green-500/20 hover:bg-green-500/30 text-green-400 px-3 py-2 rounded text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                              >
+                                {twitterLoading ? "Claiming..." : "2. Claim Points"}
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </>
                     )}
                   </div>
                 </div>
