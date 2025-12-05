@@ -7,9 +7,9 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-8 mb-12">
           <div>
             <div className="flex items-center space-x-3 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center font-bold text-white">
+              {/*<div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center font-bold text-white">
                 M
-              </div>
+              </div>*/}
               <span className="text-xl font-bold text-white">MetaMuse</span>
             </div>
             <p className="text-gray-400 mb-6">
@@ -31,7 +31,8 @@ export default function Footer() {
             {
               title: "Product",
               links: [
-                { name: "Features", href: "#" },
+                { name: "Mint Muse AI", href: "/mint" },
+                { name: "Chat with Companions", href: "/chat" },
                 {
                   name: "Documentation",
                   href: "http://metamuses.gitbook.io/docs/",
