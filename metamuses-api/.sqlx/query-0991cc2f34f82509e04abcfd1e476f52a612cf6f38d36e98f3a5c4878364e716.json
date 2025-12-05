@@ -1,0 +1,64 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                user_address,\n                total_points,\n                lifetime_points,\n                current_streak,\n                longest_streak,\n                last_checkin_date,\n                rank,\n                season_points\n            FROM user_points\n            WHERE user_address = $1\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "user_address",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "total_points",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "lifetime_points",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "current_streak",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "longest_streak",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 5,
+        "name": "last_checkin_date",
+        "type_info": "Date"
+      },
+      {
+        "ordinal": 6,
+        "name": "rank",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 7,
+        "name": "season_points",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false
+    ]
+  },
+  "hash": "0991cc2f34f82509e04abcfd1e476f52a612cf6f38d36e98f3a5c4878364e716"
+}

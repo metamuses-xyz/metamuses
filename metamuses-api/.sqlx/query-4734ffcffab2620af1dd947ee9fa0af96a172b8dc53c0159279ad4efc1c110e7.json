@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO leaderboard_cache (leaderboard_type, user_address, rank, points, streak)\n            SELECT\n                $1 as leaderboard_type,\n                user_address,\n                ROW_NUMBER() OVER (ORDER BY total_points DESC) as rank,\n                total_points as points,\n                current_streak as streak\n            FROM user_points\n            WHERE total_points > 0\n            ORDER BY total_points DESC\n            LIMIT 1000\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Varchar"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "4734ffcffab2620af1dd947ee9fa0af96a172b8dc53c0159279ad4efc1c110e7"
+}

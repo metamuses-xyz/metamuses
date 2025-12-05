@@ -1,0 +1,64 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                    INSERT INTO user_points (user_address, total_points, lifetime_points, season_points)\n                    VALUES ($1, 0, 0, 0)\n                    RETURNING\n                        user_address,\n                        total_points,\n                        lifetime_points,\n                        current_streak,\n                        longest_streak,\n                        last_checkin_date,\n                        rank,\n                        season_points\n                    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "user_address",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "total_points",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "lifetime_points",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "current_streak",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "longest_streak",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 5,
+        "name": "last_checkin_date",
+        "type_info": "Date"
+      },
+      {
+        "ordinal": 6,
+        "name": "rank",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 7,
+        "name": "season_points",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Varchar"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false
+    ]
+  },
+  "hash": "b44d3de64e22d1b3ab5df521bccaf305b744fc2191a55d8b2e9f7d35b923f280"
+}

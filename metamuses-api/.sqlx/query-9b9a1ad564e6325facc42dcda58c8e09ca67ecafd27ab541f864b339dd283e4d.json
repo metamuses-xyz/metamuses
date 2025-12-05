@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                ROW_NUMBER() OVER (ORDER BY total_points DESC)::INTEGER as \"rank!\",\n                user_address as \"user_address!\",\n                NULL as username,\n                total_points as \"points!\",\n                current_streak as \"streak!\",\n                0 as \"nft_count!\"\n            FROM user_points\n            WHERE total_points > 0\n            ORDER BY total_points DESC\n            LIMIT $1\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "rank!",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "user_address!",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "username",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "points!",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 4,
+        "name": "streak!",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 5,
+        "name": "nft_count!",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      null,
+      false,
+      null,
+      false,
+      false,
+      null
+    ]
+  },
+  "hash": "9b9a1ad564e6325facc42dcda58c8e09ca67ecafd27ab541f864b339dd283e4d"
+}

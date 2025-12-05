@@ -103,9 +103,17 @@ impl CompanionService {
 
     /// Initialize a companion from an NFT
     pub async fn initialize_companion(&self, req: &CreateCompanionRequest) -> Result<Companion> {
-        // NFT ownership verification removed - allow companion creation for any token ID
+        // 1. Verify NFT ownership
+        let is_owner = self.verify_ownership(&req.owner_address, req.nft_token_id).await?;
+        if !is_owner {
+            bail!(
+                "Address {} does not own NFT token #{}",
+                req.owner_address,
+                req.nft_token_id
+            );
+        }
 
-        // 1. Check if companion already exists
+        // 2. Check if companion already exists
         if let Some(existing) = self
             .companion_repo
             .get_by_token_id(req.nft_token_id)
@@ -127,14 +135,14 @@ impl CompanionService {
             return Ok(existing);
         }
 
-        // 3. Ensure user exists
+        // 4. Ensure user exists
         let user_req = UpsertUserRequest {
             wallet_address: req.owner_address.clone(),
             username: None,
         };
         self.user_repo.upsert(&user_req).await?;
 
-        // 4. Generate traits and name
+        // 5. Generate traits and name
         let traits = req
             .traits
             .clone()
@@ -145,7 +153,7 @@ impl CompanionService {
             .clone()
             .unwrap_or_else(|| generate_companion_name(req.nft_token_id));
 
-        // 5. Create companion
+        // 6. Create companion
         let companion = self
             .companion_repo
             .create(req.nft_token_id, &req.owner_address, &name, &traits)

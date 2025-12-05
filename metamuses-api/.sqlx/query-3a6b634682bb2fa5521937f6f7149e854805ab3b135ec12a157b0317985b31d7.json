@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                    UPDATE user_streaks SET\n                        current_streak = current_streak + 1,\n                        longest_streak = GREATEST(longest_streak, current_streak + 1),\n                        last_checkin_date = $1,\n                        total_checkins = total_checkins + 1,\n                        updated_at = NOW()\n                    WHERE user_address = $2\n                    RETURNING current_streak as \"streak!\"\n                    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "streak!",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Date",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "3a6b634682bb2fa5521937f6f7149e854805ab3b135ec12a157b0317985b31d7"
+}

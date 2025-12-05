@@ -41,6 +41,7 @@ RUN mkdir -p src/bin && \
 
 # Copy actual source code
 COPY src ./src
+COPY .sqlx ./.sqlx
 COPY migrations ./migrations
 COPY benches ./benches
 

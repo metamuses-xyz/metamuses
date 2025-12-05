@@ -1,0 +1,22 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT (COUNT(*) + 1) as \"rank!\"\n            FROM user_points\n            WHERE total_points > (\n                SELECT total_points FROM user_points WHERE user_address = $1\n            )\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "rank!",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "e397c13b3575189170cdacdcf6b16069047c89ce80da5b41e49adbe75ec4ca9c"
+}

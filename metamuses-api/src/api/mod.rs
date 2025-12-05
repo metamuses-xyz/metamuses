@@ -7,6 +7,8 @@ pub mod companion_handlers;
 pub mod handlers;
 pub mod middleware;
 pub mod mint_handlers;
+pub mod points_handlers;
+pub mod twitter_handlers;
 pub mod types;
 pub mod websocket;
 
@@ -16,4 +18,6 @@ pub use companion_handlers::*;
 pub use handlers::*;
 pub use middleware::*;
 pub use mint_handlers::*;
+pub use points_handlers::*;
+pub use twitter_handlers::*;
 pub use types::*;
