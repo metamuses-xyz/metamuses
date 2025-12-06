@@ -6,6 +6,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { usePointsAPI, UserPoints } from "@/hooks/usePointsAPI";
 import { useLeaderboardAPI } from "@/hooks/useLeaderboardAPI";
 import { useTwitterVerification } from "@/hooks/useTwitterVerification";
+import { useMuseAIContract } from "@/hooks/useMuseAI";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
@@ -23,6 +24,15 @@ export default function PointsPage() {
     isLoading: twitterLoading,
     error: twitterError,
   } = useTwitterVerification();
+
+  // NFT ownership check
+  const { useBalance, useTokensOfOwner } = useMuseAIContract();
+  const { data: nftBalance } = useBalance(address);
+  const { data: ownedTokens } = useTokensOfOwner(address);
+
+  // Check if user owns any NFTs
+  const hasNFT = nftBalance ? Number(nftBalance) > 0 : false;
+  const tokenIds = ownedTokens as bigint[] | undefined;
 
   const [userPoints, setUserPoints] = useState<UserPoints | null>(null);
   const [canCheckIn, setCanCheckIn] = useState(false);
@@ -178,6 +188,27 @@ export default function PointsPage() {
               streak
             </p>
             <ConnectButton />
+          </div>
+        ) : !hasNFT ? (
+          <div className="neural-card p-12 text-center">
+            <div className="text-6xl mb-4">🎨</div>
+            <h2 className="text-2xl font-bold text-white mb-4">
+              Mint Your First NFT
+            </h2>
+            <p className="text-gray-400 mb-4">
+              You need to own a MuseAI NFT to access the points system
+            </p>
+            <p className="text-gray-500 text-sm mb-8">
+              Each NFT unlocks access to AI companions, points earning, and exclusive features
+            </p>
+            <div className="flex justify-center">
+              <Link
+                href="/mint"
+                className="neural-button px-8 py-3 text-white rounded-xl font-semibold transition-all duration-200 hover:scale-105"
+              >
+                Mint NFT Now →
+              </Link>
+            </div>
           </div>
         ) : (
           <div className="space-y-6">
