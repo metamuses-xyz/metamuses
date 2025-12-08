@@ -10,16 +10,23 @@
         "format": "prettier --write ."
     },
     "dependencies": {
+        "@pixi/app": "6.5.10",
+        "@pixi/core": "6.5.10",
+        "@pixi/display": "6.5.10",
+        "@pixi/extensions": "6.5.10",
+        "@pixi/ticker": "6.5.10",
         "@rainbow-me/rainbowkit": "^2.2.8",
         "@react-native-async-storage/async-storage": "^2.2.0",
         "@tanstack/react-query": "^5.90.2",
         "@vercel/analytics": "^1.5.0",
         "next": "16.0.7",
+        "pixi-live2d-display": "0.4.0",
         "react": "^19.2.1",
         "react-dom": "^19.2.1",
         "viem": "~2.38.0",
         "wagmi": "^2.17.5",
-        "zod": "^4.1.12"
+        "zod": "^4.1.12",
+        "zustand": "^5.0.8"
     },
     "devDependencies": {
         "@types/node": "^20",

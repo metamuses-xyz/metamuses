@@ -48,6 +48,11 @@ const nextConfig: NextConfig = {
       });
     }
 
+    // Support for Live2D model3.json files
+    config.module.rules.push({
+      test: /\.model3\.json$/,
+      type: "asset/resource",
+    });
     return config;
   },
 };
