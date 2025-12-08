@@ -8,16 +8,17 @@ import { Analytics } from "@vercel/analytics/next";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MetaMuse - AI Companions NFT",
+  title:
+    "MetaMuses - AI companion you truly own, with a verifiable personality",
   description: "Revolutionary AI companion NFTs on the Metis blockchain",
   icons: {
     icon: [
       {
-        url: '/metamuses_logo_2.png',
-        sizes: 'any',
+        url: "/metamuses_logo_2.png",
+        sizes: "any",
       },
     ],
-    apple: '/metamuses_logo_2.png',
+    apple: "/metamuses_logo_2.png",
   },
 };
 
