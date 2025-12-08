@@ -515,7 +515,7 @@ export default function ChatPage() {
       <Header />
 
       {/* Main Content - 🆕 SPLIT SCREEN LAYOUT */}
-      <div className="relative z-10 flex flex-col lg:flex-row h-[calc(100vh-80px)] overflow-hidden">
+      <div className="relative z-10 flex flex-col lg:flex-row h-[calc(105vh-80px)] overflow-hidden">
         {/* LEFT SIDE: Chat Interface (50% on desktop, full on mobile) */}
         <div
           className={`flex flex-col ${showLive2D ? "w-full lg:w-1/2" : "w-full"} transition-all duration-300`}
@@ -570,7 +570,7 @@ export default function ChatPage() {
                   )}
 
                   {/* Messages */}
-                  <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                  <div className="flex-1 overflow-y-auto p-6 space-y-4 max-h-[calc(100vh-400px)]">
                     {!walletConnected && (
                       <div className="text-center py-12">
                         <div className="text-6xl mb-4">🔐</div>
