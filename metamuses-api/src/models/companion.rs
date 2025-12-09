@@ -138,9 +138,19 @@ pub struct CompanionStats {
 
 impl Companion {
     /// Check if companion can level up
+    /// XP is cumulative, so we need to check if total XP exceeds the cumulative threshold for next level
     pub fn can_level_up(&self) -> bool {
-        let required_xp = Self::xp_for_level(self.level as u32);
-        self.experience_points >= required_xp as i64
+        let cumulative_xp_for_next_level = Self::cumulative_xp_for_level((self.level + 1) as u32);
+        self.experience_points >= cumulative_xp_for_next_level as i64
+    }
+
+    /// Calculate cumulative XP required to reach a given level
+    pub fn cumulative_xp_for_level(level: u32) -> u64 {
+        let mut total = 0u64;
+        for l in 1..level {
+            total += Self::xp_for_level(l);
+        }
+        total
     }
 
     /// Calculate XP required for a given level
