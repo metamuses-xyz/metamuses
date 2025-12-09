@@ -6,6 +6,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useChatAPI, checkAPIHealth } from "@/hooks/useChatAPI";
 import { useMuseAIContract } from "@/hooks/useMuseAI";
 import { useEmotionQueue } from "@/hooks/use-emotion-queue";
+import { stripEmotionMarkers } from "@/constants/emotions";
 import dynamic from "next/dynamic";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -350,30 +351,30 @@ export default function ChatPage() {
       status: "online",
       description: "Creative soul with mystical wisdom",
     },
-    {
-      id: "2",
-      name: "Sage the Wise",
-      avatar: {
-        gradient: "from-blue-500 to-cyan-500",
-        initial: "S",
-        emoji: "🧙‍♂️",
-      },
-      personality: { creativity: 45, wisdom: 98, humor: 30, empathy: 85 },
-      status: "online",
-      description: "Ancient wisdom meets modern understanding",
-    },
-    {
-      id: "3",
-      name: "Spark the Jester",
-      avatar: {
-        gradient: "from-orange-500 to-yellow-500",
-        initial: "S",
-        emoji: "🎭",
-      },
-      personality: { creativity: 85, wisdom: 40, humor: 98, empathy: 70 },
-      status: "thinking",
-      description: "Bringing joy and laughter to conversations",
-    },
+    // {
+    //   id: "2",
+    //   name: "Sage the Wise",
+    //   avatar: {
+    //     gradient: "from-blue-500 to-cyan-500",
+    //     initial: "S",
+    //     emoji: "🧙‍♂️",
+    //   },
+    //   personality: { creativity: 45, wisdom: 98, humor: 30, empathy: 85 },
+    //   status: "online",
+    //   description: "Ancient wisdom meets modern understanding",
+    // },
+    // {
+    //   id: "3",
+    //   name: "Spark the Jester",
+    //   avatar: {
+    //     gradient: "from-orange-500 to-yellow-500",
+    //     initial: "S",
+    //     emoji: "🎭",
+    //   },
+    //   personality: { creativity: 85, wisdom: 40, humor: 98, empathy: 70 },
+    //   status: "thinking",
+    //   description: "Bringing joy and laughter to conversations",
+    // },
   ];
 
   // Check API health on mount
@@ -426,17 +427,14 @@ export default function ChatPage() {
     scrollToBottom();
   }, [messages]);
 
-  // 🆕 Detect emotions from AI messages
-  useEffect(() => {
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage && lastMessage.sender === "ai" && !lastMessage.typing) {
-      console.log("[Chat] Detecting emotions in:", lastMessage.content);
-      detectAndEnqueue(lastMessage.content);
-    }
-  }, [messages, detectAndEnqueue]);
-
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "nearest"
+      });
+    }
   };
 
   const handleSendMessage = async (messageContent?: string) => {
@@ -470,9 +468,15 @@ export default function ChatPage() {
         },
       );
 
+      // Detect and queue emotions BEFORE stripping markers
+      detectAndEnqueue(aiResponse);
+
+      // Strip emotion markers from displayed content
+      const cleanedContent = stripEmotionMarkers(aiResponse);
+
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: aiResponse,
+        content: cleanedContent,
         sender: "ai",
         timestamp: new Date(),
       };
@@ -515,7 +519,7 @@ export default function ChatPage() {
       <Header />
 
       {/* Main Content - 🆕 SPLIT SCREEN LAYOUT */}
-      <div className="relative z-10 flex flex-col lg:flex-row h-[calc(105vh-80px)] overflow-hidden">
+      <div className="relative z-10 flex flex-col lg:flex-row h-[calc(100vh-80px)] overflow-hidden">
         {/* LEFT SIDE: Chat Interface (50% on desktop, full on mobile) */}
         <div
           className={`flex flex-col ${showLive2D ? "w-full lg:w-1/2" : "w-full"} transition-all duration-300`}

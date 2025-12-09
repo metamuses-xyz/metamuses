@@ -65,3 +65,20 @@ export const DEFAULT_MODEL_PARAMETERS = {
 } as const
 
 export type ModelParameters = typeof DEFAULT_MODEL_PARAMETERS
+
+/**
+ * Utility function to strip emotion markers from text for display
+ * @param text - Text potentially containing emotion markers
+ * @returns Clean text without emotion markers
+ */
+export function stripEmotionMarkers(text: string): string {
+  let cleanedText = text
+
+  // Remove all emotion markers
+  for (const emotion of EMOTION_VALUES) {
+    cleanedText = cleanedText.replace(new RegExp(emotion.replace(/[|<>]/g, '\\$&'), 'g'), '')
+  }
+
+  // Clean up any extra whitespace left behind
+  return cleanedText.trim()
+}
