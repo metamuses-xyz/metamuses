@@ -15,21 +15,24 @@ impl CompanionRepository {
     /// Create a new companion
     pub async fn create(
         &self,
+        muse_id: i64,
         nft_token_id: i64,
         owner_address: &str,
         name: &str,
         traits: &Traits,
+        is_public: bool,
     ) -> Result<Companion> {
         let companion = sqlx::query_as::<_, Companion>(
             r#"
             INSERT INTO companions (
-                nft_token_id, owner_address, name,
-                creativity, wisdom, humor, empathy, logic
+                muse_id, nft_token_id, owner_address, name,
+                creativity, wisdom, humor, empathy, logic, is_public
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
             RETURNING *
             "#,
         )
+        .bind(muse_id)
         .bind(nft_token_id)
         .bind(owner_address.to_lowercase())
         .bind(name)
@@ -38,6 +41,7 @@ impl CompanionRepository {
         .bind(traits.humor as i16)
         .bind(traits.empathy as i16)
         .bind(traits.logic as i16)
+        .bind(is_public)
         .fetch_one(&self.pool)
         .await
         .context("Failed to create companion")?;
@@ -64,6 +68,17 @@ impl CompanionRepository {
                 .fetch_optional(&self.pool)
                 .await
                 .context("Failed to get companion by token id")?;
+
+        Ok(companion)
+    }
+
+    /// Get companion by Muse ID
+    pub async fn get_by_muse_id(&self, muse_id: i64) -> Result<Option<Companion>> {
+        let companion = sqlx::query_as::<_, Companion>("SELECT * FROM companions WHERE muse_id = $1")
+            .bind(muse_id)
+            .fetch_optional(&self.pool)
+            .await
+            .context("Failed to get companion by muse id")?;
 
         Ok(companion)
     }
@@ -111,6 +126,11 @@ impl CompanionRepository {
             param_index += 1;
         }
 
+        if let Some(is_public) = &req.is_public {
+            params.push(format!(", is_public = ${}", param_index));
+            param_index += 1;
+        }
+
         query.push_str(&params.join(""));
         query.push_str(&format!(" WHERE id = ${} RETURNING *", param_index));
 
@@ -122,6 +142,10 @@ impl CompanionRepository {
 
         if let Some(description) = &req.description {
             q = q.bind(description);
+        }
+
+        if let Some(is_public) = &req.is_public {
+            q = q.bind(is_public);
         }
 
         q = q.bind(id);
@@ -253,6 +277,107 @@ impl CompanionRepository {
         Ok(exists)
     }
 
+    /// Get all public companions (visible to all users)
+    pub async fn get_all_public(&self, limit: i64, offset: i64) -> Result<Vec<Companion>> {
+        let companions = sqlx::query_as::<_, Companion>(
+            "SELECT * FROM companions WHERE is_public = true ORDER BY created_at DESC LIMIT $1 OFFSET $2",
+        )
+        .bind(limit)
+        .bind(offset)
+        .fetch_all(&self.pool)
+        .await
+        .context("Failed to get public companions")?;
+
+        Ok(companions)
+    }
+
+    /// Get all companions for a specific NFT token ID (including public ones)
+    pub async fn get_all_by_token_id(&self, token_id: i64) -> Result<Vec<Companion>> {
+        let companions = sqlx::query_as::<_, Companion>(
+            "SELECT * FROM companions WHERE nft_token_id = $1 ORDER BY created_at DESC",
+        )
+        .bind(token_id)
+        .fetch_all(&self.pool)
+        .await
+        .context("Failed to get companions by token id")?;
+
+        Ok(companions)
+    }
+
+    /// Get companions accessible to a user (owned + public)
+    /// This includes:
+    /// 1. All companions owned by the user
+    /// 2. All public companions from other users
+    pub async fn get_accessible_by_user(
+        &self,
+        user_address: &str,
+        limit: i64,
+        offset: i64,
+    ) -> Result<Vec<Companion>> {
+        let companions = sqlx::query_as::<_, Companion>(
+            r#"
+            SELECT * FROM companions
+            WHERE owner_address = $1 OR is_public = true
+            ORDER BY
+                CASE WHEN owner_address = $1 THEN 0 ELSE 1 END,
+                created_at DESC
+            LIMIT $2 OFFSET $3
+            "#,
+        )
+        .bind(user_address.to_lowercase())
+        .bind(limit)
+        .bind(offset)
+        .fetch_all(&self.pool)
+        .await
+        .context("Failed to get accessible companions")?;
+
+        Ok(companions)
+    }
+
+    /// Update privacy setting for a companion (owner only)
+    pub async fn update_privacy(
+        &self,
+        id: Uuid,
+        owner_address: &str,
+        is_public: bool,
+    ) -> Result<Companion> {
+        let companion = sqlx::query_as::<_, Companion>(
+            r#"
+            UPDATE companions
+            SET is_public = $1, updated_at = NOW()
+            WHERE id = $2 AND owner_address = $3
+            RETURNING *
+            "#,
+        )
+        .bind(is_public)
+        .bind(id)
+        .bind(owner_address.to_lowercase())
+        .fetch_one(&self.pool)
+        .await
+        .context("Failed to update companion privacy")?;
+
+        Ok(companion)
+    }
+
+    /// Check if a user can access a companion (owner or public)
+    pub async fn can_access(&self, id: Uuid, user_address: &str) -> Result<bool> {
+        let can_access = sqlx::query_scalar::<_, bool>(
+            r#"
+            SELECT EXISTS(
+                SELECT 1 FROM companions
+                WHERE id = $1 AND (owner_address = $2 OR is_public = true)
+            )
+            "#,
+        )
+        .bind(id)
+        .bind(user_address.to_lowercase())
+        .fetch_one(&self.pool)
+        .await
+        .context("Failed to check companion access")?;
+
+        Ok(can_access)
+    }
+
     /// Delete companion (for testing)
     #[cfg(test)]
     pub async fn delete(&self, id: Uuid) -> Result<()> {
@@ -289,12 +414,14 @@ mod tests {
 
         let traits = Traits::balanced();
         let companion = repo
-            .create(99999, "0xtest123", "Test Companion", &traits)
+            .create(99999, 1, "0xtest123", "Test Companion", &traits, false)
             .await
             .expect("Failed to create companion");
 
         assert_eq!(companion.name, "Test Companion");
-        assert_eq!(companion.nft_token_id, 99999);
+        assert_eq!(companion.muse_id, 99999);
+        assert_eq!(companion.nft_token_id, 1);
+        assert_eq!(companion.is_public, false);
 
         let fetched = repo
             .get_by_id(companion.id)

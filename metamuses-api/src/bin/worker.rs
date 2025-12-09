@@ -21,9 +21,14 @@ async fn main() -> anyhow::Result<()> {
     info!("║   MetaMuses AI Inference Worker       ║");
     info!("║              v0.1.0                    ║");
     info!("╠════════════════════════════════════════╣");
-    info!("║  Worker ID: {}/{}                       ║", config.worker_id, config.total_workers);
-    info!("║  Threads: {} | Batch: {} | Ctx: {}   ║",
-        config.threads_per_worker, config.batch_size, config.context_size);
+    info!(
+        "║  Worker ID: {}/{}                       ║",
+        config.worker_id, config.total_workers
+    );
+    info!(
+        "║  Threads: {} | Batch: {} | Ctx: {}   ║",
+        config.threads_per_worker, config.batch_size, config.context_size
+    );
     info!("╚════════════════════════════════════════╝");
 
     info!("Loading configuration...");
@@ -39,7 +44,11 @@ async fn main() -> anyhow::Result<()> {
     // Initialize inference engine with worker-specific configuration
     info!("Initializing inference engine...");
     info!("Model directory: {}", config.models_dir);
-    let model_path = format!("{}/qwen2.5-3b-instruct-q4_k_m.gguf", config.models_dir);
+
+    // Get model filename from environment or use default (0.5B for high concurrency)
+    let model_filename = std::env::var("MODEL_FILENAME")
+        .unwrap_or_else(|_| "qwen2.5-0.5b-instruct-q4_k_m.gguf".to_string());
+    let model_path = format!("{}/{}", config.models_dir, model_filename);
     info!("Loading model from: {}", model_path);
 
     // Check if model file exists
@@ -49,7 +58,7 @@ async fn main() -> anyhow::Result<()> {
     }
 
     info!("Model file found, beginning initialization...");
-    info!("This may take 30-60 seconds for model loading...");
+    info!("This may take 10-30 seconds for model loading (0.5B is fast!)...");
 
     // Configure llama.cpp for this worker instance
     let llama_config = LlamaCppConfig {
@@ -64,24 +73,35 @@ async fn main() -> anyhow::Result<()> {
     let max_tokens = std::env::var("MAX_TOKENS")
         .ok()
         .and_then(|v| v.parse().ok())
-        .unwrap_or(32);
+        .unwrap_or(128);
 
     let gen_config = GenerationConfig {
         max_new_tokens: max_tokens,
         temperature: 0.7,
         top_p: 0.9,
         repetition_penalty: 1.1,
-        stop_sequences: vec![
-            "<|im_end|>".to_string(),
-            "<|endoftext|>".to_string(),
-        ],
+        stop_sequences: vec!["<|im_end|>".to_string(), "<|endoftext|>".to_string()],
     };
 
-    info!("   Max tokens: {} (set MAX_TOKENS env to override)", max_tokens);
+    info!(
+        "   Max tokens: {} (set MAX_TOKENS env to override)",
+        max_tokens
+    );
+
+    // Determine model name from filename for logging
+    let model_name = if model_filename.contains("0.5b") {
+        "Qwen2.5-0.5B-Instruct"
+    } else if model_filename.contains("1.5b") {
+        "Qwen2.5-1.5B-Instruct"
+    } else if model_filename.contains("3b") {
+        "Qwen2.5-3B-Instruct"
+    } else {
+        "Qwen2.5-Instruct"
+    };
 
     let engine = match LlamaCppEngine::new_with_full_config(
         &model_path,
-        "Qwen2.5-3B-Instruct".to_string(),
+        model_name.to_string(),
         ModelTier::Fast,
         gen_config,
         llama_config,
@@ -90,10 +110,14 @@ async fn main() -> anyhow::Result<()> {
     {
         Ok(engine) => {
             info!("✓ Inference engine initialized successfully!");
+            info!("   Model: {}", model_name);
             #[cfg(target_os = "macos")]
             info!("   Backend: llama.cpp with Metal GPU acceleration");
             #[cfg(target_os = "linux")]
-            info!("   Backend: llama.cpp CPU ({} threads)", config.threads_per_worker);
+            info!(
+                "   Backend: llama.cpp CPU ({} threads)",
+                config.threads_per_worker
+            );
             engine
         }
         Err(e) => {
@@ -103,7 +127,10 @@ async fn main() -> anyhow::Result<()> {
     };
 
     info!("");
-    info!("⚡ Worker {} ready! Listening for jobs...", config.worker_id);
+    info!(
+        "⚡ Worker {} ready! Listening for jobs...",
+        config.worker_id
+    );
     info!("");
 
     // Main worker loop
@@ -176,7 +203,7 @@ async fn main() -> anyhow::Result<()> {
                         let result = InferenceResult {
                             request_id: job.id,
                             content: response,
-                            model_name: "Qwen2.5-3B-Instruct".to_string(),
+                            model_name: model_name.to_string(),
                             tier: ModelTier::Fast,
                             latency_ms,
                             from_cache: false,
@@ -202,7 +229,7 @@ async fn main() -> anyhow::Result<()> {
                         let result = InferenceResult {
                             request_id: job.id,
                             content: format!("Error: {}", e),
-                            model_name: "Qwen2.5-3B-Instruct".to_string(),
+                            model_name: model_name.to_string(),
                             tier: ModelTier::Fast,
                             latency_ms: start.elapsed().as_millis() as u64,
                             from_cache: false,

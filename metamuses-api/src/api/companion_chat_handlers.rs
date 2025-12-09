@@ -68,61 +68,77 @@ pub async fn companion_chat_handler(
     let request_id = Uuid::new_v4();
     let start = std::time::Instant::now();
 
-    // STEP 1: Get or initialize companion
-    let companion = match state
+    // STEP 1: Get companion by muse_id
+    // Note: muse_id is the unique companion instance ID, not the NFT token_id
+    let companion = state
         .companion_service
-        .get_companion_by_token_id(req.muse_id as i64)
+        .get_companion_by_muse_id(req.muse_id as i64)
         .await
         .map_err(|e| AppError::InternalError(format!("Failed to get companion: {}", e)))?
-    {
-        Some(c) => c,
-        None => {
-            // Auto-initialize companion if not exists
-            info!("Auto-initializing companion for token_id: {}", req.muse_id);
-            let create_req = crate::models::CreateCompanionRequest {
-                nft_token_id: req.muse_id as i64,
-                owner_address: req.user_address.clone(),
-                name: None,
-                traits: None,
-            };
-            state
-                .companion_service
-                .initialize_companion(&create_req)
-                .await
-                .map_err(|e| {
-                    AppError::InternalError(format!("Failed to initialize companion: {}", e))
-                })?
-        }
-    };
-
-    info!(
-        "Using companion: {} (level {})",
-        companion.name, companion.level
-    );
-
-    // STEP 2: Verify NFT ownership (REQUIRED)
-    info!(
-        "Verifying ownership of token_id {} for user {}",
-        req.muse_id, req.user_address
-    );
-
-    let is_owner = state
-        .companion_service
-        .verify_ownership(&req.user_address, req.muse_id as i64)
-        .await
-        .map_err(|e| {
-            error!("Ownership verification failed: {}", e);
-            AppError::InternalError(format!("Failed to verify ownership: {}", e))
+        .ok_or_else(|| {
+            AppError::NotFound(format!(
+                "Companion with muse_id {} not found. Please create a companion first.",
+                req.muse_id
+            ))
         })?;
 
-    if !is_owner {
-        return Err(AppError::Unauthorized(format!(
-            "You must own MuseAI NFT #{} to chat with this companion. Please mint an NFT first.",
-            req.muse_id
-        )));
+    info!(
+        "Using companion: {} (level {}, public: {})",
+        companion.name, companion.level, companion.is_public
+    );
+
+    // STEP 2: Access control - NFT-gated with privacy levels
+    // Private companions: Only the specific NFT owner can chat
+    // Public companions: Any NFT holder can chat (not just the owner)
+
+    // First, check if user owns ANY MuseAI NFT
+    let owned_tokens = state
+        .companion_service
+        .get_owned_tokens(&req.user_address)
+        .await
+        .map_err(|e| {
+            error!("Failed to get owned tokens: {}", e);
+            AppError::InternalError(format!("Failed to verify NFT ownership: {}", e))
+        })?;
+
+    if owned_tokens.is_empty() {
+        return Err(AppError::Unauthorized(
+            "You must own at least one MuseAI NFT to chat with companions. Please mint an NFT first.".to_string()
+        ));
     }
 
-    info!("✓ Ownership verified for user {}", req.user_address);
+    info!(
+        "✓ User {} owns {} MuseAI NFT(s): {:?}",
+        req.user_address,
+        owned_tokens.len(),
+        owned_tokens
+    );
+
+    // For private companions, verify user owns the SPECIFIC NFT
+    if !companion.is_public {
+        info!(
+            "Private companion - checking if user owns specific NFT #{}",
+            companion.nft_token_id
+        );
+
+        if !owned_tokens.contains(&companion.nft_token_id) {
+            return Err(AppError::Unauthorized(format!(
+                "This is a private companion. You must own MuseAI NFT #{} to chat with it. You own: {:?}",
+                companion.nft_token_id,
+                owned_tokens
+            )));
+        }
+
+        info!(
+            "✓ Private companion access granted - user owns NFT #{}",
+            companion.nft_token_id
+        );
+    } else {
+        info!(
+            "✓ Public companion access granted - user owns NFT(s): {:?}",
+            owned_tokens
+        );
+    }
 
     // STEP 3: Build conversation context with semantic search
     let context = state

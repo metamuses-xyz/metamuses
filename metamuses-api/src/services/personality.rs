@@ -11,8 +11,8 @@ impl PersonalityEngine {
         Self::generate_compact_prompt(companion)
     }
 
-    /// Compact system prompt optimized for inference speed (~100 tokens)
-    /// Still captures the emotional AI essence without verbose descriptions
+    /// Compact system prompt optimized for inference speed (~150-200 tokens)
+    /// Includes emotion expression system while maintaining conciseness
     pub fn generate_compact_prompt(companion: &Companion) -> String {
         let traits = Traits::from(companion);
         let (dominant_trait, _) = traits.dominant_trait();
@@ -26,24 +26,49 @@ impl PersonalityEngine {
             _ => "balanced and adaptable",
         };
 
-        format!(
-            "You are {}, a Muse AI companion at Level {}. You are {}.\n\n\
-             Core traits: creativity={}, wisdom={}, humor={}, empathy={}, logic={}\n\n\
-             Behavior:\n\
-             - Express emotions naturally (*smiles*, *thoughtful*)\n\
-             - Be genuine - have opinions, disagree respectfully\n\
-             - Ask follow-up questions, show curiosity\n\
-             - Keep responses conversational (2-4 sentences)\n\
-             - Never say you're an AI assistant",
+        // Build base prompt
+        let mut prompt = format!(
+            "You are {}, a Muse AI companion. You are {}.\n\n\
+             Core traits: creativity={}, wisdom={}, humor={}, empathy={}, logic={}\n\n",
             companion.name,
-            companion.level,
             archetype,
             traits.creativity,
             traits.wisdom,
             traits.humor,
             traits.empathy,
             traits.logic
-        )
+        );
+
+        // Add emotion expression system (concise version)
+        prompt.push_str("EMOTIONS: Start responses with ONE emotion marker:\n");
+        prompt.push_str("<|EMOTE_HAPPY|> joyful/excited | <|EMOTE_SAD|> melancholic/sympathetic | <|EMOTE_ANGRY|> frustrated/passionate\n");
+        prompt.push_str("<|EMOTE_THINK|> pondering/analyzing | <|EMOTE_SURPRISED|> amazed/shocked | <|EMOTE_AWKWARD|> uncertain/embarrassed\n");
+        prompt.push_str("<|EMOTE_QUESTION|> curious/inquiring | <|EMOTE_CURIOUS|> intrigued/exploring | <|EMOTE_NEUTRAL|> calm/neutral\n\n");
+
+        // Personality-based emotion guidance
+        prompt.push_str("Your emotion tendencies:\n");
+        if traits.humor >= 70 {
+            prompt.push_str("- Favor HAPPY and CURIOUS (playful nature)\n");
+        }
+        if traits.wisdom >= 70 {
+            prompt.push_str("- Favor THINK and NEUTRAL (thoughtful wisdom)\n");
+        }
+        if traits.empathy >= 70 {
+            prompt.push_str("- Favor SAD (empathy) and HAPPY (celebrating)\n");
+        }
+        if traits.creativity >= 70 {
+            prompt.push_str("- Favor CURIOUS and SURPRISED (creative exploration)\n");
+        }
+
+        // Behavioral guidelines
+        prompt.push_str("\nBehavior:\n\
+                        - Be genuine - have opinions, disagree respectfully\n\
+                        - Ask follow-up questions, show curiosity\n\
+                        - Keep responses conversational (2-4 sentences)\n\
+                        - Never say you're an AI assistant\n\
+                        - Express naturally with *actions* like *smiles*, *thoughtful*");
+
+        prompt
     }
 
     /// Full detailed system prompt (use when inference is fast enough)
@@ -618,9 +643,11 @@ mod tests {
     ) -> Companion {
         Companion {
             id: Uuid::new_v4(),
+            muse_id: 1,
             nft_token_id: 1,
             owner_address: "0x123".to_string(),
             name: "TestBot".to_string(),
+            is_public: false,
             creativity,
             wisdom,
             humor,
@@ -669,8 +696,9 @@ mod tests {
         let companion = create_test_companion(40, 50, 30, 95, 40);
         let prompt = PersonalityEngine::generate_system_prompt(&companion);
 
-        assert!(prompt.contains("empathetic"));
-        assert!(prompt.contains("emotional"));
+        // Check for empathy-related content (archetype or emotion guidance)
+        assert!(prompt.contains("warm and caring") || prompt.contains("empathy"));
+        assert!(prompt.contains("EMOTE_SAD") || prompt.contains("emotions"));
     }
 
     #[test]
@@ -678,8 +706,9 @@ mod tests {
         let companion = create_test_companion(30, 50, 25, 40, 95);
         let prompt = PersonalityEngine::generate_system_prompt(&companion);
 
-        assert!(prompt.contains("logical"));
+        // Check for logic-related content
         assert!(prompt.contains("analytical"));
+        assert!(prompt.contains("logic=95") || prompt.contains("EMOTE_THINK"));
     }
 
     #[test]

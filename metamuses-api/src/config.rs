@@ -130,22 +130,21 @@ impl Config {
                 .unwrap_or_else(|_| "https://hyperion-testnet-explorer.metisdevops.link".to_string()),
 
             // Worker process configuration
-            // For 16 CPUs with 4 workers: each worker gets 4 threads
-            // For 16 CPUs with 2 workers: each worker gets 8 threads
+            // Default: 8 workers × 2 threads = 16 vCPU for maximum concurrency with 0.5B model
             worker_id: env::var("WORKER_ID")
                 .unwrap_or_else(|_| "0".to_string())
                 .parse()?,
             total_workers: env::var("TOTAL_WORKERS")
-                .unwrap_or_else(|_| "4".to_string())
+                .unwrap_or_else(|_| "8".to_string())
                 .parse()?,
             threads_per_worker: env::var("THREADS_PER_WORKER")
-                .unwrap_or_else(|_| "4".to_string())
+                .unwrap_or_else(|_| "2".to_string())
                 .parse()?,
             batch_size: env::var("BATCH_SIZE")
                 .unwrap_or_else(|_| "512".to_string())
                 .parse()?,
             context_size: env::var("CONTEXT_SIZE")
-                .unwrap_or_else(|_| "2048".to_string())
+                .unwrap_or_else(|_| "1024".to_string())
                 .parse()?,
         })
     }

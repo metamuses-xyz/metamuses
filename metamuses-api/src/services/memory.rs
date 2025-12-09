@@ -562,9 +562,11 @@ mod tests {
 
         let companion = Companion {
             id: Uuid::new_v4(),
+            muse_id: 1,
             nft_token_id: 1,
             owner_address: "0x123".to_string(),
             name: "Test".to_string(),
+            is_public: false,
             creativity: 50,
             wisdom: 50,
             humor: 50,

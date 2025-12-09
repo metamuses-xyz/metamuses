@@ -7,9 +7,11 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct Companion {
     pub id: Uuid,
-    pub nft_token_id: i64,
+    pub muse_id: i64,           // Unique ID for each companion instance
+    pub nft_token_id: i64,      // NFT that owns this companion (can have multiple)
     pub owner_address: String,
     pub name: String,
+    pub is_public: bool,        // Privacy: false = owner only, true = public
 
     // Personality traits (0-100 scale)
     pub creativity: i16,
@@ -112,6 +114,7 @@ pub struct CreateCompanionRequest {
     pub owner_address: String,
     pub name: Option<String>,
     pub traits: Option<Traits>,
+    pub is_public: Option<bool>,  // Optional, defaults to false (private)
 }
 
 /// Request to update a companion
@@ -119,6 +122,7 @@ pub struct CreateCompanionRequest {
 pub struct UpdateCompanionRequest {
     pub name: Option<String>,
     pub description: Option<String>,
+    pub is_public: Option<bool>,  // Allow updating privacy setting
 }
 
 /// Companion statistics
