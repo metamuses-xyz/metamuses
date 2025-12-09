@@ -5,23 +5,31 @@ version: '3.8'
 # https://api.metamuses.xyz
 #
 # Multi-Worker Configuration for 16 CPU / 32GB RAM (Hetzner ARM64)
-# Default: 4 workers with 4 threads each = 16 CPUs utilized
+# Default: 8 workers with 2 threads each = 16 CPUs utilized (Maximum Concurrency)
+# Model: Qwen2.5-0.5B-Instruct-Q4_K_M (~0.4GB, ~0.6GB RAM per worker)
 #
 # Services:
 #   - postgres    : PostgreSQL 16 database
 #   - redis       : Redis 7 queue manager
 #   - qdrant      : Vector database for semantic caching
 #   - api         : MetaMuses API server
-#   - worker-0/1/2/3 : Background AI inference workers (scalable)
+#   - worker-0..7 : Background AI inference workers (8 instances)
 #   - prometheus  : Metrics collection
 #   - grafana     : Monitoring dashboard
+#
+# Expected Performance (0.5B model, 8 workers):
+#   - Concurrent users: 8
+#   - Response latency: ~5-8 seconds
+#   - Throughput: ~50-70 requests/min
+#   - Token generation: ~40-60 tok/sec
 # ============================================================================
 
 # Worker configuration (set these in .env)
-# TOTAL_WORKERS=4          # Number of worker containers
-# THREADS_PER_WORKER=4     # CPU threads per worker (16 / 4 = 4)
+# TOTAL_WORKERS=8          # Number of worker containers
+# THREADS_PER_WORKER=2     # CPU threads per worker (16 / 8 = 2)
 # BATCH_SIZE=512           # Batch size for prompt processing
-# CONTEXT_SIZE=2048        # Context window size
+# CONTEXT_SIZE=1024        # Context window size
+# MODEL_FILENAME=qwen2.5-0.5b-instruct-q4_k_m.gguf
 
 x-worker-common: &worker-common
   build:
@@ -42,18 +50,19 @@ x-worker-common: &worker-common
     - REDIS_URL=redis://:${REDIS_PASSWORD:-changeme}@redis:6379
     - REDIS_QUEUE_PREFIX=metamuse
 
-    # Models
+    # Models - Qwen2.5-0.5B for maximum concurrency
     - MODELS_DIR=/models
+    - MODEL_FILENAME=${MODEL_FILENAME:-qwen2.5-0.5b-instruct-q4_k_m.gguf}
     - ENABLE_FAST_TIER=${ENABLE_FAST_TIER:-true}
     - ENABLE_MEDIUM_TIER=${ENABLE_MEDIUM_TIER:-false}
     - ENABLE_HEAVY_TIER=${ENABLE_HEAVY_TIER:-false}
 
-    # Worker Configuration (shared)
-    - TOTAL_WORKERS=${TOTAL_WORKERS:-4}
-    - THREADS_PER_WORKER=${THREADS_PER_WORKER:-4}
+    # Worker Configuration (8 workers × 2 threads = 16 vCPU)
+    - TOTAL_WORKERS=${TOTAL_WORKERS:-8}
+    - THREADS_PER_WORKER=${THREADS_PER_WORKER:-2}
     - BATCH_SIZE=${BATCH_SIZE:-512}
-    - CONTEXT_SIZE=${CONTEXT_SIZE:-2048}
-    - MAX_TOKENS=${MAX_TOKENS:-32}
+    - CONTEXT_SIZE=${CONTEXT_SIZE:-1024}
+    - MAX_TOKENS=${MAX_TOKENS:-128}
 
     # Semantic Cache (disabled by default for performance)
     - ENABLE_SEMANTIC_CACHE=${ENABLE_SEMANTIC_CACHE:-false}
@@ -69,11 +78,11 @@ x-worker-common: &worker-common
   deploy:
     resources:
       limits:
-        cpus: '${THREADS_PER_WORKER:-4}'
-        memory: ${WORKER_MEMORY_LIMIT:-6G}
+        cpus: '${THREADS_PER_WORKER:-2}'
+        memory: ${WORKER_MEMORY_LIMIT:-1G}
       reservations:
-        cpus: '${THREADS_PER_WORKER:-4}'
-        memory: ${WORKER_MEMORY_RESERVATION:-4G}
+        cpus: '${THREADS_PER_WORKER:-2}'
+        memory: ${WORKER_MEMORY_RESERVATION:-768M}
 
 services:
   # ==========================================================================
@@ -283,8 +292,9 @@ services:
           memory: 1G
 
   # ==========================================================================
-  # MetaMuses Workers - Background AI Inference Workers (4 instances)
-  # Each worker gets THREADS_PER_WORKER CPU threads
+  # MetaMuses Workers - Background AI Inference Workers (8 instances)
+  # Each worker gets 2 CPU threads for Qwen2.5-0.5B model
+  # Total: 8 workers × 2 threads = 16 vCPU
   # ==========================================================================
 
   worker-0:
@@ -296,13 +306,15 @@ services:
       - REDIS_URL=redis://:${REDIS_PASSWORD:-changeme}@redis:6379
       - REDIS_QUEUE_PREFIX=metamuse
       - MODELS_DIR=/models
+      - MODEL_FILENAME=${MODEL_FILENAME:-qwen2.5-0.5b-instruct-q4_k_m.gguf}
       - ENABLE_FAST_TIER=${ENABLE_FAST_TIER:-true}
       - ENABLE_MEDIUM_TIER=${ENABLE_MEDIUM_TIER:-false}
       - ENABLE_HEAVY_TIER=${ENABLE_HEAVY_TIER:-false}
-      - TOTAL_WORKERS=${TOTAL_WORKERS:-4}
-      - THREADS_PER_WORKER=${THREADS_PER_WORKER:-4}
+      - TOTAL_WORKERS=${TOTAL_WORKERS:-8}
+      - THREADS_PER_WORKER=${THREADS_PER_WORKER:-2}
       - BATCH_SIZE=${BATCH_SIZE:-512}
-      - CONTEXT_SIZE=${CONTEXT_SIZE:-2048}
+      - CONTEXT_SIZE=${CONTEXT_SIZE:-1024}
+      - MAX_TOKENS=${MAX_TOKENS:-128}
       - ENABLE_SEMANTIC_CACHE=${ENABLE_SEMANTIC_CACHE:-false}
       - RUST_LOG=${RUST_LOG:-info}
       - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
@@ -316,18 +328,18 @@ services:
       - REDIS_URL=redis://:${REDIS_PASSWORD:-changeme}@redis:6379
       - REDIS_QUEUE_PREFIX=metamuse
       - MODELS_DIR=/models
+      - MODEL_FILENAME=${MODEL_FILENAME:-qwen2.5-0.5b-instruct-q4_k_m.gguf}
       - ENABLE_FAST_TIER=${ENABLE_FAST_TIER:-true}
       - ENABLE_MEDIUM_TIER=${ENABLE_MEDIUM_TIER:-false}
       - ENABLE_HEAVY_TIER=${ENABLE_HEAVY_TIER:-false}
-      - TOTAL_WORKERS=${TOTAL_WORKERS:-4}
-      - THREADS_PER_WORKER=${THREADS_PER_WORKER:-4}
+      - TOTAL_WORKERS=${TOTAL_WORKERS:-8}
+      - THREADS_PER_WORKER=${THREADS_PER_WORKER:-2}
       - BATCH_SIZE=${BATCH_SIZE:-512}
-      - CONTEXT_SIZE=${CONTEXT_SIZE:-2048}
+      - CONTEXT_SIZE=${CONTEXT_SIZE:-1024}
+      - MAX_TOKENS=${MAX_TOKENS:-128}
       - ENABLE_SEMANTIC_CACHE=${ENABLE_SEMANTIC_CACHE:-false}
       - RUST_LOG=${RUST_LOG:-info}
       - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
-    profiles:
-      - multi-worker
 
   worker-2:
     <<: *worker-common
@@ -338,18 +350,18 @@ services:
       - REDIS_URL=redis://:${REDIS_PASSWORD:-changeme}@redis:6379
       - REDIS_QUEUE_PREFIX=metamuse
       - MODELS_DIR=/models
+      - MODEL_FILENAME=${MODEL_FILENAME:-qwen2.5-0.5b-instruct-q4_k_m.gguf}
       - ENABLE_FAST_TIER=${ENABLE_FAST_TIER:-true}
       - ENABLE_MEDIUM_TIER=${ENABLE_MEDIUM_TIER:-false}
       - ENABLE_HEAVY_TIER=${ENABLE_HEAVY_TIER:-false}
-      - TOTAL_WORKERS=${TOTAL_WORKERS:-4}
-      - THREADS_PER_WORKER=${THREADS_PER_WORKER:-4}
+      - TOTAL_WORKERS=${TOTAL_WORKERS:-8}
+      - THREADS_PER_WORKER=${THREADS_PER_WORKER:-2}
       - BATCH_SIZE=${BATCH_SIZE:-512}
-      - CONTEXT_SIZE=${CONTEXT_SIZE:-2048}
+      - CONTEXT_SIZE=${CONTEXT_SIZE:-1024}
+      - MAX_TOKENS=${MAX_TOKENS:-128}
       - ENABLE_SEMANTIC_CACHE=${ENABLE_SEMANTIC_CACHE:-false}
       - RUST_LOG=${RUST_LOG:-info}
       - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
-    profiles:
-      - multi-worker
 
   worker-3:
     <<: *worker-common
@@ -360,18 +372,106 @@ services:
       - REDIS_URL=redis://:${REDIS_PASSWORD:-changeme}@redis:6379
       - REDIS_QUEUE_PREFIX=metamuse
       - MODELS_DIR=/models
+      - MODEL_FILENAME=${MODEL_FILENAME:-qwen2.5-0.5b-instruct-q4_k_m.gguf}
       - ENABLE_FAST_TIER=${ENABLE_FAST_TIER:-true}
       - ENABLE_MEDIUM_TIER=${ENABLE_MEDIUM_TIER:-false}
       - ENABLE_HEAVY_TIER=${ENABLE_HEAVY_TIER:-false}
-      - TOTAL_WORKERS=${TOTAL_WORKERS:-4}
-      - THREADS_PER_WORKER=${THREADS_PER_WORKER:-4}
+      - TOTAL_WORKERS=${TOTAL_WORKERS:-8}
+      - THREADS_PER_WORKER=${THREADS_PER_WORKER:-2}
       - BATCH_SIZE=${BATCH_SIZE:-512}
-      - CONTEXT_SIZE=${CONTEXT_SIZE:-2048}
+      - CONTEXT_SIZE=${CONTEXT_SIZE:-1024}
+      - MAX_TOKENS=${MAX_TOKENS:-128}
       - ENABLE_SEMANTIC_CACHE=${ENABLE_SEMANTIC_CACHE:-false}
       - RUST_LOG=${RUST_LOG:-info}
       - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
-    profiles:
-      - multi-worker
+
+  worker-4:
+    <<: *worker-common
+    container_name: metamuses-worker-4
+    image: metamuses-worker:latest
+    environment:
+      - WORKER_ID=4
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-changeme}@redis:6379
+      - REDIS_QUEUE_PREFIX=metamuse
+      - MODELS_DIR=/models
+      - MODEL_FILENAME=${MODEL_FILENAME:-qwen2.5-0.5b-instruct-q4_k_m.gguf}
+      - ENABLE_FAST_TIER=${ENABLE_FAST_TIER:-true}
+      - ENABLE_MEDIUM_TIER=${ENABLE_MEDIUM_TIER:-false}
+      - ENABLE_HEAVY_TIER=${ENABLE_HEAVY_TIER:-false}
+      - TOTAL_WORKERS=${TOTAL_WORKERS:-8}
+      - THREADS_PER_WORKER=${THREADS_PER_WORKER:-2}
+      - BATCH_SIZE=${BATCH_SIZE:-512}
+      - CONTEXT_SIZE=${CONTEXT_SIZE:-1024}
+      - MAX_TOKENS=${MAX_TOKENS:-128}
+      - ENABLE_SEMANTIC_CACHE=${ENABLE_SEMANTIC_CACHE:-false}
+      - RUST_LOG=${RUST_LOG:-info}
+      - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
+
+  worker-5:
+    <<: *worker-common
+    container_name: metamuses-worker-5
+    image: metamuses-worker:latest
+    environment:
+      - WORKER_ID=5
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-changeme}@redis:6379
+      - REDIS_QUEUE_PREFIX=metamuse
+      - MODELS_DIR=/models
+      - MODEL_FILENAME=${MODEL_FILENAME:-qwen2.5-0.5b-instruct-q4_k_m.gguf}
+      - ENABLE_FAST_TIER=${ENABLE_FAST_TIER:-true}
+      - ENABLE_MEDIUM_TIER=${ENABLE_MEDIUM_TIER:-false}
+      - ENABLE_HEAVY_TIER=${ENABLE_HEAVY_TIER:-false}
+      - TOTAL_WORKERS=${TOTAL_WORKERS:-8}
+      - THREADS_PER_WORKER=${THREADS_PER_WORKER:-2}
+      - BATCH_SIZE=${BATCH_SIZE:-512}
+      - CONTEXT_SIZE=${CONTEXT_SIZE:-1024}
+      - MAX_TOKENS=${MAX_TOKENS:-128}
+      - ENABLE_SEMANTIC_CACHE=${ENABLE_SEMANTIC_CACHE:-false}
+      - RUST_LOG=${RUST_LOG:-info}
+      - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
+
+  worker-6:
+    <<: *worker-common
+    container_name: metamuses-worker-6
+    image: metamuses-worker:latest
+    environment:
+      - WORKER_ID=6
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-changeme}@redis:6379
+      - REDIS_QUEUE_PREFIX=metamuse
+      - MODELS_DIR=/models
+      - MODEL_FILENAME=${MODEL_FILENAME:-qwen2.5-0.5b-instruct-q4_k_m.gguf}
+      - ENABLE_FAST_TIER=${ENABLE_FAST_TIER:-true}
+      - ENABLE_MEDIUM_TIER=${ENABLE_MEDIUM_TIER:-false}
+      - ENABLE_HEAVY_TIER=${ENABLE_HEAVY_TIER:-false}
+      - TOTAL_WORKERS=${TOTAL_WORKERS:-8}
+      - THREADS_PER_WORKER=${THREADS_PER_WORKER:-2}
+      - BATCH_SIZE=${BATCH_SIZE:-512}
+      - CONTEXT_SIZE=${CONTEXT_SIZE:-1024}
+      - MAX_TOKENS=${MAX_TOKENS:-128}
+      - ENABLE_SEMANTIC_CACHE=${ENABLE_SEMANTIC_CACHE:-false}
+      - RUST_LOG=${RUST_LOG:-info}
+      - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
+
+  worker-7:
+    <<: *worker-common
+    container_name: metamuses-worker-7
+    image: metamuses-worker:latest
+    environment:
+      - WORKER_ID=7
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-changeme}@redis:6379
+      - REDIS_QUEUE_PREFIX=metamuse
+      - MODELS_DIR=/models
+      - MODEL_FILENAME=${MODEL_FILENAME:-qwen2.5-0.5b-instruct-q4_k_m.gguf}
+      - ENABLE_FAST_TIER=${ENABLE_FAST_TIER:-true}
+      - ENABLE_MEDIUM_TIER=${ENABLE_MEDIUM_TIER:-false}
+      - ENABLE_HEAVY_TIER=${ENABLE_HEAVY_TIER:-false}
+      - TOTAL_WORKERS=${TOTAL_WORKERS:-8}
+      - THREADS_PER_WORKER=${THREADS_PER_WORKER:-2}
+      - BATCH_SIZE=${BATCH_SIZE:-512}
+      - CONTEXT_SIZE=${CONTEXT_SIZE:-1024}
+      - MAX_TOKENS=${MAX_TOKENS:-128}
+      - ENABLE_SEMANTIC_CACHE=${ENABLE_SEMANTIC_CACHE:-false}
+      - RUST_LOG=${RUST_LOG:-info}
+      - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
 
   # ==========================================================================
   # Prometheus - Metrics Collection
