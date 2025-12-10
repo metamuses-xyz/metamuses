@@ -6,18 +6,45 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { Emotion, EMOTION_MOTION_CONFIG, EMOTION_VALUES, EMOTION_ANIMATION_DURATIONS, DEFAULT_ANIMATION_DURATION } from '@/constants/emotions'
+import { Emotion, EMOTION_MOTION_CONFIG, EMOTION_SOUND_MAP, EMOTION_VALUES, EMOTION_ANIMATION_DURATIONS, DEFAULT_ANIMATION_DURATION } from '@/constants/emotions'
 import { createQueue } from '@/lib/live2d/queue'
 import { useLive2DStore } from '@/store/live2d-store'
+import { useSoundStore } from '@/store/sound-store'
+import { getAudioManager } from '@/lib/audio/audio-manager'
 
 export function useEmotionQueue() {
   const setMotion = useLive2DStore((state) => state.setMotion)
   const setParameters = useLive2DStore((state) => state.setParameters)
+  const { enabled: soundEnabled, volume } = useSoundStore()
+  const audioManagerRef = useRef(getAudioManager({ volume: 0.3, enableSounds: true }))
+
+  // Preload all emotion sounds on mount
+  useEffect(() => {
+    const soundFiles = Object.values(EMOTION_SOUND_MAP)
+    audioManagerRef.current.preloadAll(soundFiles).catch(err => {
+      console.warn('[Emotion] Failed to preload sounds:', err)
+    })
+  }, [])
+
+  // Sync audio manager with sound store settings
+  useEffect(() => {
+    audioManagerRef.current.setEnabled(soundEnabled)
+    audioManagerRef.current.setVolume(volume)
+  }, [soundEnabled, volume])
+
   const queueRef = useRef(createQueue<Emotion>({
     handlers: [
       async (ctx) => {
         const config = EMOTION_MOTION_CONFIG[ctx.data]
         const motionName = config.motion
+
+        // Play sound effect for this emotion
+        const soundPath = EMOTION_SOUND_MAP[ctx.data]
+        if (soundPath) {
+          audioManagerRef.current.play(soundPath).catch(err => {
+            console.warn('[Emotion] Failed to play sound:', soundPath, err)
+          })
+        }
 
         // Apply emotion-specific parameters if defined
         if (config.parameters && Object.keys(config.parameters).length > 0) {
@@ -27,7 +54,7 @@ export function useEmotionQueue() {
 
         // Trigger motion
         setMotion({ group: motionName })
-        console.log('[Emotion] Triggered:', ctx.data, '→', motionName)
+        console.log('[Emotion] Triggered:', ctx.data, '→', motionName, '🔊')
 
         // Wait for animation to complete
         const duration = EMOTION_ANIMATION_DURATIONS[motionName] || DEFAULT_ANIMATION_DURATION

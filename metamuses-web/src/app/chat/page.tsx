@@ -10,6 +10,7 @@ import { stripEmotionMarkers } from "@/constants/emotions";
 import dynamic from "next/dynamic";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { SoundToggle } from "@/components/SoundToggle";
 import Link from "next/link";
 
 // Dynamic import for Live2D (SSR disabled)
@@ -568,7 +569,10 @@ export default function ChatPage() {
                           </div>
                         </div>
 
-                        {!walletConnected && <ConnectButton />}
+                        <div className="flex items-center gap-3">
+                          <SoundToggle />
+                          {!walletConnected && <ConnectButton />}
+                        </div>
                       </div>
                     </div>
                   )}

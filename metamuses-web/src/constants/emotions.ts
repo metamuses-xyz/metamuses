@@ -80,11 +80,27 @@ export const EMOTION_ANIMATION_DURATIONS: Record<string, number> = {
 // Default duration if motion not found in map
 export const DEFAULT_ANIMATION_DURATION = 1500
 
+// Sound effect mappings for each emotion
+// Maps emotions to audio file paths in /public/sounds/
+// Supports both .mp3 and .wav formats (use .wav for generated sounds, .mp3 for production)
+export const EMOTION_SOUND_MAP: Record<Emotion, string> = {
+  [Emotion.Happy]: '/sounds/happy.wav',
+  [Emotion.Sad]: '/sounds/sad.wav',
+  [Emotion.Angry]: '/sounds/angry.wav',
+  [Emotion.Think]: '/sounds/think.wav',
+  [Emotion.Surprise]: '/sounds/surprise.wav',
+  [Emotion.Awkward]: '/sounds/awkward.wav',
+  [Emotion.Question]: '/sounds/question.wav',
+  [Emotion.Curious]: '/sounds/curious.wav',
+  [Emotion.Idle]: '/sounds/idle.wav',
+}
+
 // Enhanced emotion-to-motion mapping with parameter variations
 // Differentiates emotions that share the same motion group
 export const EMOTION_MOTION_CONFIG: Record<Emotion, {
   motion: string
   parameters?: Partial<ModelParameters>
+  sound?: string
 }> = {
   [Emotion.Happy]: {
     motion: 'Tap',
