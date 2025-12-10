@@ -66,6 +66,64 @@ export const DEFAULT_MODEL_PARAMETERS = {
 
 export type ModelParameters = typeof DEFAULT_MODEL_PARAMETERS
 
+// Animation durations for each Live2D motion (in milliseconds)
+// Based on Hiyori model motion files
+export const EMOTION_ANIMATION_DURATIONS: Record<string, number> = {
+  'Idle': 2000,        // Base idle animation
+  'Tap': 1500,         // Happy, Curious
+  'Flick': 1200,       // Awkward
+  'FlickDown': 1400,   // Sad
+  'Tap@Body': 1800,    // Think, Surprise, Question
+  'Flick@Body': 1600,  // Angry
+}
+
+// Default duration if motion not found in map
+export const DEFAULT_ANIMATION_DURATION = 1500
+
+// Enhanced emotion-to-motion mapping with parameter variations
+// Differentiates emotions that share the same motion group
+export const EMOTION_MOTION_CONFIG: Record<Emotion, {
+  motion: string
+  parameters?: Partial<ModelParameters>
+}> = {
+  [Emotion.Happy]: {
+    motion: 'Tap',
+    parameters: { leftEyeOpen: 1.2, rightEyeOpen: 1.2, mouthOpen: 0.6 }
+  },
+  [Emotion.Sad]: {
+    motion: 'FlickDown',
+    parameters: { leftEyeOpen: 0.7, rightEyeOpen: 0.7, angleY: -5 }
+  },
+  [Emotion.Think]: {
+    motion: 'Tap@Body',
+    parameters: { angleX: -10, leftEyeOpen: 0.9, rightEyeOpen: 0.9 }
+  },
+  [Emotion.Surprise]: {
+    motion: 'Tap@Body',
+    parameters: { leftEyeOpen: 1.3, rightEyeOpen: 1.3, angleY: 5 }
+  },
+  [Emotion.Question]: {
+    motion: 'Tap@Body',
+    parameters: { angleZ: 8, leftEyeOpen: 1.1, rightEyeOpen: 1.1 }
+  },
+  [Emotion.Curious]: {
+    motion: 'Tap',
+    parameters: { angleY: 10, leftEyeOpen: 1.1, rightEyeOpen: 1.1 }
+  },
+  [Emotion.Angry]: {
+    motion: 'Flick@Body',
+    parameters: { angleX: 5, leftEyeOpen: 0.8, rightEyeOpen: 0.8 }
+  },
+  [Emotion.Awkward]: {
+    motion: 'Flick',
+    parameters: { angleZ: -5, mouthForm: -0.3 }
+  },
+  [Emotion.Idle]: {
+    motion: 'Idle',
+    parameters: {} // Default parameters
+  }
+}
+
 /**
  * Utility function to strip emotion markers from text for display
  * @param text - Text potentially containing emotion markers

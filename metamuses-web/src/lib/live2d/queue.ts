@@ -7,6 +7,7 @@ export interface QueueHandler<T> {
   (ctx: {
     data: T
     emit: (event: string, ...args: any[]) => void
+    queueLength: number  // Number of items remaining in queue
   }): void | Promise<void>
 }
 
@@ -32,13 +33,14 @@ export function createQueue<T>(options: QueueOptions<T>): Queue<T> {
 
     while (queue.length > 0) {
       const item = queue.shift()!
-      
+
       const ctx = {
         data: item,
         emit: (event: string, ...args: any[]) => {
           const handlers = eventHandlers[event] || []
           handlers.forEach(handler => handler(...args))
         },
+        queueLength: queue.length,  // Expose remaining queue length
       }
 
       for (const handler of options.handlers) {

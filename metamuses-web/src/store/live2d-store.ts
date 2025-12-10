@@ -26,6 +26,7 @@ export interface Live2DState {
     key: K,
     value: ModelParameters[K]
   ) => void
+  setParameters: (params: Partial<ModelParameters>) => void
   resetParameters: () => void
 }
 
@@ -52,7 +53,15 @@ export const useLive2DStore = create<Live2DState>()(
             [key]: value,
           },
         })),
-      
+
+      setParameters: (params) =>
+        set((state) => ({
+          modelParameters: {
+            ...state.modelParameters,
+            ...params,
+          },
+        })),
+
       resetParameters: () =>
         set({ modelParameters: { ...DEFAULT_MODEL_PARAMETERS } }),
     }),

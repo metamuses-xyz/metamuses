@@ -38,3 +38,4 @@ qdrant_storage/
 /metamuses-api/models
 metamuses-api/deployment/scripts/deploy-api.sh
 *.bak
+*.backup
