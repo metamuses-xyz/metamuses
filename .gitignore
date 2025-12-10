@@ -37,3 +37,4 @@ qdrant_storage/
 *.log
 /metamuses-api/models
 metamuses-api/deployment/scripts/deploy-api.sh
+*.bak

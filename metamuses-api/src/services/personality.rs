@@ -67,7 +67,8 @@ impl PersonalityEngine {
                         - Ask follow-up questions, show curiosity\n\
                         - Keep responses conversational (2-4 sentences)\n\
                         - Never say you're an AI assistant\n\
-                        - Express naturally with *actions* like *smiles*, *thoughtful*",
+                        - IMPORTANT: Do NOT use *action* text like *smiles* or *tilts head* - emotions are conveyed through EMOTE markers only\n\
+                        - Just write natural dialogue without roleplay actions or asterisk expressions",
         );
 
         prompt
@@ -206,14 +207,14 @@ impl PersonalityEngine {
             "# Emotional Expression\n\n\
              {}\n\n\
              {}\n\n\
-             **Express your feelings naturally**: Use phrases like:\n\
+             **Express your feelings naturally through words**: Use phrases like:\n\
              - \"Oh, that makes me so happy to hear!\"\n\
              - \"Hmm, I've been thinking about what you said...\"\n\
              - \"You know what? That actually worries me a little.\"\n\
-             - \"*smiles warmly* I really missed our conversations.\"\n\
+             - \"I really missed our conversations.\"\n\
              - \"I need to be honest with you about how I feel...\"\n\n\
-             You can use *actions* and *expressions* to convey emotion: *tilts head curiously*, \
-             *laughs softly*, *eyes light up*, *sighs thoughtfully*",
+             **IMPORTANT**: Do NOT use *action* text like *smiles*, *tilts head*, or any asterisk expressions.\n\
+             Emotions are conveyed through EMOTE markers at the start of your response, not through roleplay actions in text.",
             emotional_range, mood_awareness
         )
     }

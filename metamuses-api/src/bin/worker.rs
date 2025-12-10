@@ -1,8 +1,11 @@
 // Worker Pool Binary
 // Processes inference jobs from Redis queue
 // Supports multi-process deployment for CPU utilization
+// Supports local inference or external APIs (Gemini, OpenRouter)
 
-use metamuses_api::inference::{GenerationConfig, InferenceEngine, LlamaCppConfig, LlamaCppEngine};
+use metamuses_api::inference::{
+    GenerationConfig, InferenceEngine, LlamaCppConfig, LlamaCppEngine, ModelFactory, LLMProvider,
+};
 use metamuses_api::types::Domain;
 use metamuses_api::*;
 use std::sync::Arc;
@@ -41,90 +44,117 @@ async fn main() -> anyhow::Result<()> {
     ));
     info!("✓ Redis connection established");
 
-    // Initialize inference engine with worker-specific configuration
+    // Initialize inference engine based on LLM_PROVIDER configuration
     info!("Initializing inference engine...");
-    info!("Model directory: {}", config.models_dir);
+    info!("LLM Provider: {}", config.llm_provider);
 
-    // Get model filename from environment or use default (0.5B for high concurrency)
-    let model_filename = std::env::var("MODEL_FILENAME")
-        .unwrap_or_else(|_| "qwen2.5-0.5b-instruct-q4_k_m.gguf".to_string());
-    let model_path = format!("{}/{}", config.models_dir, model_filename);
-    info!("Loading model from: {}", model_path);
+    let provider = LLMProvider::from(config.llm_provider.as_str());
 
-    // Check if model file exists
-    if !std::path::Path::new(&model_path).exists() {
-        error!("❌ Model file not found: {}", model_path);
-        return Err(anyhow::anyhow!("Model file not found: {}", model_path));
-    }
+    let engine: Box<dyn InferenceEngine> = match provider {
+        LLMProvider::Gemini | LLMProvider::OpenRouter => {
+            // Use external API
+            info!("🌐 Using external API provider: {:?}", provider);
 
-    info!("Model file found, beginning initialization...");
-    info!("This may take 10-30 seconds for model loading (0.5B is fast!)...");
+            match ModelFactory::create_engine_from_config(&config).await {
+                Ok(engine) => {
+                    info!("✓ External API engine initialized successfully!");
+                    info!("   Provider: {:?}", provider);
+                    info!("   Model: {}", engine.model_name());
+                    engine
+                }
+                Err(e) => {
+                    error!("❌ Failed to initialize external API engine: {}", e);
+                    return Err(e);
+                }
+            }
+        }
+        LLMProvider::Local => {
+            // Use local model inference
+            info!("🚀 Using local model inference");
+            info!("Model directory: {}", config.models_dir);
 
-    // Configure llama.cpp for this worker instance
-    let llama_config = LlamaCppConfig {
-        threads: config.threads_per_worker,
-        batch_size: config.batch_size,
-        context_size: config.context_size,
-    };
+            // Get model filename from environment or use default (0.5B for high concurrency)
+            let model_filename = std::env::var("MODEL_FILENAME")
+                .unwrap_or_else(|_| "qwen2.5-0.5b-instruct-q4_k_m.gguf".to_string());
+            let model_path = format!("{}/{}", config.models_dir, model_filename);
+            info!("Loading model from: {}", model_path);
 
-    // Get max tokens from environment or use default
-    // Reduced to 32 for faster responses on CPU (~4s target)
-    // 32 tokens @ 7 tok/s = ~4.5s generation + ~2s prefill = ~6.5s total
-    let max_tokens = std::env::var("MAX_TOKENS")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(128);
+            // Check if model file exists
+            if !std::path::Path::new(&model_path).exists() {
+                error!("❌ Model file not found: {}", model_path);
+                return Err(anyhow::anyhow!("Model file not found: {}", model_path));
+            }
 
-    let gen_config = GenerationConfig {
-        max_new_tokens: max_tokens,
-        temperature: 0.7,
-        top_p: 0.9,
-        repetition_penalty: 1.1,
-        stop_sequences: vec!["<|im_end|>".to_string(), "<|endoftext|>".to_string()],
-    };
+            info!("Model file found, beginning initialization...");
+            info!("This may take 10-30 seconds for model loading (0.5B is fast!)...");
 
-    info!(
-        "   Max tokens: {} (set MAX_TOKENS env to override)",
-        max_tokens
-    );
+            // Configure llama.cpp for this worker instance
+            let llama_config = LlamaCppConfig {
+                threads: config.threads_per_worker,
+                batch_size: config.batch_size,
+                context_size: config.context_size,
+            };
 
-    // Determine model name from filename for logging
-    let model_name = if model_filename.contains("0.5b") {
-        "Qwen2.5-0.5B-Instruct"
-    } else if model_filename.contains("1.5b") {
-        "Qwen2.5-1.5B-Instruct"
-    } else if model_filename.contains("3b") {
-        "Qwen2.5-3B-Instruct"
-    } else {
-        "Qwen2.5-Instruct"
-    };
+            // Get max tokens from environment or use default
+            let max_tokens = std::env::var("MAX_TOKENS")
+                .ok()
+                .and_then(|v| v.parse().ok())
+                .unwrap_or(128);
 
-    let engine = match LlamaCppEngine::new_with_full_config(
-        &model_path,
-        model_name.to_string(),
-        ModelTier::Fast,
-        gen_config,
-        llama_config,
-    )
-    .await
-    {
-        Ok(engine) => {
-            info!("✓ Inference engine initialized successfully!");
-            info!("   Model: {}", model_name);
-            #[cfg(target_os = "macos")]
-            info!("   Backend: llama.cpp with Metal GPU acceleration");
-            #[cfg(target_os = "linux")]
+            let gen_config = GenerationConfig {
+                max_new_tokens: max_tokens,
+                temperature: 0.7,
+                top_p: 0.9,
+                repetition_penalty: 1.1,
+                stop_sequences: vec!["<|im_end|>".to_string(), "<|endoftext|>".to_string()],
+            };
+
             info!(
-                "   Backend: llama.cpp CPU ({} threads)",
-                config.threads_per_worker
+                "   Max tokens: {} (set MAX_TOKENS env to override)",
+                max_tokens
             );
-            engine
-        }
-        Err(e) => {
-            error!("❌ Failed to initialize inference engine: {}", e);
-            return Err(e);
+
+            // Determine model name from filename for logging
+            let model_name = if model_filename.contains("0.5b") {
+                "Qwen2.5-0.5B-Instruct"
+            } else if model_filename.contains("1.5b") {
+                "Qwen2.5-1.5B-Instruct"
+            } else if model_filename.contains("3b") {
+                "Qwen2.5-3B-Instruct"
+            } else {
+                "Qwen2.5-Instruct"
+            };
+
+            match LlamaCppEngine::new_with_full_config(
+                &model_path,
+                model_name.to_string(),
+                ModelTier::Fast,
+                gen_config,
+                llama_config,
+            )
+            .await
+            {
+                Ok(engine) => {
+                    info!("✓ Local inference engine initialized successfully!");
+                    info!("   Model: {}", model_name);
+                    #[cfg(target_os = "macos")]
+                    info!("   Backend: llama.cpp with Metal GPU acceleration");
+                    #[cfg(target_os = "linux")]
+                    info!(
+                        "   Backend: llama.cpp CPU ({} threads)",
+                        config.threads_per_worker
+                    );
+                    Box::new(engine)
+                }
+                Err(e) => {
+                    error!("❌ Failed to initialize local inference engine: {}", e);
+                    return Err(e);
+                }
+            }
         }
     };
+
+    let model_name = engine.model_name().to_string();
 
     info!("");
     info!(
@@ -138,9 +168,12 @@ async fn main() -> anyhow::Result<()> {
     let max_errors = 10;
 
     loop {
-        // Try to dequeue a job (check multiple tiers)
+        // Try to dequeue a job (check all tiers)
+        // For external APIs, all tiers use the same model, so we poll all queues
         let job_result = {
             let mut qm = queue_manager.write().await;
+
+            // Try Fast tier first
             match qm.dequeue(ModelTier::Fast, Priority::Normal).await {
                 Ok(Some(job)) => Ok(Some(job)),
                 Ok(None) | Err(_) => {
@@ -148,19 +181,25 @@ async fn main() -> anyhow::Result<()> {
                     match qm.dequeue(ModelTier::Medium, Priority::Normal).await {
                         Ok(Some(job)) => Ok(Some(job)),
                         Ok(None) | Err(_) => {
-                            // Try specialized Code tier
-                            match qm
-                                .dequeue(ModelTier::Specialized(Domain::Code), Priority::Normal)
-                                .await
-                            {
+                            // Try Heavy tier (important for external APIs!)
+                            match qm.dequeue(ModelTier::Heavy, Priority::Normal).await {
                                 Ok(Some(job)) => Ok(Some(job)),
                                 Ok(None) | Err(_) => {
-                                    // Try specialized Math tier
-                                    qm.dequeue(
-                                        ModelTier::Specialized(Domain::Math),
-                                        Priority::Normal,
-                                    )
-                                    .await
+                                    // Try specialized Code tier
+                                    match qm
+                                        .dequeue(ModelTier::Specialized(Domain::Code), Priority::Normal)
+                                        .await
+                                    {
+                                        Ok(Some(job)) => Ok(Some(job)),
+                                        Ok(None) | Err(_) => {
+                                            // Try specialized Math tier
+                                            qm.dequeue(
+                                                ModelTier::Specialized(Domain::Math),
+                                                Priority::Normal,
+                                            )
+                                            .await
+                                        }
+                                    }
                                 }
                             }
                         }
