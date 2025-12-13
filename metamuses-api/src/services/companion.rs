@@ -153,10 +153,15 @@ impl CompanionService {
             .clone()
             .unwrap_or_else(|| generate_companion_name(req.nft_token_id));
 
-        // 6. Create companion
+        let is_public = req.is_public.unwrap_or(false); // Default to private
+
+        // 6. Generate unique muse_id (for now, use timestamp + token_id)
+        let muse_id = (chrono::Utc::now().timestamp() % 1_000_000) * 10_000 + req.nft_token_id;
+
+        // 7. Create companion
         let companion = self
             .companion_repo
-            .create(req.nft_token_id, &req.owner_address, &name, &traits)
+            .create(muse_id, req.nft_token_id, &req.owner_address, &name, &traits, is_public)
             .await?;
 
         tracing::info!(
@@ -177,6 +182,10 @@ impl CompanionService {
     /// Get companion by NFT token ID
     pub async fn get_companion_by_token_id(&self, token_id: i64) -> Result<Option<Companion>> {
         self.companion_repo.get_by_token_id(token_id).await
+    }
+
+    pub async fn get_companion_by_muse_id(&self, muse_id: i64) -> Result<Option<Companion>> {
+        self.companion_repo.get_by_muse_id(muse_id).await
     }
 
     /// Get all companions owned by an address
@@ -206,6 +215,7 @@ impl CompanionService {
                         owner_address: owner_address.to_string(),
                         name: None,
                         traits: None,
+                        is_public: Some(false), // Default to private
                     };
                     let companion = self.initialize_companion(&req).await?;
                     companions.push(companion);

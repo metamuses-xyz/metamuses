@@ -50,8 +50,28 @@ impl MemoryService {
         }
     }
 
+    /// Ensure user exists in database before storing messages
+    async fn ensure_user_exists(&self, user_address: &str) -> Result<()> {
+        sqlx::query(
+            r#"
+            INSERT INTO users (wallet_address)
+            VALUES ($1)
+            ON CONFLICT (wallet_address) DO UPDATE SET last_active = NOW()
+            "#,
+        )
+        .bind(user_address.to_lowercase())
+        .execute(&self.pool)
+        .await
+        .context("Failed to ensure user exists")?;
+
+        Ok(())
+    }
+
     /// Store a message in both short-term (Redis) and long-term (PostgreSQL)
     pub async fn store_message(&self, message: &Message) -> Result<()> {
+        // 0. Ensure user exists (foreign key constraint)
+        self.ensure_user_exists(&message.user_address).await?;
+
         // 1. Store in PostgreSQL (long-term)
         self.message_repo
             .create(message)
@@ -562,9 +582,11 @@ mod tests {
 
         let companion = Companion {
             id: Uuid::new_v4(),
+            muse_id: 1,
             nft_token_id: 1,
             owner_address: "0x123".to_string(),
             name: "Test".to_string(),
+            is_public: false,
             creativity: 50,
             wisdom: 50,
             humor: 50,

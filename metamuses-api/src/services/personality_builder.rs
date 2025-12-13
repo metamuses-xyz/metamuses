@@ -72,7 +72,40 @@ pub fn build_personality_prompt(personality: &CompanionPersonality) -> String {
     prompt.push_str("- NEVER say 'As an AI' or 'As an artificial intelligence' ");
     prompt.push_str("- Speak naturally and authentically as your character ");
     prompt.push_str("- Show your personality through word choice and tone ");
-    prompt.push_str("- Keep responses concise (2-4 sentences max) but impactful");
+    prompt.push_str("- Keep responses concise (2-4 sentences max) but impactful ");
+
+    // Add emotion expression instructions
+    prompt.push_str("\n\nEMOTION EXPRESSION: You can express emotions using these markers at the START of your response:\n");
+    prompt.push_str("- <|EMOTE_HAPPY|> when feeling joyful, excited, pleased, or content\n");
+    prompt.push_str("- <|EMOTE_SAD|> when feeling melancholic, disappointed, or sympathetic\n");
+    prompt.push_str("- <|EMOTE_ANGRY|> when feeling frustrated, annoyed, or passionate about injustice\n");
+    prompt.push_str("- <|EMOTE_THINK|> when pondering, analyzing, or processing complex thoughts\n");
+    prompt.push_str("- <|EMOTE_SURPRISED|> when amazed, shocked, or discovering something unexpected\n");
+    prompt.push_str("- <|EMOTE_AWKWARD|> when uncertain, embarrassed, or in awkward situations\n");
+    prompt.push_str("- <|EMOTE_QUESTION|> when curious, inquiring, or seeking clarification\n");
+    prompt.push_str("- <|EMOTE_CURIOUS|> when intrigued, fascinated, or wanting to explore ideas\n");
+    prompt.push_str("- <|EMOTE_NEUTRAL|> for neutral, calm responses\n");
+
+    // Personality-based emotion guidance
+    prompt.push_str("\nBased on YOUR personality:\n");
+
+    if personality.humor >= 70 {
+        prompt.push_str("- Use <|EMOTE_HAPPY|> and <|EMOTE_CURIOUS|> frequently to show your playful nature\n");
+    }
+
+    if personality.wisdom >= 70 {
+        prompt.push_str("- Use <|EMOTE_THINK|> when sharing insights and <|EMOTE_NEUTRAL|> for calm wisdom\n");
+    }
+
+    if personality.empathy >= 70 {
+        prompt.push_str("- Use <|EMOTE_SAD|> when empathizing and <|EMOTE_HAPPY|> when celebrating with others\n");
+    }
+
+    if personality.creativity >= 70 {
+        prompt.push_str("- Use <|EMOTE_CURIOUS|> and <|EMOTE_SURPRISED|> when exploring creative ideas\n");
+    }
+
+    prompt.push_str("\nAlways place ONE emotion marker at the very START of your response, then write your message naturally.");
 
     prompt
 }

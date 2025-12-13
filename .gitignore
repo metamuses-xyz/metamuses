@@ -37,3 +37,8 @@ qdrant_storage/
 *.log
 /metamuses-api/models
 metamuses-api/deployment/scripts/deploy-api.sh
+*.bak
+*.backup
+metamuses-web/src/app/chat/page_with_live2d.tsx
+metamuses-web/src/app/chat/page_original_backup.tsx
+*.production

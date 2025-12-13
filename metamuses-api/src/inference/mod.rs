@@ -1,10 +1,14 @@
 pub mod engine;
+pub mod external;
 pub mod llama_engine;
 pub mod models;
 pub mod worker_pool;
 
 // Primary engine - llama.cpp with Metal/CPU acceleration
 pub use llama_engine::{LlamaCppConfig, LlamaCppEngine};
+
+// External API engines
+pub use external::{ExternalAPIEngine, ExternalAPIConfig, LLMProvider};
 
 // Engine traits and configuration
 pub use engine::{GenerationConfig, InferenceEngine};
@@ -19,7 +23,50 @@ pub use worker_pool::{Worker, WorkerPool};
 pub struct ModelFactory;
 
 impl ModelFactory {
+    /// Create inference engine based on LLM_PROVIDER configuration
+    ///
+    /// Supports:
+    /// - "local" (default): Uses llama.cpp with Metal/CPU acceleration
+    /// - "gemini": Uses Google Gemini API
+    /// - "openrouter": Uses OpenRouter API (multi-provider)
+    pub async fn create_engine_from_config(
+        app_config: &crate::config::Config,
+    ) -> anyhow::Result<Box<dyn InferenceEngine>> {
+        let provider = LLMProvider::from(app_config.llm_provider.as_str());
+
+        match provider {
+            LLMProvider::Gemini => {
+                tracing::info!("🌐 Creating Gemini API inference engine");
+                let external_config = ExternalAPIConfig::from_config(app_config);
+                let engine = ExternalAPIEngine::new_gemini(&external_config)?;
+                Ok(Box::new(engine))
+            }
+            LLMProvider::OpenRouter => {
+                tracing::info!("🌐 Creating OpenRouter API inference engine");
+                let external_config = ExternalAPIConfig::from_config(app_config);
+                let engine = ExternalAPIEngine::new_openrouter(&external_config)?;
+                Ok(Box::new(engine))
+            }
+            LLMProvider::Local => {
+                tracing::info!("🚀 Creating local llama.cpp inference engine (Metal GPU)");
+
+                // Build model path for local inference
+                let model_path = format!("{}/qwen2.5-3b-instruct-q4_k_m.gguf", app_config.models_dir);
+                let model_name = "qwen2.5-3b-instruct".to_string();
+
+                let engine = LlamaCppEngine::new(
+                    &model_path,
+                    model_name,
+                    crate::types::ModelTier::Fast,
+                ).await?;
+
+                Ok(Box::new(engine))
+            }
+        }
+    }
+
     /// Create inference engine - uses llama.cpp by default for best performance
+    /// (Legacy method for backward compatibility)
     pub async fn create_engine(
         config: &crate::types::ModelConfig,
     ) -> anyhow::Result<Box<dyn InferenceEngine>> {

@@ -7,9 +7,11 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct Companion {
     pub id: Uuid,
-    pub nft_token_id: i64,
+    pub muse_id: i64,           // Unique ID for each companion instance
+    pub nft_token_id: i64,      // NFT that owns this companion (can have multiple)
     pub owner_address: String,
     pub name: String,
+    pub is_public: bool,        // Privacy: false = owner only, true = public
 
     // Personality traits (0-100 scale)
     pub creativity: i16,
@@ -112,6 +114,7 @@ pub struct CreateCompanionRequest {
     pub owner_address: String,
     pub name: Option<String>,
     pub traits: Option<Traits>,
+    pub is_public: Option<bool>,  // Optional, defaults to false (private)
 }
 
 /// Request to update a companion
@@ -119,6 +122,7 @@ pub struct CreateCompanionRequest {
 pub struct UpdateCompanionRequest {
     pub name: Option<String>,
     pub description: Option<String>,
+    pub is_public: Option<bool>,  // Allow updating privacy setting
 }
 
 /// Companion statistics
@@ -134,9 +138,19 @@ pub struct CompanionStats {
 
 impl Companion {
     /// Check if companion can level up
+    /// XP is cumulative, so we need to check if total XP exceeds the cumulative threshold for next level
     pub fn can_level_up(&self) -> bool {
-        let required_xp = Self::xp_for_level(self.level as u32);
-        self.experience_points >= required_xp as i64
+        let cumulative_xp_for_next_level = Self::cumulative_xp_for_level((self.level + 1) as u32);
+        self.experience_points >= cumulative_xp_for_next_level as i64
+    }
+
+    /// Calculate cumulative XP required to reach a given level
+    pub fn cumulative_xp_for_level(level: u32) -> u64 {
+        let mut total = 0u64;
+        for l in 1..level {
+            total += Self::xp_for_level(l);
+        }
+        total
     }
 
     /// Calculate XP required for a given level

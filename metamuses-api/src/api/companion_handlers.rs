@@ -52,6 +52,7 @@ pub async fn initialize_companion(
         owner_address: req.user_address,
         name: None,
         traits: None,
+        is_public: Some(false), // Default to private
     };
 
     let companion = service
