@@ -67,6 +67,17 @@ x-worker-common: &worker-common
     # Semantic Cache (disabled by default for performance)
     - ENABLE_SEMANTIC_CACHE=${ENABLE_SEMANTIC_CACHE:-false}
 
+    # LLM Provider Configuration
+    - LLM_PROVIDER=${LLM_PROVIDER:-gemini}
+    - GEMINI_API_KEY=${GEMINI_API_KEY}
+    - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash-lite}
+    - GEMINI_BASE_URL=${GEMINI_BASE_URL:-https://generativelanguage.googleapis.com/v1beta}
+    - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+    - OPENROUTER_MODEL=${OPENROUTER_MODEL:-google/gemini-2.0-flash-001}
+    - OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
+    - EXTERNAL_API_TIMEOUT_SECS=${EXTERNAL_API_TIMEOUT_SECS:-30}
+    - EXTERNAL_API_MAX_RETRIES=${EXTERNAL_API_MAX_RETRIES:-3}
+
     # Logging
     - RUST_LOG=${RUST_LOG:-info}
     - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
@@ -268,6 +279,17 @@ services:
       - CHAIN_ID=${CHAIN_ID:-133717}
       - EXPLORER_BASE_URL=${EXPLORER_BASE_URL:-https://hyperion-testnet-explorer.metisdevops.link}
 
+      # LLM Provider Configuration
+      - LLM_PROVIDER=${LLM_PROVIDER:-gemini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash-lite}
+      - GEMINI_BASE_URL=${GEMINI_BASE_URL:-https://generativelanguage.googleapis.com/v1beta}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-google/gemini-2.0-flash-001}
+      - OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
+      - EXTERNAL_API_TIMEOUT_SECS=${EXTERNAL_API_TIMEOUT_SECS:-30}
+      - EXTERNAL_API_MAX_RETRIES=${EXTERNAL_API_MAX_RETRIES:-3}
+
       # Logging
       - RUST_LOG=${RUST_LOG:-info}
       - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
@@ -303,19 +325,33 @@ services:
     image: metamuses-worker:latest
     environment:
       - WORKER_ID=0
+      # Redis
       - REDIS_URL=redis://:${REDIS_PASSWORD:-changeme}@redis:6379
       - REDIS_QUEUE_PREFIX=metamuse
+      # Models
       - MODELS_DIR=/models
       - MODEL_FILENAME=${MODEL_FILENAME:-qwen2.5-0.5b-instruct-q4_k_m.gguf}
       - ENABLE_FAST_TIER=${ENABLE_FAST_TIER:-true}
       - ENABLE_MEDIUM_TIER=${ENABLE_MEDIUM_TIER:-false}
       - ENABLE_HEAVY_TIER=${ENABLE_HEAVY_TIER:-false}
+      # Worker Config
       - TOTAL_WORKERS=${TOTAL_WORKERS:-8}
       - THREADS_PER_WORKER=${THREADS_PER_WORKER:-2}
       - BATCH_SIZE=${BATCH_SIZE:-512}
       - CONTEXT_SIZE=${CONTEXT_SIZE:-1024}
       - MAX_TOKENS=${MAX_TOKENS:-128}
       - ENABLE_SEMANTIC_CACHE=${ENABLE_SEMANTIC_CACHE:-false}
+      # LLM Provider
+      - LLM_PROVIDER=${LLM_PROVIDER:-gemini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash-lite}
+      - GEMINI_BASE_URL=${GEMINI_BASE_URL:-https://generativelanguage.googleapis.com/v1beta}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-google/gemini-2.0-flash-001}
+      - OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
+      - EXTERNAL_API_TIMEOUT_SECS=${EXTERNAL_API_TIMEOUT_SECS:-30}
+      - EXTERNAL_API_MAX_RETRIES=${EXTERNAL_API_MAX_RETRIES:-3}
+      # Logging
       - RUST_LOG=${RUST_LOG:-info}
       - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
 
@@ -338,6 +374,15 @@ services:
       - CONTEXT_SIZE=${CONTEXT_SIZE:-1024}
       - MAX_TOKENS=${MAX_TOKENS:-128}
       - ENABLE_SEMANTIC_CACHE=${ENABLE_SEMANTIC_CACHE:-false}
+      - LLM_PROVIDER=${LLM_PROVIDER:-gemini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash-lite}
+      - GEMINI_BASE_URL=${GEMINI_BASE_URL:-https://generativelanguage.googleapis.com/v1beta}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-google/gemini-2.0-flash-001}
+      - OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
+      - EXTERNAL_API_TIMEOUT_SECS=${EXTERNAL_API_TIMEOUT_SECS:-30}
+      - EXTERNAL_API_MAX_RETRIES=${EXTERNAL_API_MAX_RETRIES:-3}
       - RUST_LOG=${RUST_LOG:-info}
       - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
 
@@ -360,6 +405,15 @@ services:
       - CONTEXT_SIZE=${CONTEXT_SIZE:-1024}
       - MAX_TOKENS=${MAX_TOKENS:-128}
       - ENABLE_SEMANTIC_CACHE=${ENABLE_SEMANTIC_CACHE:-false}
+      - LLM_PROVIDER=${LLM_PROVIDER:-gemini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash-lite}
+      - GEMINI_BASE_URL=${GEMINI_BASE_URL:-https://generativelanguage.googleapis.com/v1beta}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-google/gemini-2.0-flash-001}
+      - OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
+      - EXTERNAL_API_TIMEOUT_SECS=${EXTERNAL_API_TIMEOUT_SECS:-30}
+      - EXTERNAL_API_MAX_RETRIES=${EXTERNAL_API_MAX_RETRIES:-3}
       - RUST_LOG=${RUST_LOG:-info}
       - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
 
@@ -382,6 +436,15 @@ services:
       - CONTEXT_SIZE=${CONTEXT_SIZE:-1024}
       - MAX_TOKENS=${MAX_TOKENS:-128}
       - ENABLE_SEMANTIC_CACHE=${ENABLE_SEMANTIC_CACHE:-false}
+      - LLM_PROVIDER=${LLM_PROVIDER:-gemini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash-lite}
+      - GEMINI_BASE_URL=${GEMINI_BASE_URL:-https://generativelanguage.googleapis.com/v1beta}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-google/gemini-2.0-flash-001}
+      - OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
+      - EXTERNAL_API_TIMEOUT_SECS=${EXTERNAL_API_TIMEOUT_SECS:-30}
+      - EXTERNAL_API_MAX_RETRIES=${EXTERNAL_API_MAX_RETRIES:-3}
       - RUST_LOG=${RUST_LOG:-info}
       - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
 
@@ -404,6 +467,15 @@ services:
       - CONTEXT_SIZE=${CONTEXT_SIZE:-1024}
       - MAX_TOKENS=${MAX_TOKENS:-128}
       - ENABLE_SEMANTIC_CACHE=${ENABLE_SEMANTIC_CACHE:-false}
+      - LLM_PROVIDER=${LLM_PROVIDER:-gemini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash-lite}
+      - GEMINI_BASE_URL=${GEMINI_BASE_URL:-https://generativelanguage.googleapis.com/v1beta}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-google/gemini-2.0-flash-001}
+      - OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
+      - EXTERNAL_API_TIMEOUT_SECS=${EXTERNAL_API_TIMEOUT_SECS:-30}
+      - EXTERNAL_API_MAX_RETRIES=${EXTERNAL_API_MAX_RETRIES:-3}
       - RUST_LOG=${RUST_LOG:-info}
       - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
 
@@ -426,6 +498,15 @@ services:
       - CONTEXT_SIZE=${CONTEXT_SIZE:-1024}
       - MAX_TOKENS=${MAX_TOKENS:-128}
       - ENABLE_SEMANTIC_CACHE=${ENABLE_SEMANTIC_CACHE:-false}
+      - LLM_PROVIDER=${LLM_PROVIDER:-gemini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash-lite}
+      - GEMINI_BASE_URL=${GEMINI_BASE_URL:-https://generativelanguage.googleapis.com/v1beta}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-google/gemini-2.0-flash-001}
+      - OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
+      - EXTERNAL_API_TIMEOUT_SECS=${EXTERNAL_API_TIMEOUT_SECS:-30}
+      - EXTERNAL_API_MAX_RETRIES=${EXTERNAL_API_MAX_RETRIES:-3}
       - RUST_LOG=${RUST_LOG:-info}
       - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
 
@@ -448,6 +529,15 @@ services:
       - CONTEXT_SIZE=${CONTEXT_SIZE:-1024}
       - MAX_TOKENS=${MAX_TOKENS:-128}
       - ENABLE_SEMANTIC_CACHE=${ENABLE_SEMANTIC_CACHE:-false}
+      - LLM_PROVIDER=${LLM_PROVIDER:-gemini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash-lite}
+      - GEMINI_BASE_URL=${GEMINI_BASE_URL:-https://generativelanguage.googleapis.com/v1beta}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-google/gemini-2.0-flash-001}
+      - OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
+      - EXTERNAL_API_TIMEOUT_SECS=${EXTERNAL_API_TIMEOUT_SECS:-30}
+      - EXTERNAL_API_MAX_RETRIES=${EXTERNAL_API_MAX_RETRIES:-3}
       - RUST_LOG=${RUST_LOG:-info}
       - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
 
@@ -470,6 +560,15 @@ services:
       - CONTEXT_SIZE=${CONTEXT_SIZE:-1024}
       - MAX_TOKENS=${MAX_TOKENS:-128}
       - ENABLE_SEMANTIC_CACHE=${ENABLE_SEMANTIC_CACHE:-false}
+      - LLM_PROVIDER=${LLM_PROVIDER:-gemini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash-lite}
+      - GEMINI_BASE_URL=${GEMINI_BASE_URL:-https://generativelanguage.googleapis.com/v1beta}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-google/gemini-2.0-flash-001}
+      - OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
+      - EXTERNAL_API_TIMEOUT_SECS=${EXTERNAL_API_TIMEOUT_SECS:-30}
+      - EXTERNAL_API_MAX_RETRIES=${EXTERNAL_API_MAX_RETRIES:-3}
       - RUST_LOG=${RUST_LOG:-info}
       - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
 

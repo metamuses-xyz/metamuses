@@ -92,10 +92,6 @@ path = "src/bin/worker.rs"
 name = "test-inference"
 path = "src/bin/test_inference.rs"
 
-[[bench]]
-name = "inference_bench"
-harness = false
-
 [features]
 default = ["llama-cpp"]
 llama-cpp = []

@@ -26,24 +26,11 @@ RUN apt-get update && apt-get install -y \
 # Create app directory
 WORKDIR /app
 
-# Copy Cargo files first (for dependency caching)
+# Copy all source code
 COPY Cargo.toml Cargo.lock ./
-
-# Create dummy src to cache dependencies
-RUN mkdir -p src/bin && \
-    echo "fn main() {}" > src/main.rs && \
-    echo "fn main() {}" > src/lib.rs && \
-    echo "fn main() {}" > src/bin/server.rs && \
-    echo "fn main() {}" > src/bin/worker.rs && \
-    echo "fn main() {}" > src/bin/test_inference.rs && \
-    cargo build --release 2>/dev/null || true && \
-    rm -rf src
-
-# Copy actual source code
 COPY src ./src
 COPY .sqlx ./.sqlx
 COPY migrations ./migrations
-COPY benches ./benches
 
 # Build both release binaries with optimizations
 # Using SQLX_OFFLINE=true to skip compile-time database checks
@@ -51,9 +38,17 @@ ENV SQLX_OFFLINE=true
 
 # Set optimal build flags for the target architecture
 # ARM64 will use NEON/SVE, x86_64 will use AVX2
-RUN cargo build --release --bin metamuse-server --bin metamuse-worker && \
+# Using --verbose to debug build issues
+RUN echo "=== Starting cargo build ===" && \
+    cargo build --release --bin metamuse-server --bin metamuse-worker --verbose && \
+    echo "=== Build completed ===" && \
+    echo "Binary sizes before strip:" && \
+    ls -lh target/release/metamuse-server target/release/metamuse-worker && \
+    echo "=== Stripping binaries ===" && \
     strip target/release/metamuse-server && \
-    strip target/release/metamuse-worker
+    strip target/release/metamuse-worker && \
+    echo "Binary sizes after strip:" && \
+    ls -lh target/release/metamuse-server target/release/metamuse-worker
 
 # ============================================================================
 # Stage 2: Runtime Stage (Server)
@@ -76,8 +71,9 @@ RUN useradd -m -u 1000 -s /bin/bash metamuse
 RUN mkdir -p /app /models /data /app/logs && \
     chown -R metamuse:metamuse /app /models /data
 
-# Copy server binary from builder
+# Copy server binary and migrations from builder
 COPY --from=builder --chown=metamuse:metamuse /app/target/release/metamuse-server /app/metamuse-server
+COPY --from=builder --chown=metamuse:metamuse /app/migrations /app/migrations
 
 # Switch to non-root user
 USER metamuse
@@ -118,8 +114,9 @@ RUN useradd -m -u 1000 -s /bin/bash metamuse
 RUN mkdir -p /app /models /data /app/logs && \
     chown -R metamuse:metamuse /app /models /data
 
-# Copy worker binary from builder
+# Copy worker binary and migrations from builder
 COPY --from=builder --chown=metamuse:metamuse /app/target/release/metamuse-worker /app/metamuse-worker
+COPY --from=builder --chown=metamuse:metamuse /app/migrations /app/migrations
 
 # Switch to non-root user
 USER metamuse
