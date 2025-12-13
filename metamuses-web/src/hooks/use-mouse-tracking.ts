@@ -6,7 +6,7 @@
 
 'use client'
 
-import { useEffect, useState, useRef, useCallback, RefObject } from 'react'
+import { useEffect, useState, useRef, useCallback, useMemo, RefObject } from 'react'
 import type { ModelParameters } from '@/constants/emotions'
 
 interface MousePosition {
@@ -193,15 +193,20 @@ export function useMouseTracking(
     }
   }, [containerRef, handleMouseMove, handleMouseLeave])
 
-  // Calculate parameters from smoothed position
-  const params = mouseToParams(smoothedPos, fullConfig)
+  // Memoize parameters to prevent unnecessary re-renders
+  // Only recalculate when smoothedPos actually changes
+  const params = useMemo(() =>
+    mouseToParams(smoothedPos, fullConfig),
+    [smoothedPos.x, smoothedPos.y, fullConfig.headAngleXRange, fullConfig.headAngleYRange, fullConfig.sensitivity]
+  )
 
-  return {
+  // Memoize the entire return object to maintain referential equality
+  return useMemo(() => ({
     mousePos: smoothedPos,
     params,
     isInsideContainer,
     isTracking,
-  }
+  }), [smoothedPos, params, isInsideContainer, isTracking])
 }
 
 /**
@@ -272,11 +277,16 @@ export function useWindowMouseTracking(
     }
   }, [updateSmoothedPosition])
 
-  const params = mouseToParams(smoothedPos, fullConfig)
+  // Memoize parameters
+  const params = useMemo(() =>
+    mouseToParams(smoothedPos, fullConfig),
+    [smoothedPos.x, smoothedPos.y, fullConfig.headAngleXRange, fullConfig.headAngleYRange, fullConfig.sensitivity]
+  )
 
-  return {
+  // Memoize return object
+  return useMemo(() => ({
     mousePos: smoothedPos,
     params,
     isTracking,
-  }
+  }), [smoothedPos, params, isTracking])
 }

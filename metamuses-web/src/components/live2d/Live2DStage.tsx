@@ -6,7 +6,7 @@
 
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, memo, useMemo } from 'react'
 import { Live2DCanvas } from './Live2DCanvas'
 import { Live2DModel } from './Live2DModel'
 import { useMouseTracking } from '@/hooks/use-mouse-tracking'
@@ -22,7 +22,15 @@ export interface Live2DStageProps {
   enableMouseTracking?: boolean
 }
 
-export function Live2DStage({
+// Memoize the tracking config to prevent re-creating on every render
+const TRACKING_CONFIG = {
+  headAngleXRange: 20,
+  headAngleYRange: 15,
+  smoothing: 0.12,
+  trackOutside: true,
+} as const
+
+export const Live2DStage = memo(function Live2DStage({
   modelSrc,
   modelId,
   className = '',
@@ -35,12 +43,7 @@ export function Live2DStage({
   const containerRef = useRef<HTMLDivElement>(null)
 
   // Mouse tracking for eye/head following
-  const { params: mouseTrackingParams } = useMouseTracking(containerRef, {
-    headAngleXRange: 20,
-    headAngleYRange: 15,
-    smoothing: 0.12,
-    trackOutside: true,
-  })
+  const { params: mouseTrackingParams } = useMouseTracking(containerRef, TRACKING_CONFIG)
 
   // Handle window resize
   useEffect(() => {
@@ -55,6 +58,12 @@ export function Live2DStage({
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
+
+  // Memoize the mouse params to pass down
+  const effectiveMouseParams = useMemo(() =>
+    enableMouseTracking ? mouseTrackingParams : undefined,
+    [enableMouseTracking, mouseTrackingParams]
+  )
 
   return (
     <div ref={containerRef} className={`relative ${className}`}>
@@ -71,7 +80,7 @@ export function Live2DStage({
             modelId={modelId}
             mouthOpenSize={mouthOpenSize}
             onModelLoaded={onModelLoaded}
-            mouseTrackingParams={enableMouseTracking ? mouseTrackingParams : undefined}
+            mouseTrackingParams={effectiveMouseParams}
             enableIdleAnimations={enableIdleAnimations}
             enableMouseTracking={enableMouseTracking}
           />
@@ -79,4 +88,4 @@ export function Live2DStage({
       </Live2DCanvas>
     </div>
   )
-}
+})
