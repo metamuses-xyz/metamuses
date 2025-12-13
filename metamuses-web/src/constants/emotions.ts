@@ -95,50 +95,136 @@ export const EMOTION_SOUND_MAP: Record<Emotion, string> = {
   [Emotion.Idle]: '/sounds/idle.wav',
 }
 
-// Enhanced emotion-to-motion mapping with parameter variations
-// Differentiates emotions that share the same motion group
-export const EMOTION_MOTION_CONFIG: Record<Emotion, {
+// Enhanced emotion configuration type
+export interface EmotionConfig {
   motion: string
   parameters?: Partial<ModelParameters>
   sound?: string
-}> = {
+  transitionDuration?: number  // How long to transition to this emotion (ms)
+  holdDuration?: number        // How long to hold the emotion before returning to idle (ms)
+}
+
+// Enhanced emotion-to-motion mapping with parameter variations
+// Each emotion has unique parameters to differentiate even when sharing motion groups
+export const EMOTION_MOTION_CONFIG: Record<Emotion, EmotionConfig> = {
   [Emotion.Happy]: {
     motion: 'Tap',
-    parameters: { leftEyeOpen: 1.2, rightEyeOpen: 1.2, mouthOpen: 0.6 }
+    parameters: {
+      leftEyeOpen: 1.15,
+      rightEyeOpen: 1.15,
+      mouthOpen: 0.5,
+      mouthForm: 0.4,     // Smile shape
+      angleY: 3,          // Slight upward tilt
+    },
+    transitionDuration: 200,
+    holdDuration: 1500,
   },
   [Emotion.Sad]: {
     motion: 'FlickDown',
-    parameters: { leftEyeOpen: 0.7, rightEyeOpen: 0.7, angleY: -5 }
+    parameters: {
+      leftEyeOpen: 0.7,
+      rightEyeOpen: 0.7,
+      angleX: -8,         // Look down
+      angleY: -5,         // Head tilt
+      mouthForm: -0.3,    // Slight frown
+    },
+    transitionDuration: 350,
+    holdDuration: 1600,
   },
   [Emotion.Think]: {
     motion: 'Tap@Body',
-    parameters: { angleX: -10, leftEyeOpen: 0.9, rightEyeOpen: 0.9 }
+    parameters: {
+      angleX: -15,        // Look down (contemplating)
+      angleY: -8,         // Slight side tilt
+      angleZ: 3,          // Subtle tilt
+      leftEyeOpen: 0.7,   // Narrowed eyes
+      rightEyeOpen: 0.7,
+      mouthForm: -0.15,   // Subtle pursed lips
+    },
+    transitionDuration: 400,  // Slower for contemplation
+    holdDuration: 2000,
   },
   [Emotion.Surprise]: {
     motion: 'Tap@Body',
-    parameters: { leftEyeOpen: 1.3, rightEyeOpen: 1.3, angleY: 5 }
+    parameters: {
+      angleX: 8,          // Head back
+      leftEyeOpen: 1.4,   // Wide eyes
+      rightEyeOpen: 1.4,
+      mouthOpen: 0.7,     // Open mouth (gasp)
+      mouthForm: 0.1,     // Slightly rounded
+    },
+    transitionDuration: 120,  // Quick snap reaction
+    holdDuration: 1200,
   },
   [Emotion.Question]: {
     motion: 'Tap@Body',
-    parameters: { angleZ: 8, leftEyeOpen: 1.1, rightEyeOpen: 1.1 }
+    parameters: {
+      angleZ: 12,         // Head tilt (curious)
+      angleX: 5,          // Slight forward lean
+      angleY: 8,          // Looking up slightly
+      leftEyeOpen: 1.15,  // Alert eyes
+      rightEyeOpen: 1.1,  // Slight asymmetry
+      mouthOpen: 0.15,    // Slightly parted
+    },
+    transitionDuration: 250,
+    holdDuration: 1500,
   },
   [Emotion.Curious]: {
     motion: 'Tap',
-    parameters: { angleY: 10, leftEyeOpen: 1.1, rightEyeOpen: 1.1 }
+    parameters: {
+      angleY: 12,         // Head turn (interested)
+      angleX: 5,          // Slight lean forward
+      leftEyeOpen: 1.2,   // Wide, interested eyes
+      rightEyeOpen: 1.2,
+      mouthForm: 0.2,     // Slight smile
+    },
+    transitionDuration: 220,
+    holdDuration: 1500,
   },
   [Emotion.Angry]: {
     motion: 'Flick@Body',
-    parameters: { angleX: 5, leftEyeOpen: 0.8, rightEyeOpen: 0.8 }
+    parameters: {
+      angleX: 5,          // Head tilted forward
+      angleY: 0,
+      leftEyeOpen: 0.75,  // Narrowed, intense eyes
+      rightEyeOpen: 0.75,
+      mouthOpen: 0.2,
+      mouthForm: -0.4,    // Frown
+    },
+    transitionDuration: 180,
+    holdDuration: 1600,
   },
   [Emotion.Awkward]: {
     motion: 'Flick',
-    parameters: { angleZ: -5, mouthForm: -0.3 }
+    parameters: {
+      angleZ: -8,         // Head tilt away
+      angleY: -6,         // Looking away
+      leftEyeOpen: 0.85,
+      rightEyeOpen: 0.9,  // Asymmetric
+      mouthForm: -0.25,   // Nervous expression
+      mouthOpen: 0.1,
+    },
+    transitionDuration: 280,
+    holdDuration: 1400,
   },
   [Emotion.Idle]: {
     motion: 'Idle',
-    parameters: {} // Default parameters
+    parameters: {
+      angleX: 0,
+      angleY: 0,
+      angleZ: 0,
+      leftEyeOpen: 1,
+      rightEyeOpen: 1,
+      mouthOpen: 0,
+      mouthForm: 0,
+    },
+    transitionDuration: 350,
+    holdDuration: 2000,
   }
 }
+
+// Default transition duration if not specified
+export const DEFAULT_TRANSITION_DURATION = 300
 
 /**
  * Utility function to strip emotion markers from text for display

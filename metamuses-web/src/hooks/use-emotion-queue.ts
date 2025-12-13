@@ -1,12 +1,13 @@
 /**
  * Emotion Queue Hook
  * Manages emotion detection and queuing from LLM responses
+ * Now uses smooth transitions via the animation system
  */
 
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { Emotion, EMOTION_MOTION_CONFIG, EMOTION_SOUND_MAP, EMOTION_VALUES, EMOTION_ANIMATION_DURATIONS, DEFAULT_ANIMATION_DURATION } from '@/constants/emotions'
+import { Emotion, EMOTION_MOTION_CONFIG, EMOTION_SOUND_MAP, EMOTION_VALUES, DEFAULT_TRANSITION_DURATION } from '@/constants/emotions'
 import { createQueue } from '@/lib/live2d/queue'
 import { useLive2DStore } from '@/store/live2d-store'
 import { useSoundStore } from '@/store/sound-store'
@@ -37,6 +38,8 @@ export function useEmotionQueue() {
       async (ctx) => {
         const config = EMOTION_MOTION_CONFIG[ctx.data]
         const motionName = config.motion
+        const transitionDuration = config.transitionDuration || DEFAULT_TRANSITION_DURATION
+        const holdDuration = config.holdDuration || 1500
 
         // Play sound effect for this emotion
         const soundPath = EMOTION_SOUND_MAP[ctx.data]
@@ -46,26 +49,27 @@ export function useEmotionQueue() {
           })
         }
 
-        // Apply emotion-specific parameters if defined
+        // Note: Parameters are now handled by Live2DModel via the animation system
+        // We just need to set them in the store and the animator will smooth them
         if (config.parameters && Object.keys(config.parameters).length > 0) {
           setParameters(config.parameters)
-          console.log('[Emotion] Applied parameters:', config.parameters)
+          console.log('[Emotion] Set parameters for smooth transition:', ctx.data)
         }
 
-        // Trigger motion
+        // Trigger motion - the Live2DModel will handle smooth parameter animation
         setMotion({ group: motionName })
-        console.log('[Emotion] Triggered:', ctx.data, '→', motionName, '🔊')
+        console.log('[Emotion] Triggered:', ctx.data, '→', motionName,
+          `(transition: ${transitionDuration}ms, hold: ${holdDuration}ms)`)
 
-        // Wait for animation to complete
-        const duration = EMOTION_ANIMATION_DURATIONS[motionName] || DEFAULT_ANIMATION_DURATION
-        await new Promise(resolve => setTimeout(resolve, duration))
+        // Wait for the hold duration (animation system handles the transitions)
+        await new Promise(resolve => setTimeout(resolve, holdDuration))
 
         // Smart transition: Only return to idle if queue is empty
         const hasMoreEmotions = ctx.queueLength > 0
         if (!hasMoreEmotions) {
           console.log('[Emotion] Queue empty, returning to idle')
           setMotion({ group: 'Idle' })
-          // Reset parameters to default when returning to idle
+          // Reset parameters - animation system will smooth the transition back
           setParameters({})
         } else {
           console.log('[Emotion] Queue has', ctx.queueLength, 'more emotion(s), transitioning...')
