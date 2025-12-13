@@ -64,6 +64,18 @@ export function Live2DModel({
   const lastEmotionParamsRef = useRef<Partial<ModelParameters>>({})
   const isEmotionActiveRef = useRef(false)
 
+  // Store mouse tracking params in ref to avoid re-renders
+  const mouseTrackingParamsRef = useRef<Partial<ModelParameters> | undefined>(mouseTrackingParams)
+  const enableMouseTrackingRef = useRef(enableMouseTracking)
+  const enableIdleAnimationsRef = useRef(enableIdleAnimations)
+  const mouthOpenSizeRef = useRef(mouthOpenSize)
+
+  // Update refs when props change (without triggering re-renders)
+  mouseTrackingParamsRef.current = mouseTrackingParams
+  enableMouseTrackingRef.current = enableMouseTracking
+  enableIdleAnimationsRef.current = enableIdleAnimations
+  mouthOpenSizeRef.current = mouthOpenSize
+
   // Helper to apply parameters to model
   const applyParamsToModel = useCallback((params: Partial<ModelParameters>) => {
     if (!modelRef.current) return
@@ -141,17 +153,15 @@ export function Live2DModel({
     }
   }, [app, modelSrc, modelId, scale, position, applyParamsToModel, onModelLoaded])
 
-  // Set up main animation loop
+  // Set up main animation loop - only depends on app and applyParamsToModel
+  // All other values are read from refs to avoid re-creating the loop
   useEffect(() => {
     if (!modelRef.current) return
 
     const animator = parameterAnimatorRef.current
     const idleAnimator = idleAnimatorRef.current
 
-    // Configure idle animator
-    idleAnimator.setEnabled(enableIdleAnimations)
-
-    // Main animation loop
+    // Main animation loop - reads from refs for latest values
     const animationLoop = () => {
       if (!modelRef.current) return
 
@@ -161,19 +171,20 @@ export function Live2DModel({
       const finalParams: Partial<ModelParameters> = { ...DEFAULT_MODEL_PARAMETERS }
 
       // Layer 1: Idle animations (breathing, blinking, subtle sway)
-      if (enableIdleAnimations && !isEmotionActiveRef.current) {
+      if (enableIdleAnimationsRef.current && !isEmotionActiveRef.current) {
         const idleParams = idleAnimator.update(now)
         Object.assign(finalParams, idleParams)
       }
 
       // Layer 2: Mouse tracking (if enabled and not during emotion)
-      if (enableMouseTracking && mouseTrackingParams && !isEmotionActiveRef.current) {
+      const mouseParams = mouseTrackingParamsRef.current
+      if (enableMouseTrackingRef.current && mouseParams && !isEmotionActiveRef.current) {
         // Blend mouse tracking with current values
-        if (mouseTrackingParams.angleX !== undefined) {
-          finalParams.angleX = (finalParams.angleX || 0) + mouseTrackingParams.angleX * 0.5
+        if (mouseParams.angleX !== undefined) {
+          finalParams.angleX = (finalParams.angleX || 0) + mouseParams.angleX * 0.5
         }
-        if (mouseTrackingParams.angleY !== undefined) {
-          finalParams.angleY = (finalParams.angleY || 0) + mouseTrackingParams.angleY * 0.5
+        if (mouseParams.angleY !== undefined) {
+          finalParams.angleY = (finalParams.angleY || 0) + mouseParams.angleY * 0.5
         }
       }
 
@@ -189,8 +200,8 @@ export function Live2DModel({
       }
 
       // Layer 5: External mouth control (for lip sync)
-      if (mouthOpenSize > 0) {
-        finalParams.mouthOpen = mouthOpenSize
+      if (mouthOpenSizeRef.current > 0) {
+        finalParams.mouthOpen = mouthOpenSizeRef.current
       }
 
       // Apply all parameters to model
@@ -207,7 +218,12 @@ export function Live2DModel({
         tickerCallbackRef.current = null
       }
     }
-  }, [app, enableIdleAnimations, enableMouseTracking, mouseTrackingParams, mouthOpenSize, applyParamsToModel])
+  }, [app, applyParamsToModel])
+
+  // Update idle animator enabled state when prop changes
+  useEffect(() => {
+    idleAnimatorRef.current.setEnabled(enableIdleAnimations)
+  }, [enableIdleAnimations])
 
   // Handle motion and emotion parameter changes from store
   useEffect(() => {

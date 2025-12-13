@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { useEffect } from 'react'
+import { memo, useCallback } from 'react'
 
 const Live2DStage = dynamic(
   () => import('./index').then((m) => m.Live2DStage),
@@ -14,18 +14,24 @@ interface Live2DCompanionDisplayProps {
   className?: string
 }
 
-export function Live2DCompanionDisplay({
+// Memoized component to prevent re-renders when parent state changes
+export const Live2DCompanionDisplay = memo(function Live2DCompanionDisplay({
   modelSrc,
   companionName,
   className = ''
 }: Live2DCompanionDisplayProps) {
+  // Memoize the callback to prevent re-renders
+  const handleModelLoaded = useCallback(() => {
+    console.log(`${companionName} model loaded`)
+  }, [companionName])
+
   return (
     <div className={`relative w-full h-full bg-gradient-to-br from-purple-900/20 to-blue-900/20 rounded-lg overflow-hidden ${className}`}>
       <Live2DStage
         modelSrc={modelSrc}
         modelId={companionName}
         className="w-full h-full"
-        onModelLoaded={() => console.log(`${companionName} model loaded`)}
+        onModelLoaded={handleModelLoaded}
       />
 
       {/* Companion Name Overlay */}
@@ -35,4 +41,4 @@ export function Live2DCompanionDisplay({
       </div>
     </div>
   )
-}
+})
