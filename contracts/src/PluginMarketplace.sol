@@ -45,15 +45,16 @@ contract PluginMarketplace is IPluginMarketplace, ReentrancyGuard, Ownable {
     address public platformWallet;
     address public museNFT;
     address public usageTracker;
+    address public companionFactory;
 
     // ============ Modifiers ============
 
     modifier onlyMuseOwner(uint256 _museId) {
         require(museNFT != address(0), "MuseNFT not set");
-        require(
-            IERC721(museNFT).ownerOf(_museId) == msg.sender,
-            "Not muse owner"
-        );
+        // Allow either the NFT owner or their companion contract to call
+        bool isOwner = IERC721(museNFT).ownerOf(_museId) == msg.sender;
+        bool isCompanion = _isCompanionForToken(_museId, msg.sender);
+        require(isOwner || isCompanion, "Not muse owner");
         _;
     }
 
@@ -690,6 +691,10 @@ contract PluginMarketplace is IPluginMarketplace, ReentrancyGuard, Ownable {
         usageTracker = _tracker;
     }
 
+    function setCompanionFactory(address _factory) external onlyOwner {
+        companionFactory = _factory;
+    }
+
     function withdrawPlatformFees() external onlyOwner {
         uint256 balance = address(this).balance;
         require(balance > 0, "No fees to withdraw");
@@ -789,5 +794,24 @@ contract PluginMarketplace is IPluginMarketplace, ReentrancyGuard, Ownable {
                 break;
             }
         }
+    }
+
+    function _isCompanionForToken(uint256 _museId, address _caller) internal view returns (bool) {
+        if (companionFactory == address(0)) {
+            return false;
+        }
+
+        // Check if the caller is the companion contract for this token
+        // Call the factory's getCompanion function
+        (bool success, bytes memory data) = companionFactory.staticcall(
+            abi.encodeWithSignature("getCompanion(uint256)", _museId)
+        );
+
+        if (!success || data.length == 0) {
+            return false;
+        }
+
+        address companion = abi.decode(data, (address));
+        return companion != address(0) && companion == _caller;
     }
 }
