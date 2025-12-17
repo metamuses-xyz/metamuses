@@ -43,7 +43,7 @@ contract AccessControl is Ownable {
 
     event NodeAuthorized(address indexed node, bool status);
 
-    constructor(address _marketplace) Ownable(msg.sender) {
+    constructor(address _marketplace) {
         require(_marketplace != address(0), "Invalid marketplace address");
         marketplace = IDATMarketplace(_marketplace);
     }
