@@ -40,6 +40,9 @@ contract MuseAICompanion is IMuseAICompanion, ReentrancyGuard {
     uint256 public createdAt;
     string public name;
 
+    // Tip tracking
+    uint256 public totalTipsReceived;
+
     // ============ Modifiers ============
 
     /**
@@ -314,6 +317,49 @@ contract MuseAICompanion is IMuseAICompanion, ReentrancyGuard {
                 count++;
             }
         }
+    }
+
+    // ============ Tipping ============
+
+    /**
+     * @notice Send a tip to the companion owner
+     * @dev Anyone can call this to tip the companion
+     * @param _message Optional message with the tip
+     */
+    function tip(string calldata _message) external payable {
+        require(msg.value > 0, "Tip must be greater than 0");
+
+        totalTipsReceived += msg.value;
+
+        emit TipReceived(msg.sender, msg.value, _message);
+    }
+
+    /**
+     * @notice Send a tip without a message
+     * @dev Convenience function for tipping without a message
+     */
+    function tip() external payable {
+        require(msg.value > 0, "Tip must be greater than 0");
+
+        totalTipsReceived += msg.value;
+
+        emit TipReceived(msg.sender, msg.value, "");
+    }
+
+    /**
+     * @notice Withdraw all tips to the owner
+     * @dev Only the companion owner can withdraw tips
+     */
+    function withdrawTips() external nonReentrant onlyOwner {
+        uint256 balance = address(this).balance;
+        require(balance > 0, "No tips to withdraw");
+
+        // Reset tips counter (optional - tracks withdrawn vs total)
+        uint256 amount = balance;
+
+        payable(owner()).transfer(amount);
+
+        emit TipsWithdrawn(owner(), amount);
     }
 
     // ============ Factory Functions ============

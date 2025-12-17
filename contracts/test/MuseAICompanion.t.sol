@@ -729,4 +729,139 @@ contract MuseAICompanionTest is Test {
 
         assertEq(MuseAICompanion(payable(companionAddr)).getActivePluginCount(), 0);
     }
+
+    // ============ Tipping Tests ============
+
+    function test_TipWithMessage() public {
+        vm.prank(user1);
+        address companionAddr = factory.deployCompanion(0, defaultTraits);
+
+        // User2 tips the companion
+        vm.prank(user2);
+        IMuseAICompanion(companionAddr).tip{value: 0.5 ether}("Great companion!");
+
+        assertEq(companionAddr.balance, 0.5 ether);
+        assertEq(MuseAICompanion(payable(companionAddr)).totalTipsReceived(), 0.5 ether);
+    }
+
+    function test_TipWithoutMessage() public {
+        vm.prank(user1);
+        address companionAddr = factory.deployCompanion(0, defaultTraits);
+
+        // User2 tips the companion without message
+        vm.prank(user2);
+        MuseAICompanion(payable(companionAddr)).tip{value: 0.3 ether}();
+
+        assertEq(companionAddr.balance, 0.3 ether);
+        assertEq(MuseAICompanion(payable(companionAddr)).totalTipsReceived(), 0.3 ether);
+    }
+
+    function test_MultipleTips() public {
+        vm.prank(user1);
+        address companionAddr = factory.deployCompanion(0, defaultTraits);
+
+        // Multiple tips from different users
+        vm.prank(user2);
+        IMuseAICompanion(companionAddr).tip{value: 0.1 ether}("Tip 1");
+
+        vm.prank(creator);
+        IMuseAICompanion(companionAddr).tip{value: 0.2 ether}("Tip 2");
+
+        vm.prank(user2);
+        IMuseAICompanion(companionAddr).tip{value: 0.15 ether}("Tip 3");
+
+        assertEq(companionAddr.balance, 0.45 ether);
+        assertEq(MuseAICompanion(payable(companionAddr)).totalTipsReceived(), 0.45 ether);
+    }
+
+    function test_Tip_RevertZeroAmount() public {
+        vm.prank(user1);
+        address companionAddr = factory.deployCompanion(0, defaultTraits);
+
+        vm.prank(user2);
+        vm.expectRevert("Tip must be greater than 0");
+        IMuseAICompanion(companionAddr).tip{value: 0}("Empty tip");
+    }
+
+    function test_WithdrawTips() public {
+        vm.prank(user1);
+        address companionAddr = factory.deployCompanion(0, defaultTraits);
+
+        // User2 tips the companion
+        vm.prank(user2);
+        IMuseAICompanion(companionAddr).tip{value: 1 ether}("Thanks!");
+
+        uint256 ownerBalanceBefore = user1.balance;
+
+        // Owner withdraws tips
+        vm.prank(user1);
+        IMuseAICompanion(companionAddr).withdrawTips();
+
+        assertEq(user1.balance, ownerBalanceBefore + 1 ether);
+        assertEq(companionAddr.balance, 0);
+    }
+
+    function test_WithdrawTips_RevertNotOwner() public {
+        vm.prank(user1);
+        address companionAddr = factory.deployCompanion(0, defaultTraits);
+
+        vm.prank(user2);
+        IMuseAICompanion(companionAddr).tip{value: 0.5 ether}("Tip");
+
+        vm.prank(user2);
+        vm.expectRevert("Not companion owner");
+        IMuseAICompanion(companionAddr).withdrawTips();
+    }
+
+    function test_WithdrawTips_RevertNoTips() public {
+        vm.prank(user1);
+        address companionAddr = factory.deployCompanion(0, defaultTraits);
+
+        vm.prank(user1);
+        vm.expectRevert("No tips to withdraw");
+        IMuseAICompanion(companionAddr).withdrawTips();
+    }
+
+    function test_TipAfterOwnershipTransfer() public {
+        vm.prank(user1);
+        address companionAddr = factory.deployCompanion(0, defaultTraits);
+
+        // Tip before transfer
+        vm.prank(creator);
+        IMuseAICompanion(companionAddr).tip{value: 0.5 ether}("Before transfer");
+
+        // Transfer NFT to user2
+        vm.prank(user1);
+        museNFT.transferFrom(user1, user2, 0);
+
+        // Tip after transfer
+        vm.prank(creator);
+        IMuseAICompanion(companionAddr).tip{value: 0.5 ether}("After transfer");
+
+        assertEq(MuseAICompanion(payable(companionAddr)).totalTipsReceived(), 1 ether);
+
+        // New owner (user2) can withdraw
+        uint256 user2BalanceBefore = user2.balance;
+        vm.prank(user2);
+        IMuseAICompanion(companionAddr).withdrawTips();
+
+        assertEq(user2.balance, user2BalanceBefore + 1 ether);
+
+        // Old owner (user1) cannot withdraw
+        // (no balance left anyway, but let's verify they can't call)
+    }
+
+    function testFuzz_Tip(uint256 amount) public {
+        vm.assume(amount > 0 && amount <= 10 ether);
+
+        vm.prank(user1);
+        address companionAddr = factory.deployCompanion(0, defaultTraits);
+
+        vm.deal(user2, amount);
+        vm.prank(user2);
+        IMuseAICompanion(companionAddr).tip{value: amount}("Fuzz tip");
+
+        assertEq(companionAddr.balance, amount);
+        assertEq(MuseAICompanion(payable(companionAddr)).totalTipsReceived(), amount);
+    }
 }

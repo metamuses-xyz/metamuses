@@ -47,6 +47,14 @@ interface IMuseAICompanion {
 
     event QuotaPurchased(uint256 indexed pluginId, uint256 listingId);
 
+    event TipReceived(
+        address indexed tipper,
+        uint256 amount,
+        string message
+    );
+
+    event TipsWithdrawn(address indexed owner, uint256 amount);
+
     // ============ Ownership ============
 
     /**
@@ -129,6 +137,25 @@ interface IMuseAICompanion {
      * @param _listingId The listing ID
      */
     function purchaseQuota(uint256 _pluginId, uint256 _listingId) external payable;
+
+    // ============ Tipping ============
+
+    /**
+     * @notice Send a tip to the companion owner with a message
+     * @param _message Optional message with the tip
+     */
+    function tip(string calldata _message) external payable;
+
+    /**
+     * @notice Withdraw all tips to the owner
+     */
+    function withdrawTips() external;
+
+    /**
+     * @notice Get total tips received by this companion
+     * @return Total amount of tips received
+     */
+    function totalTipsReceived() external view returns (uint256);
 
     // ============ Utility ============
 
