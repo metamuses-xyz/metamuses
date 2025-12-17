@@ -70,7 +70,7 @@ contract MusePlugins is Ownable {
         _;
     }
 
-    constructor(address _metaMuse) Ownable(msg.sender) {
+    constructor(address _metaMuse) {
         metaMuse = _metaMuse;
     }
 
