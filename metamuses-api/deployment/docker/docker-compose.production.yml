@@ -271,13 +271,13 @@ services:
       - CACHE_TTL_HOURS=${CACHE_TTL_HOURS:-24}
 
       # Blockchain
-      - RPC_URL=${RPC_URL}
+      - RPC_URL=${RPC_URL:-https://hyperion-testnet.metis.io}
       - PRIVATE_KEY=${PRIVATE_KEY}
       - IPFS_JWT_TOKEN=${IPFS_JWT_TOKEN}
       - CONTRACT_ADDRESS=${CONTRACT_ADDRESS:-0xE7612c29d2e73db07c7a4245741b38D2beB36308}
       - BACKEND_PRIVATE_KEY=${BACKEND_PRIVATE_KEY}
       - CHAIN_ID=${CHAIN_ID:-133717}
-      - EXPLORER_BASE_URL=${EXPLORER_BASE_URL:-https://hyperion-testnet-explorer.metisdevops.link}
+      - EXPLORER_BASE_URL=${EXPLORER_BASE_URL:-https://explorer.hyperion-testnet.metis.io}
 
       # LLM Provider Configuration
       - LLM_PROVIDER=${LLM_PROVIDER:-gemini}

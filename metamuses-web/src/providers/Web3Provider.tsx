@@ -21,12 +21,12 @@ export const metisHyperionTestnet = defineChain({
     symbol: "tMETIS",
   },
   rpcUrls: {
-    default: { http: ["https://hyperion-testnet.metisdevops.link"] },
+    default: { http: ["https://hyperion-testnet.metis.io"] },
   },
   blockExplorers: {
     default: {
       name: "Hyperion Explorer",
-      url: "https://hyperion-testnet-explorer.metisdevops.link",
+      url: "https://explorer.hyperion-testnet.metis.io",
     },
   },
   testnet: true,
