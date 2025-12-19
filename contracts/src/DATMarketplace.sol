@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.13;
 
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
  * @title DATMarketplace
@@ -95,7 +95,7 @@ contract DATMarketplace is ReentrancyGuard, Ownable {
 
     event PlatformFeeUpdated(uint256 newFee);
 
-    constructor(address _platformWallet) Ownable(msg.sender) {
+    constructor(address _platformWallet) {
         require(_platformWallet != address(0), "Invalid platform wallet");
         platformWallet = _platformWallet;
     }

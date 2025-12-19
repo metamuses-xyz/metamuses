@@ -2,6 +2,11 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useAccount } from "wagmi";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useMuseAIContract } from "@/hooks/useMuseAI";
+import { useCompanionFactory, useHasCompanion } from "@/hooks/useMuseAICompanionFactory";
+import { COMPANION_FACTORY_ADDRESS } from "@/contracts/MuseAICompanionFactory";
 
 // Interactive Neural Network Background
 const NeuralNetwork = () => {
@@ -147,6 +152,19 @@ const PersonalityDesigner = ({
 
       gradient: "from-green-500 via-teal-500 to-green-600",
     },
+    {
+      key: "logic",
+      name: "Logic",
+      icon: "🧠",
+      color: "indigo",
+      description: "Analytical reasoning and problem-solving",
+      examples: [
+        "Systematic thinking",
+        "Data analysis",
+        "Strategic planning",
+      ],
+      gradient: "from-indigo-500 via-violet-500 to-indigo-600",
+    },
   ];
 
   const handleTraitChange = (traitKey: string, value: number) => {
@@ -157,8 +175,8 @@ const PersonalityDesigner = ({
   };
 
   const getPersonalityArchetype = () => {
-    const { creativity, wisdom, humor, empathy } = personality;
-    const dominant = Math.max(creativity, wisdom, humor, empathy);
+    const { creativity, wisdom, humor, empathy, logic } = personality;
+    const dominant = Math.max(creativity, wisdom, humor, empathy, logic);
 
     if (dominant === creativity && creativity > 70)
       return {
@@ -176,6 +194,11 @@ const PersonalityDesigner = ({
       return {
         name: "The Healer",
         desc: "Compassion and understanding flow naturally",
+      };
+    if (dominant === logic && logic > 70)
+      return {
+        name: "The Analyst",
+        desc: "Precise reasoning illuminates every problem",
       };
 
     const balanced =
@@ -745,7 +768,50 @@ const AvatarCreator = ({
   );
 };
 
+// NFT Card Component for selection
+const NFTCard = ({
+  tokenId,
+  isSelected,
+  onSelect,
+}: {
+  tokenId: bigint;
+  isSelected: boolean;
+  onSelect: () => void;
+}) => {
+  const { data: hasCompanion } = useHasCompanion(tokenId);
+
+  return (
+    <div
+      onClick={hasCompanion ? undefined : onSelect}
+      className={`neural-card rounded-xl p-4 cursor-pointer transition-all duration-300 ${
+        isSelected
+          ? "ring-2 ring-purple-500 bg-purple-500/10 scale-105"
+          : hasCompanion
+            ? "opacity-50 cursor-not-allowed"
+            : "hover:scale-105 hover:bg-white/5"
+      }`}
+    >
+      <div className="w-full aspect-square bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg mb-3 flex items-center justify-center">
+        <span className="text-4xl font-bold text-purple-400">
+          #{tokenId.toString()}
+        </span>
+      </div>
+      <div className="text-center">
+        <p className="text-white font-semibold">MuseAI #{tokenId.toString()}</p>
+        {hasCompanion ? (
+          <span className="text-xs text-yellow-400">Has Companion</span>
+        ) : isSelected ? (
+          <span className="text-xs text-purple-400">Selected</span>
+        ) : (
+          <span className="text-xs text-gray-400">Available</span>
+        )}
+      </div>
+    </div>
+  );
+};
+
 export default function CreateMusePage() {
+  // State management
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [personality, setPersonality] = useState({
@@ -753,18 +819,59 @@ export default function CreateMusePage() {
     wisdom: 50,
     humor: 50,
     empathy: 50,
+    logic: 50,
   });
   const [selectedAvatar, setSelectedAvatar] = useState<any>(null);
   const [generatedAvatar, setGeneratedAvatar] = useState<any>(null);
-  const [isCreating, setIsCreating] = useState(false);
   const [museName, setMuseName] = useState("");
   const [museDescription, setMuseDescription] = useState("");
+
+  // NFT Selection state
+  const [selectedTokenId, setSelectedTokenId] = useState<bigint | null>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [deployedCompanionAddress, setDeployedCompanionAddress] = useState<string | null>(null);
+
+  // Wallet and contract hooks
+  const { address, isConnected } = useAccount();
+  const { useTokensOfOwner } = useMuseAIContract();
+  const { data: ownedTokens, isLoading: isLoadingTokens } = useTokensOfOwner(address);
+
+  const {
+    deployCompanion,
+    isPending,
+    isConfirming,
+    isConfirmed,
+    error: deployError,
+    hash,
+    reset: resetDeploy,
+  } = useCompanionFactory();
+
+  // Check if selected token already has a companion
+  const { data: hasExistingCompanion } = useHasCompanion(selectedTokenId ?? undefined);
+
+  // Derived state
+  const isCreating = isPending || isConfirming;
+
+  // Handle successful deployment
+  useEffect(() => {
+    if (isConfirmed && hash) {
+      setShowSuccessModal(true);
+    }
+  }, [isConfirmed, hash]);
+
+  // Handle deployment error
+  useEffect(() => {
+    if (deployError) {
+      setShowErrorModal(true);
+    }
+  }, [deployError]);
 
   // Generate avatar based on personality
   useEffect(() => {
     const generateAvatar = () => {
-      const { creativity, wisdom, humor, empathy } = personality;
-      const dominant = Math.max(creativity, wisdom, humor, empathy);
+      const { creativity, wisdom, humor, empathy, logic } = personality;
+      const dominant = Math.max(creativity, wisdom, humor, empathy, logic);
 
       let gradient = "from-purple-500 to-pink-500";
       let pattern = "";
@@ -782,6 +889,10 @@ export default function CreateMusePage() {
         gradient = "from-orange-500 to-yellow-500";
         initial = "H";
         pattern = "bg-gradient-to-tl";
+      } else if (dominant === logic) {
+        gradient = "from-indigo-500 to-violet-500";
+        initial = "L";
+        pattern = "bg-gradient-to-r";
       } else {
         gradient = "from-green-500 to-teal-500";
         initial = "E";
@@ -830,6 +941,7 @@ export default function CreateMusePage() {
   ];
 
   const stepTitles = [
+    "Select NFT",
     "Template",
     "Personality",
     "Avatar",
@@ -838,11 +950,12 @@ export default function CreateMusePage() {
   ];
 
   const stepDescriptions = [
+    "Connect wallet and select which NFT to create a companion for",
     "Choose a starting template or begin with a blank canvas",
     "Design your AI companion's core personality traits",
     "Create a unique visual identity for your muse",
     "Define name, backstory, and behavioral patterns",
-    "Deploy your muse to the blockchain as an NFT",
+    "Deploy your AI companion to the blockchain",
   ];
 
   const sampleResponses = [
@@ -864,7 +977,7 @@ export default function CreateMusePage() {
   ];
 
   const handleNext = () => {
-    if (currentStep < 5) {
+    if (currentStep < 6) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -876,16 +989,137 @@ export default function CreateMusePage() {
   };
 
   const handleCreateMuse = async () => {
-    setIsCreating(true);
-    // Simulate blockchain transaction
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    setIsCreating(false);
-    // Redirect or show success
+    if (!selectedTokenId || !museName.trim()) return;
+
+    // Deploy companion to blockchain
+    deployCompanion(selectedTokenId, personality, museName.trim());
+  };
+
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
+    resetDeploy();
+    // Reset form for creating another
+    setCurrentStep(1);
+    setSelectedTokenId(null);
+    setMuseName("");
+    setMuseDescription("");
+    setPersonality({
+      creativity: 50,
+      wisdom: 50,
+      humor: 50,
+      empathy: 50,
+      logic: 50,
+    });
+  };
+
+  const handleCloseErrorModal = () => {
+    setShowErrorModal(false);
+    resetDeploy();
   };
 
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
+        // NFT Selection Step
+        return (
+          <div className="max-w-4xl mx-auto">
+            <div className="neural-card rounded-3xl p-8 mb-8">
+              <h3 className="text-3xl font-bold text-white mb-4 text-center">
+                Select Your MuseAI NFT
+              </h3>
+              <p className="text-gray-400 text-center mb-8">
+                Connect your wallet and choose which NFT to create an AI companion for
+              </p>
+
+              {!isConnected ? (
+                <div className="text-center py-12">
+                  <div className="w-24 h-24 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full mx-auto mb-6 flex items-center justify-center">
+                    <span className="text-4xl">🔗</span>
+                  </div>
+                  <h4 className="text-xl text-white font-semibold mb-4">
+                    Connect Your Wallet
+                  </h4>
+                  <p className="text-gray-400 mb-6">
+                    Please connect your wallet to view your MuseAI NFTs
+                  </p>
+                  <ConnectButton />
+                </div>
+              ) : isLoadingTokens ? (
+                <div className="text-center py-12">
+                  <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                  <p className="text-gray-400">Loading your NFTs...</p>
+                </div>
+              ) : !ownedTokens || ownedTokens.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="w-24 h-24 bg-gradient-to-br from-gray-600/20 to-gray-700/20 rounded-full mx-auto mb-6 flex items-center justify-center">
+                    <span className="text-4xl">🎭</span>
+                  </div>
+                  <h4 className="text-xl text-white font-semibold mb-4">
+                    No MuseAI NFTs Found
+                  </h4>
+                  <p className="text-gray-400 mb-6">
+                    You need to own a MuseAI NFT to create an AI companion
+                  </p>
+                  <Link
+                    href="/mint"
+                    className="neural-button px-8 py-3 text-white font-semibold rounded-xl inline-block"
+                  >
+                    Mint a MuseAI NFT
+                  </Link>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {ownedTokens.map((tokenId: bigint) => {
+                    const isSelected = selectedTokenId === tokenId;
+                    return (
+                      <NFTCard
+                        key={tokenId.toString()}
+                        tokenId={tokenId}
+                        isSelected={isSelected}
+                        onSelect={() => setSelectedTokenId(tokenId)}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {selectedTokenId !== null && hasExistingCompanion && (
+              <div className="neural-card rounded-xl p-4 mb-8 border border-yellow-500/30 bg-yellow-500/5">
+                <div className="flex items-center space-x-3">
+                  <span className="text-2xl">⚠️</span>
+                  <div>
+                    <p className="text-yellow-400 font-semibold">Companion Already Exists</p>
+                    <p className="text-gray-400 text-sm">
+                      This NFT already has an AI companion deployed. Select a different NFT.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="text-center">
+              <button
+                onClick={handleNext}
+                disabled={!selectedTokenId || hasExistingCompanion}
+                className={`neural-button px-16 py-5 text-white font-bold text-xl rounded-2xl transition-all duration-500 ${
+                  selectedTokenId && !hasExistingCompanion
+                    ? "hover:scale-105 shadow-2xl shadow-purple-500/30"
+                    : "opacity-50 cursor-not-allowed"
+                }`}
+              >
+                {selectedTokenId
+                  ? hasExistingCompanion
+                    ? "Select a Different NFT"
+                    : `Continue with NFT #${selectedTokenId.toString()}`
+                  : "Select an NFT to Continue"}
+              </button>
+            </div>
+          </div>
+        );
+
+      case 2:
+        // Template Selection
         return (
           <div className="max-w-7xl mx-auto">
             <TemplateSelector
@@ -894,7 +1128,13 @@ export default function CreateMusePage() {
               onSelect={setSelectedTemplate}
             />
 
-            <div className="text-center mt-12">
+            <div className="flex justify-center space-x-6 mt-12">
+              <button
+                onClick={handleBack}
+                className="px-10 py-4 border-2 border-gray-600 text-gray-300 font-bold rounded-xl hover:bg-gray-700 transition-all hover:scale-105"
+              >
+                ← Previous
+              </button>
               <button
                 onClick={handleNext}
                 disabled={!selectedTemplate}
@@ -912,7 +1152,7 @@ export default function CreateMusePage() {
           </div>
         );
 
-      case 2:
+      case 3:
         return (
           <div className="max-w-7xl mx-auto">
             <PersonalityDesigner
@@ -941,7 +1181,8 @@ export default function CreateMusePage() {
           </div>
         );
 
-      case 3:
+      case 4:
+        // Avatar Creation
         return (
           <div className="max-w-7xl mx-auto">
             <AvatarCreator
@@ -968,7 +1209,7 @@ export default function CreateMusePage() {
           </div>
         );
 
-      case 4:
+      case 5:
         return (
           <div className="max-w-4xl mx-auto space-y-8">
             {/* Muse Identity Form */}
@@ -1094,55 +1335,48 @@ export default function CreateMusePage() {
           </div>
         );
 
-      case 4:
+      case 6:
+        // Deploy Step - Blockchain Integration
         return (
-          <div className="max-w-6xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-8 mb-12">
-              {/* Avatar and Personality Summary */}
-              <div className="neural-card rounded-2xl p-8">
-                <div className="flex items-center justify-center space-x-8 mb-8">
-                  <AvatarPreview avatar={generatedAvatar} />
-                  <div className="flex flex-col items-center space-y-2">
-                    <div className="text-4xl font-mono text-purple-400">
-                      #preview
-                    </div>
-                    <AvatarPreview avatar={generatedAvatar} size="small" />
+          <div className="max-w-3xl mx-auto">
+            {/* Summary Card */}
+            <div className="neural-card rounded-2xl p-8 mb-8">
+              <h3 className="text-2xl font-semibold text-white mb-6 text-center">
+                Deploy Your AI Companion
+              </h3>
+
+              <div className="grid md:grid-cols-2 gap-8 mb-8">
+                {/* Companion Preview */}
+                <div className="text-center">
+                  <div
+                    className={`w-24 h-24 rounded-full bg-gradient-to-br ${generatedAvatar?.gradient} mx-auto mb-4 flex items-center justify-center shadow-lg`}
+                  >
+                    <span className="text-3xl font-bold text-white">
+                      {generatedAvatar?.initial}
+                    </span>
                   </div>
+                  <h4 className="text-xl font-bold text-white mb-2">
+                    {museName || "Unnamed Companion"}
+                  </h4>
+                  <p className="text-gray-400 text-sm">
+                    NFT #{selectedTokenId?.toString()}
+                  </p>
                 </div>
 
-                <h3 className="text-2xl font-semibold text-white text-center mb-2">
-                  {generatedAvatar?.name || "Balanced Harmony"}
-                </h3>
-                <p className="text-gray-400 text-center mb-8">
-                  All aspects of being flow together in perfect equilibrium,
-                  adaptable to any moment.
-                </p>
-
-                <div className="space-y-4">
+                {/* Personality Summary */}
+                <div className="space-y-2">
+                  <h4 className="text-white font-semibold mb-3">Personality Traits</h4>
                   {Object.entries(personality).map(([trait, value]) => (
-                    <div
-                      key={trait}
-                      className="flex items-center justify-between"
-                    >
-                      <span className="text-white capitalize font-medium">
-                        {trait}
-                      </span>
-                      <div className="flex items-center space-x-3">
-                        <div className="w-24 h-2 bg-gray-700 rounded-full">
+                    <div key={trait} className="flex items-center justify-between">
+                      <span className="text-gray-400 capitalize text-sm">{trait}</span>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-16 h-1.5 bg-gray-700 rounded-full">
                           <div
-                            className={`h-full rounded-full bg-gradient-to-r ${
-                              trait === "creativity"
-                                ? "from-purple-500 to-pink-500"
-                                : trait === "wisdom"
-                                  ? "from-blue-500 to-cyan-500"
-                                  : trait === "humor"
-                                    ? "from-orange-500 to-yellow-500"
-                                    : "from-green-500 to-teal-500"
-                            }`}
+                            className="h-full rounded-full bg-purple-500"
                             style={{ width: `${value}%` }}
                           />
                         </div>
-                        <span className="text-white font-mono font-bold text-lg w-8">
+                        <span className="text-purple-400 font-mono text-sm w-6">
                           {value}
                         </span>
                       </div>
@@ -1151,106 +1385,109 @@ export default function CreateMusePage() {
                 </div>
               </div>
 
-              {/* Sample Responses */}
-              <div>
-                <h3 className="text-2xl font-semibold text-white mb-6 flex items-center">
-                  <span className="text-2xl mr-2">✨</span>
-                  Sample Responses
-                </h3>
-
-                <div className="space-y-4">
-                  {sampleResponses.map((sample, index) => (
-                    <div key={index} className="neural-card rounded-xl p-4">
-                      <div className="flex items-start space-x-3 mb-3">
-                        <div className="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center text-xs">
-                          👤
-                        </div>
-                        <div className="text-gray-300">
-                          User: "{sample.user}"
-                        </div>
-                      </div>
-                      <div className="pl-9 text-gray-200 leading-relaxed">
-                        {sample.response}
-                      </div>
-                    </div>
-                  ))}
+              {/* Transaction Details */}
+              <div className="border-t border-gray-700 pt-6 space-y-4">
+                <h4 className="text-white font-semibold mb-4">Transaction Details</h4>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">Network:</span>
+                    <span className="text-white font-mono">Metis Hyperion Testnet</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">Contract:</span>
+                    <span className="text-white font-mono text-xs">
+                      {COMPANION_FACTORY_ADDRESS.slice(0, 6)}...{COMPANION_FACTORY_ADDRESS.slice(-4)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">Your Wallet:</span>
+                    <span className="text-white font-mono">
+                      {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "Not connected"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">Estimated Gas:</span>
+                    <span className="text-white font-mono">~0.03 METIS</span>
+                  </div>
                 </div>
               </div>
+
+              {/* Transaction Status */}
+              {hash && (
+                <div className="mt-6 p-4 bg-purple-500/10 rounded-xl border border-purple-500/30">
+                  <div className="flex items-center space-x-3">
+                    {isConfirming ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+                        <span className="text-purple-400">Confirming transaction...</span>
+                      </>
+                    ) : isConfirmed ? (
+                      <>
+                        <span className="text-2xl">✅</span>
+                        <span className="text-green-400">Transaction confirmed!</span>
+                      </>
+                    ) : (
+                      <>
+                        <div className="w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+                        <span className="text-purple-400">Waiting for signature...</span>
+                      </>
+                    )}
+                  </div>
+                  <a
+                    href={`https://hyperion-testnet-explorer.metisdevops.link/tx/${hash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-purple-400 hover:text-purple-300 text-sm mt-2 inline-block"
+                  >
+                    View on Explorer →
+                  </a>
+                </div>
+              )}
+
+              {/* Error Display */}
+              {deployError && (
+                <div className="mt-6 p-4 bg-red-500/10 rounded-xl border border-red-500/30">
+                  <div className="flex items-center space-x-3">
+                    <span className="text-2xl">❌</span>
+                    <span className="text-red-400">
+                      {deployError.message || "Transaction failed"}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="flex justify-center space-x-4">
               <button
                 onClick={handleBack}
-                className="px-8 py-3 border border-gray-600 text-gray-300 font-semibold rounded-xl hover:bg-gray-700 transition-all"
-              >
-                Back to Avatar
-              </button>
-              <button
-                onClick={() => {
-                  /* Test interaction */
-                }}
-                className="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl transition-all"
-              >
-                Test Interaction
-              </button>
-              <button
-                onClick={handleNext}
-                className="neural-button px-8 py-3 text-white font-semibold rounded-xl"
-              >
-                Create Muse
-              </button>
-            </div>
-          </div>
-        );
-
-      case 5:
-        return (
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="neural-card rounded-2xl p-12 mb-8">
-              <h3 className="text-2xl font-semibold text-white mb-8">
-                Transaction Details
-              </h3>
-
-              <div className="space-y-6 text-left">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Network:</span>
-                  <span className="text-white font-mono">
-                    Metis Hyperion Testnet
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Gas Fee:</span>
-                  <span className="text-white font-mono">~0.001 METIS</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Your Wallet:</span>
-                  <span className="text-white font-mono">0x3BD9...7881</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-center space-x-4">
-              <button
-                onClick={handleBack}
-                className="px-8 py-3 border border-gray-600 text-gray-300 font-semibold rounded-xl hover:bg-gray-700 transition-all"
-              >
-                Back to Preview
-              </button>
-              <button
-                onClick={handleCreateMuse}
                 disabled={isCreating}
-                className={`neural-button px-8 py-3 text-white font-semibold rounded-xl ${
+                className={`px-8 py-3 border border-gray-600 text-gray-300 font-semibold rounded-xl hover:bg-gray-700 transition-all ${
                   isCreating ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
-                {isCreating ? (
+                ← Back to Identity
+              </button>
+              <button
+                onClick={handleCreateMuse}
+                disabled={isCreating || !selectedTokenId || !museName.trim()}
+                className={`neural-button px-12 py-3 text-white font-bold text-lg rounded-xl transition-all ${
+                  isCreating || !selectedTokenId || !museName.trim()
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:scale-105"
+                }`}
+              >
+                {isPending ? (
                   <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-
-                    <span>Creating...</span>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Confirm in Wallet...</span>
+                  </div>
+                ) : isConfirming ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Deploying...</span>
                   </div>
                 ) : (
-                  "Create My Muse"
+                  "Deploy Companion"
                 )}
               </button>
             </div>
@@ -1309,7 +1546,7 @@ export default function CreateMusePage() {
         {/* Step Navigation */}
         <StepNavigation
           currentStep={currentStep}
-          totalSteps={5}
+          totalSteps={6}
           onStepChange={setCurrentStep}
           stepTitles={stepTitles}
         />
@@ -1317,7 +1554,7 @@ export default function CreateMusePage() {
         {/* Enhanced Step Info */}
         <div className="text-center mb-20">
           <div className="inline-block px-6 py-3 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-300 text-sm font-mono mb-8">
-            🚀 Step {currentStep} of 5
+            🚀 Step {currentStep} of 6
           </div>
 
           <h1 className="text-6xl lg:text-7xl font-black mb-8 leading-tight">
@@ -1336,16 +1573,81 @@ export default function CreateMusePage() {
             <div className="w-32 h-2 bg-gray-700 rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-full transition-all duration-700"
-                style={{ width: `${(currentStep / 5) * 100}%` }}
+                style={{ width: `${(currentStep / 6) * 100}%` }}
               />
             </div>
-            <span>{Math.round((currentStep / 5) * 100)}%</span>
+            <span>{Math.round((currentStep / 6) * 100)}%</span>
           </div>
         </div>
 
         {/* Step Content */}
         {renderStepContent()}
       </div>
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="neural-card rounded-3xl p-8 max-w-md w-full text-center animate-in fade-in zoom-in duration-300">
+            <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-full mx-auto mb-6 flex items-center justify-center">
+              <span className="text-4xl">✨</span>
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-4">
+              Companion Deployed!
+            </h3>
+            <p className="text-gray-400 mb-6">
+              Your AI companion has been successfully deployed to the blockchain.
+              You can now start chatting with your companion!
+            </p>
+            {hash && (
+              <a
+                href={`https://hyperion-testnet-explorer.metisdevops.link/tx/${hash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-purple-400 hover:text-purple-300 text-sm mb-6 inline-block"
+              >
+                View Transaction →
+              </a>
+            )}
+            <div className="flex flex-col space-y-3 mt-6">
+              <Link
+                href="/chat"
+                className="neural-button px-8 py-3 text-white font-semibold rounded-xl"
+              >
+                Chat with Companion
+              </Link>
+              <button
+                onClick={handleCloseSuccessModal}
+                className="px-8 py-3 border border-gray-600 text-gray-300 font-semibold rounded-xl hover:bg-gray-700 transition-all"
+              >
+                Create Another
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error Modal */}
+      {showErrorModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="neural-card rounded-3xl p-8 max-w-md w-full text-center animate-in fade-in zoom-in duration-300">
+            <div className="w-20 h-20 bg-gradient-to-br from-red-400 to-red-600 rounded-full mx-auto mb-6 flex items-center justify-center">
+              <span className="text-4xl">❌</span>
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-4">
+              Deployment Failed
+            </h3>
+            <p className="text-gray-400 mb-6">
+              {deployError?.message || "Something went wrong. Please try again."}
+            </p>
+            <button
+              onClick={handleCloseErrorModal}
+              className="neural-button px-8 py-3 text-white font-semibold rounded-xl"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
