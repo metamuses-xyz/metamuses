@@ -11,6 +11,7 @@ import dynamic from "next/dynamic";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { SoundToggle } from "@/components/SoundToggle";
+import TipModal from "@/components/TipModal";
 import Link from "next/link";
 
 // Dynamic import for Live2D (SSR disabled)
@@ -291,6 +292,7 @@ export default function ChatPage() {
     useState<AICompanion | null>(null);
   const [apiHealthy, setApiHealthy] = useState<boolean | null>(null);
   const [showLive2D, setShowLive2D] = useState(true); // Toggle Live2D
+  const [showTipModal, setShowTipModal] = useState(false); // Tip modal
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Derived state
@@ -570,6 +572,17 @@ export default function ChatPage() {
                         </div>
 
                         <div className="flex items-center gap-3">
+                          {/* Tip Button */}
+                          {walletConnected && selectedCompanion && (
+                            <button
+                              onClick={() => setShowTipModal(true)}
+                              className="px-4 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 flex items-center gap-2"
+                              title="Tip your AI companion"
+                            >
+                              <span>💰</span>
+                              <span>Tip</span>
+                            </button>
+                          )}
                           <SoundToggle />
                           {!walletConnected && <ConnectButton />}
                         </div>
@@ -719,6 +732,16 @@ export default function ChatPage() {
           </div>
         )}
       </div>
+
+      {/* Tip Modal */}
+      {selectedCompanion && (
+        <TipModal
+          isOpen={showTipModal}
+          onClose={() => setShowTipModal(false)}
+          companionName={selectedCompanion.name}
+          companionAvatar={selectedCompanion.avatar}
+        />
+      )}
 
       <Footer />
     </div>
