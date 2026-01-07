@@ -1,5 +1,6 @@
 pub mod companion;
 pub mod fact_extractor;
+pub mod instructions;
 pub mod interaction_stats;
 pub mod memory;
 pub mod personality;
@@ -9,6 +10,10 @@ pub mod traits_gen;
 
 pub use companion::CompanionService;
 pub use fact_extractor::{ExtractedFact, FactExtractor};
+pub use instructions::{
+    CommunicationStyle, EffectiveInstructions, InstructionService, ResponseLength,
+    UpdateInstructionsRequest, UserInstructions,
+};
 pub use interaction_stats::{
     InteractionPercentages, InteractionStatsRow, InteractionStatsService, InteractionSummary,
 };

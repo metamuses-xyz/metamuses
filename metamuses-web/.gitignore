@@ -38,3 +38,8 @@ next-env.d.ts
 
 # lock files (keeping pnpm-lock.yaml since it's committed)
 bun.lock
+
+# Serwist generated files
+public/sw.js
+public/sw.js.map
+public/swe-worker-*.js

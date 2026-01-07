@@ -12,6 +12,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { SoundToggle } from "@/components/SoundToggle";
 import TipModal from "@/components/TipModal";
+import InstructionsEditor from "@/components/InstructionsEditor";
 import Link from "next/link";
 
 // Dynamic import for Live2D (SSR disabled)
@@ -293,6 +294,7 @@ export default function ChatPage() {
   const [apiHealthy, setApiHealthy] = useState<boolean | null>(null);
   const [showLive2D, setShowLive2D] = useState(true); // Toggle Live2D
   const [showTipModal, setShowTipModal] = useState(false); // Tip modal
+  const [showInstructionsEditor, setShowInstructionsEditor] = useState(false); // Instructions editor
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Derived state
@@ -435,7 +437,7 @@ export default function ChatPage() {
       messagesEndRef.current.scrollIntoView({
         behavior: "smooth",
         block: "nearest",
-        inline: "nearest"
+        inline: "nearest",
       });
     }
   };
@@ -521,7 +523,8 @@ export default function ChatPage() {
     ];
 
     // Select a random thank you message
-    const randomMessage = thankYouMessages[Math.floor(Math.random() * thankYouMessages.length)];
+    const randomMessage =
+      thankYouMessages[Math.floor(Math.random() * thankYouMessages.length)];
 
     // Add AI's happy response to chat
     const thankYouMsg: Message = {
@@ -613,6 +616,17 @@ export default function ChatPage() {
                         </div>
 
                         <div className="flex items-center gap-3">
+                          {/* Customize Button */}
+                          {walletConnected && selectedCompanion && (
+                            <button
+                              onClick={() => setShowInstructionsEditor(true)}
+                              className="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-white rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 flex items-center gap-2"
+                              title="Customize companion behavior"
+                            >
+                              <span>⚙️</span>
+                              <span>Customize</span>
+                            </button>
+                          )}
                           {/* Tip Button */}
                           {walletConnected && selectedCompanion && (
                             <button
@@ -781,7 +795,18 @@ export default function ChatPage() {
           onClose={() => setShowTipModal(false)}
           companionName={selectedCompanion.name}
           companionAvatar={selectedCompanion.avatar}
+          tokenId={BigInt(selectedCompanion.id)}
           onTipSuccess={handleTipSuccess}
+        />
+      )}
+
+      {/* Instructions Editor Modal */}
+      {selectedCompanion && (
+        <InstructionsEditor
+          companionId={selectedCompanion.id}
+          companionName={selectedCompanion.name}
+          isOpen={showInstructionsEditor}
+          onClose={() => setShowInstructionsEditor(false)}
         />
       )}
 
