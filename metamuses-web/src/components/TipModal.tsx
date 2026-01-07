@@ -12,6 +12,7 @@ interface TipModalProps {
     gradient: string;
     emoji: string;
   };
+  onTipSuccess?: (amount: string) => void; // Callback when tip is successful
 }
 
 // Predefined tip amounts in tMETIS
@@ -27,12 +28,14 @@ export default function TipModal({
   onClose,
   companionName,
   companionAvatar,
+  onTipSuccess,
 }: TipModalProps) {
   const { address, isConnected } = useAccount();
   const [selectedAmount, setSelectedAmount] = useState<string>("0.01");
   const [customAmount, setCustomAmount] = useState<string>("");
   const [isCustom, setIsCustom] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [tipAmount, setTipAmount] = useState<string>("");
 
   // Mock transaction state (replace with actual contract call later)
   const { sendTransaction, data: hash, isPending } = useSendTransaction();
@@ -44,6 +47,9 @@ export default function TipModal({
 
     const amount = isCustom ? customAmount : selectedAmount;
     if (!amount || parseFloat(amount) <= 0) return;
+
+    // Store the amount for success callback
+    setTipAmount(amount);
 
     try {
       // Mock: Send native token to a placeholder address
@@ -62,9 +68,20 @@ export default function TipModal({
   // Show success state
   if (isSuccess && !showSuccess) {
     setShowSuccess(true);
+
+    // Trigger happy response from AI
+    if (onTipSuccess && tipAmount) {
+      onTipSuccess(tipAmount);
+    }
+
     setTimeout(() => {
       setShowSuccess(false);
       onClose();
+      // Reset states
+      setSelectedAmount("0.01");
+      setCustomAmount("");
+      setIsCustom(false);
+      setTipAmount("");
     }, 3000);
   }
 

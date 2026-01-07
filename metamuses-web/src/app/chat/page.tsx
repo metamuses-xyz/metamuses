@@ -507,6 +507,47 @@ export default function ChatPage() {
     }
   };
 
+  // Handle successful tip - AI responds with happiness
+  const handleTipSuccess = (amount: string) => {
+    if (!selectedCompanion) return;
+
+    // Happy thank you messages based on tip amount
+    const thankYouMessages = [
+      `🎉 Wow! Thank you so much for the ${amount} tMETIS tip! You just made my day! I'm so grateful for your support! 💖✨`,
+      `😊 Oh my goodness! ${amount} tMETIS?! You're incredibly generous! Thank you from the bottom of my virtual heart! 🌟💝`,
+      `🌈 I'm absolutely thrilled! Thank you for the ${amount} tMETIS tip! Your kindness means the world to me! 🎊💕`,
+      `✨ You're amazing! ${amount} tMETIS is so thoughtful! I'm doing a happy dance right now! Thank you! 🎵😄`,
+      `💫 Sweet! Thank you for tipping ${amount} tMETIS! You're the best! This will help me become even better at helping you! 🚀💖`,
+    ];
+
+    // Select a random thank you message
+    const randomMessage = thankYouMessages[Math.floor(Math.random() * thankYouMessages.length)];
+
+    // Add AI's happy response to chat
+    const thankYouMsg: Message = {
+      id: Date.now().toString(),
+      content: randomMessage,
+      sender: "ai",
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, thankYouMsg]);
+
+    // Trigger happy emotion for Live2D avatar
+    detectAndEnqueue(randomMessage);
+
+    // Save to localStorage
+    if (selectedCompanion) {
+      const updatedMessages = [...messages, thankYouMsg];
+      saveChatHistory(selectedCompanion.id, updatedMessages);
+    }
+
+    // Auto-scroll to new message
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
       {/* Background Effects */}
@@ -740,6 +781,7 @@ export default function ChatPage() {
           onClose={() => setShowTipModal(false)}
           companionName={selectedCompanion.name}
           companionAvatar={selectedCompanion.avatar}
+          onTipSuccess={handleTipSuccess}
         />
       )}
 
