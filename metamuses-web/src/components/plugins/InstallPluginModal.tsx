@@ -330,7 +330,7 @@ export default function InstallPluginModal({
               </p>
               {hash && (
                 <a
-                  href={`https://hyperion-testnet-explorer.metisdevops.link/tx/${hash}`}
+                  href={`https://explorer.hyperion-testnet.metis.io/tx/${hash}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-purple-400 hover:text-purple-300 text-sm mt-4 inline-block"
@@ -368,7 +368,7 @@ export default function InstallPluginModal({
               </p>
               {hash && (
                 <a
-                  href={`https://hyperion-testnet-explorer.metisdevops.link/tx/${hash}`}
+                  href={`https://explorer.hyperion-testnet.metis.io/tx/${hash}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-purple-400 hover:text-purple-300 text-sm"

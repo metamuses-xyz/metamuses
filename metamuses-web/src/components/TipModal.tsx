@@ -156,7 +156,7 @@ export default function TipModal({
             </div>
             {hash && (
               <a
-                href={`https://hyperion-testnet-explorer.metisdevops.link/tx/${hash}`}
+                href={`https://explorer.hyperion-testnet.metis.io/tx/${hash}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-3 inline-block text-purple-400 hover:text-purple-300 text-sm underline"

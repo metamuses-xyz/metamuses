@@ -457,7 +457,7 @@ export default function PluginDetailPage() {
               <div className="mt-4 pt-4 border-t border-gray-700">
                 <p className="text-gray-500 text-xs mb-1">Contract Address</p>
                 <a
-                  href={`https://hyperion-testnet-explorer.metisdevops.link/address/${plugin.creator}`}
+                  href={`https://explorer.hyperion-testnet.metis.io/address/${plugin.creator}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-purple-400 text-sm font-mono hover:text-purple-300"

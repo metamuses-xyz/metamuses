@@ -181,7 +181,7 @@ async fn main() -> anyhow::Result<()> {
     // Create companion app state (for all handlers)
     let app_state = CompanionAppState {
         router: router.clone(),
-        companion_service,
+        companion_service: companion_service.clone(),
         memory_service,
         instruction_service: instruction_service.clone(),
         interaction_stats_service,
@@ -216,6 +216,7 @@ async fn main() -> anyhow::Result<()> {
     // Create instruction app state
     let instruction_state = InstructionAppState {
         instruction_service: instruction_service.clone(),
+        companion_service: companion_service.clone(),
     };
 
     info!("Building API routes...");

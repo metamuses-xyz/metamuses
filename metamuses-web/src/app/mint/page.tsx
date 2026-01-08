@@ -627,7 +627,7 @@ export default function MintPage() {
                     <a
                       href={
                         mintExplorerUrl ||
-                        `https://hyperion-testnet-explorer.metisdevops.link/tx/${mintTxHash}`
+                        `https://explorer.hyperion-testnet.metis.io/tx/${mintTxHash}`
                       }
                       target="_blank"
                       rel="noopener noreferrer"

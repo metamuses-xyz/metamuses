@@ -3,7 +3,7 @@ import { Address } from "viem";
 // TipJar Contract - Revenue-sharing tip system for MetaMuses
 // Deployed on Metis Hyperion Testnet
 // Contract: 0x2c45061a029bD3919F4093d575a4E5328260FA44
-// Explorer: https://hyperion-testnet-explorer.metisdevops.link/address/0x2c45061a029bD3919F4093d575a4E5328260FA44
+// Explorer: https://explorer.hyperion-testnet.metis.io/address/0x2c45061a029bD3919F4093d575a4E5328260FA44
 // Deployed: January 7, 2026
 //
 // Revenue Split:

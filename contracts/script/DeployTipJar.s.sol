@@ -10,7 +10,7 @@ import "../src/TipJar.sol";
  *
  * Usage:
  *   forge script script/DeployTipJar.s.sol:DeployTipJar \
- *     --rpc-url https://hyperion-testnet.metisdevops.link \
+ *     --rpc-url https://hyperion-testnet.metis.io \
  *     --private-key $PRIVATE_KEY \
  *     --broadcast --legacy -vv
  *

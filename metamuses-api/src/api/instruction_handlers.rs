@@ -1,4 +1,6 @@
-use crate::services::{InstructionService, UpdateInstructionsRequest, UserInstructions};
+use crate::services::{
+    CompanionService, InstructionService, UpdateInstructionsRequest, UserInstructions,
+};
 use axum::{
     extract::{Path, Query, State},
     http::StatusCode,
@@ -8,7 +10,6 @@ use axum::{
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use tracing::{error, info};
-use uuid::Uuid;
 
 // ============================================================================
 // App State
@@ -17,6 +18,7 @@ use uuid::Uuid;
 #[derive(Clone)]
 pub struct InstructionAppState {
     pub instruction_service: Arc<InstructionService>,
+    pub companion_service: Arc<CompanionService>,
 }
 
 // ============================================================================
@@ -77,15 +79,15 @@ impl IntoResponse for InstructionError {
 // Handlers
 // ============================================================================
 
-/// Get user instructions for a companion
+/// Get user instructions for a companion by muse_id (NFT token ID)
 pub async fn get_instructions_handler(
     State(state): State<InstructionAppState>,
-    Path(companion_id): Path<Uuid>,
+    Path(muse_id): Path<i64>,
     Query(query): Query<GetInstructionsQuery>,
 ) -> Result<Json<InstructionsResponse>, InstructionError> {
     info!(
-        "Getting instructions for companion {} and user {}",
-        companion_id, query.user_address
+        "Getting instructions for muse_id {} and user {}",
+        muse_id, query.user_address
     );
 
     if query.user_address.is_empty() {
@@ -94,9 +96,22 @@ pub async fn get_instructions_handler(
         ));
     }
 
+    // Look up companion by muse_id
+    let companion = state
+        .companion_service
+        .get_companion_by_muse_id(muse_id)
+        .await
+        .map_err(|e| {
+            error!("Failed to get companion: {}", e);
+            InstructionError::InternalError(e.to_string())
+        })?
+        .ok_or_else(|| {
+            InstructionError::NotFound(format!("Companion with muse_id {} not found", muse_id))
+        })?;
+
     let instructions = state
         .instruction_service
-        .get_instructions(companion_id, &query.user_address)
+        .get_instructions(companion.id, &query.user_address)
         .await
         .map_err(|e| {
             error!("Failed to get instructions: {}", e);
@@ -110,15 +125,15 @@ pub async fn get_instructions_handler(
     }))
 }
 
-/// Update user instructions for a companion
+/// Update user instructions for a companion by muse_id (NFT token ID)
 pub async fn update_instructions_handler(
     State(state): State<InstructionAppState>,
-    Path(companion_id): Path<Uuid>,
+    Path(muse_id): Path<i64>,
     Json(body): Json<UpdateInstructionsBody>,
 ) -> Result<Json<InstructionsResponse>, InstructionError> {
     info!(
-        "Updating instructions for companion {} and user {}",
-        companion_id, body.user_address
+        "Updating instructions for muse_id {} and user {}",
+        muse_id, body.user_address
     );
 
     if body.user_address.is_empty() {
@@ -127,16 +142,32 @@ pub async fn update_instructions_handler(
         ));
     }
 
+    // Look up companion by muse_id
+    let companion = state
+        .companion_service
+        .get_companion_by_muse_id(muse_id)
+        .await
+        .map_err(|e| {
+            error!("Failed to get companion: {}", e);
+            InstructionError::InternalError(e.to_string())
+        })?
+        .ok_or_else(|| {
+            InstructionError::NotFound(format!("Companion with muse_id {} not found", muse_id))
+        })?;
+
     let instructions = state
         .instruction_service
-        .upsert_instructions(companion_id, &body.user_address, &body.instructions)
+        .upsert_instructions(companion.id, &body.user_address, &body.instructions)
         .await
         .map_err(|e| {
             error!("Failed to update instructions: {}", e);
             InstructionError::InternalError(e.to_string())
         })?;
 
-    info!("Instructions updated successfully");
+    info!(
+        "Instructions updated successfully for companion {}",
+        companion.name
+    );
 
     Ok(Json(InstructionsResponse {
         success: true,
@@ -145,15 +176,15 @@ pub async fn update_instructions_handler(
     }))
 }
 
-/// Delete user instructions for a companion
+/// Delete user instructions for a companion by muse_id (NFT token ID)
 pub async fn delete_instructions_handler(
     State(state): State<InstructionAppState>,
-    Path(companion_id): Path<Uuid>,
+    Path(muse_id): Path<i64>,
     Query(query): Query<GetInstructionsQuery>,
 ) -> Result<Json<InstructionsResponse>, InstructionError> {
     info!(
-        "Deleting instructions for companion {} and user {}",
-        companion_id, query.user_address
+        "Deleting instructions for muse_id {} and user {}",
+        muse_id, query.user_address
     );
 
     if query.user_address.is_empty() {
@@ -162,9 +193,22 @@ pub async fn delete_instructions_handler(
         ));
     }
 
+    // Look up companion by muse_id
+    let companion = state
+        .companion_service
+        .get_companion_by_muse_id(muse_id)
+        .await
+        .map_err(|e| {
+            error!("Failed to get companion: {}", e);
+            InstructionError::InternalError(e.to_string())
+        })?
+        .ok_or_else(|| {
+            InstructionError::NotFound(format!("Companion with muse_id {} not found", muse_id))
+        })?;
+
     let deleted = state
         .instruction_service
-        .delete_instructions(companion_id, &query.user_address)
+        .delete_instructions(companion.id, &query.user_address)
         .await
         .map_err(|e| {
             error!("Failed to delete instructions: {}", e);
@@ -194,7 +238,7 @@ use axum::Router;
 pub fn instruction_routes(state: InstructionAppState) -> Router {
     Router::new()
         .route(
-            "/api/companions/:companion_id/instructions",
+            "/api/companions/{muse_id}/instructions",
             get(get_instructions_handler)
                 .put(update_instructions_handler)
                 .delete(delete_instructions_handler),
