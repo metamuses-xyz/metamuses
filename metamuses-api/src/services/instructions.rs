@@ -338,6 +338,22 @@ impl InstructionService {
         user_address: &str,
         req: &UpdateInstructionsRequest,
     ) -> Result<UserInstructions> {
+        let user_address_lower = user_address.to_lowercase();
+
+        // First, ensure the user exists (upsert user)
+        sqlx::query(
+            r#"
+            INSERT INTO users (wallet_address)
+            VALUES ($1)
+            ON CONFLICT (wallet_address) DO UPDATE SET
+                last_active = NOW()
+            "#,
+        )
+        .bind(&user_address_lower)
+        .execute(&self.pool)
+        .await
+        .context("Failed to upsert user")?;
+
         let communication_style = req
             .communication_style
             .as_ref()
@@ -394,7 +410,7 @@ impl InstructionService {
             "#,
         )
         .bind(companion_id)
-        .bind(user_address.to_lowercase())
+        .bind(&user_address_lower)
         .bind(&req.custom_instructions)
         .bind(&communication_style)
         .bind(&response_length)
