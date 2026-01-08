@@ -10,7 +10,7 @@ import "../src/PluginMarketplace.sol";
  *
  * Usage:
  *   forge script script/DeployPluginMarketplace.s.sol:DeployPluginMarketplace \
- *     --rpc-url https://hyperion-testnet.metisdevops.link \
+ *     --rpc-url https://hyperion-testnet.metis.io \
  *     --private-key $PRIVATE_KEY \
  *     --broadcast --legacy -vv
  *

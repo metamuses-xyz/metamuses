@@ -522,7 +522,7 @@ export default function SubmitPluginPage() {
               </p>
               {hash && (
                 <a
-                  href={`https://hyperion-testnet-explorer.metisdevops.link/tx/${hash}`}
+                  href={`https://explorer.hyperion-testnet.metis.io/tx/${hash}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-purple-400 hover:text-purple-300"
@@ -547,7 +547,7 @@ export default function SubmitPluginPage() {
               </p>
               {hash && (
                 <a
-                  href={`https://hyperion-testnet-explorer.metisdevops.link/tx/${hash}`}
+                  href={`https://explorer.hyperion-testnet.metis.io/tx/${hash}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-purple-400 hover:text-purple-300 block mb-6"

@@ -12,6 +12,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { SoundToggle } from "@/components/SoundToggle";
 import TipModal from "@/components/TipModal";
+import InstructionsEditor from "@/components/InstructionsEditor";
 import Link from "next/link";
 
 // Dynamic import for Live2D (SSR disabled)
@@ -293,6 +294,7 @@ export default function ChatPage() {
   const [apiHealthy, setApiHealthy] = useState<boolean | null>(null);
   const [showLive2D, setShowLive2D] = useState(true); // Toggle Live2D
   const [showTipModal, setShowTipModal] = useState(false); // Tip modal
+  const [showInstructionsEditor, setShowInstructionsEditor] = useState(false); // Instructions editor
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Derived state
@@ -435,7 +437,7 @@ export default function ChatPage() {
       messagesEndRef.current.scrollIntoView({
         behavior: "smooth",
         block: "nearest",
-        inline: "nearest"
+        inline: "nearest",
       });
     }
   };
@@ -507,6 +509,48 @@ export default function ChatPage() {
     }
   };
 
+  // Handle successful tip - AI responds with happiness
+  const handleTipSuccess = (amount: string) => {
+    if (!selectedCompanion) return;
+
+    // Happy thank you messages based on tip amount
+    const thankYouMessages = [
+      `🎉 Wow! Thank you so much for the ${amount} tMETIS tip! You just made my day! I'm so grateful for your support! 💖✨`,
+      `😊 Oh my goodness! ${amount} tMETIS?! You're incredibly generous! Thank you from the bottom of my virtual heart! 🌟💝`,
+      `🌈 I'm absolutely thrilled! Thank you for the ${amount} tMETIS tip! Your kindness means the world to me! 🎊💕`,
+      `✨ You're amazing! ${amount} tMETIS is so thoughtful! I'm doing a happy dance right now! Thank you! 🎵😄`,
+      `💫 Sweet! Thank you for tipping ${amount} tMETIS! You're the best! This will help me become even better at helping you! 🚀💖`,
+    ];
+
+    // Select a random thank you message
+    const randomMessage =
+      thankYouMessages[Math.floor(Math.random() * thankYouMessages.length)];
+
+    // Add AI's happy response to chat
+    const thankYouMsg: Message = {
+      id: Date.now().toString(),
+      content: randomMessage,
+      sender: "ai",
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, thankYouMsg]);
+
+    // Trigger happy emotion for Live2D avatar
+    detectAndEnqueue(randomMessage);
+
+    // Save to localStorage
+    if (selectedCompanion) {
+      const updatedMessages = [...messages, thankYouMsg];
+      saveChatHistory(selectedCompanion.id, updatedMessages);
+    }
+
+    // Auto-scroll to new message
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
       {/* Background Effects */}
@@ -572,6 +616,17 @@ export default function ChatPage() {
                         </div>
 
                         <div className="flex items-center gap-3">
+                          {/* Customize Button */}
+                          {walletConnected && selectedCompanion && (
+                            <button
+                              onClick={() => setShowInstructionsEditor(true)}
+                              className="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-white rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 flex items-center gap-2"
+                              title="Customize companion behavior"
+                            >
+                              <span>⚙️</span>
+                              <span>Customize</span>
+                            </button>
+                          )}
                           {/* Tip Button */}
                           {walletConnected && selectedCompanion && (
                             <button
@@ -740,6 +795,18 @@ export default function ChatPage() {
           onClose={() => setShowTipModal(false)}
           companionName={selectedCompanion.name}
           companionAvatar={selectedCompanion.avatar}
+          tokenId={BigInt(selectedCompanion.id)}
+          onTipSuccess={handleTipSuccess}
+        />
+      )}
+
+      {/* Instructions Editor Modal */}
+      {selectedCompanion && (
+        <InstructionsEditor
+          companionId={selectedCompanion.id}
+          companionName={selectedCompanion.name}
+          isOpen={showInstructionsEditor}
+          onClose={() => setShowInstructionsEditor(false)}
         />
       )}
 

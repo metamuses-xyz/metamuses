@@ -133,7 +133,7 @@ impl Config {
 
             openai_api_key: env::var("OPENAI_API_KEY").ok(),
             rpc_url: env::var("RPC_URL")
-                .unwrap_or_else(|_| "https://hyperion-testnet.metisdevops.link".to_string()),
+                .unwrap_or_else(|_| "https://hyperion-testnet.metis.io".to_string()),
             private_key: env::var("PRIVATE_KEY").unwrap_or_else(|_| "".to_string()),
             ipfs_jwt_token: env::var("IPFS_JWT_TOKEN").unwrap_or_else(|_| "".to_string()),
 
@@ -144,7 +144,7 @@ impl Config {
                 .unwrap_or_else(|_| "133717".to_string())
                 .parse()?,
             explorer_base_url: env::var("EXPLORER_BASE_URL")
-                .unwrap_or_else(|_| "https://hyperion-testnet-explorer.metisdevops.link".to_string()),
+                .unwrap_or_else(|_| "https://explorer.hyperion-testnet.metis.io".to_string()),
 
             // Worker process configuration
             // Default: 8 workers × 2 threads = 16 vCPU for maximum concurrency with 0.5B model

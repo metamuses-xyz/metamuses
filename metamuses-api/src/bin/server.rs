@@ -4,7 +4,10 @@
 
 use metamuses_api::{
     api::{
-        companion_chat_handlers::{companion_chat_handler, CompanionAppState, CompanionChatMetrics},
+        companion_chat_handlers::{
+            companion_chat_handler, CompanionAppState, CompanionChatMetrics,
+        },
+        instruction_handlers::{instruction_routes, InstructionAppState},
         middleware::{add_request_id, cors_layer, request_logger},
         mint_handlers::{gasless_mint_handler, get_nonce_handler, MintAppState},
         points_handlers::{points_routes, PointsAppState},
@@ -15,7 +18,7 @@ use metamuses_api::{
     points::{LeaderboardService, PointsService, TwitterVerificationService},
     queue::RedisQueueManager,
     routing::IntelligentRouter,
-    services::{CompanionService, InteractionStatsService, MemoryService},
+    services::{CompanionService, InstructionService, InteractionStatsService, MemoryService},
 };
 
 use axum::{
@@ -34,19 +37,25 @@ use tracing::{error, info, warn};
 
 /// Simple health check handler (stateless)
 async fn health_handler_simple() -> (StatusCode, Json<serde_json::Value>) {
-    (StatusCode::OK, Json(json!({
-        "status": "healthy",
-        "service": "metamuses-api",
-        "version": env!("CARGO_PKG_VERSION")
-    })))
+    (
+        StatusCode::OK,
+        Json(json!({
+            "status": "healthy",
+            "service": "metamuses-api",
+            "version": env!("CARGO_PKG_VERSION")
+        })),
+    )
 }
 
 /// Simple metrics handler (stateless)
 async fn metrics_handler_simple() -> (StatusCode, Json<serde_json::Value>) {
-    (StatusCode::OK, Json(json!({
-        "status": "ok",
-        "message": "Metrics endpoint - use Prometheus scraping"
-    })))
+    (
+        StatusCode::OK,
+        Json(json!({
+            "status": "ok",
+            "message": "Metrics endpoint - use Prometheus scraping"
+        })),
+    )
 }
 
 #[tokio::main]
@@ -60,7 +69,10 @@ async fn main() -> anyhow::Result<()> {
 
     info!("╔════════════════════════════════════════╗");
     info!("║   MetaMuses AI Inference API Server   ║");
-    info!("║              v{}                 ║", env!("CARGO_PKG_VERSION"));
+    info!(
+        "║              v{}                 ║",
+        env!("CARGO_PKG_VERSION")
+    );
     info!("╚════════════════════════════════════════╝");
 
     // Load configuration
@@ -78,9 +90,7 @@ async fn main() -> anyhow::Result<()> {
 
     // Run database migrations
     info!("Running database migrations...");
-    sqlx::migrate!("./migrations")
-        .run(&pool)
-        .await?;
+    sqlx::migrate!("./migrations").run(&pool).await?;
     info!("✓ Database migrations complete");
 
     // Initialize Redis client for memory service
@@ -89,15 +99,14 @@ async fn main() -> anyhow::Result<()> {
 
     // Test Redis connection
     let mut redis_conn = redis_client.get_multiplexed_async_connection().await?;
-    redis::cmd("PING").query_async::<String>(&mut redis_conn).await?;
+    redis::cmd("PING")
+        .query_async::<String>(&mut redis_conn)
+        .await?;
     info!("✓ Redis connection established");
 
     // Initialize Redis queue manager (for job queue)
-    let queue_manager = RedisQueueManager::new(
-        &config.redis_url,
-        config.redis_queue_prefix.clone(),
-    )
-    .await?;
+    let queue_manager =
+        RedisQueueManager::new(&config.redis_url, config.redis_queue_prefix.clone()).await?;
     info!("✓ Redis queue manager initialized");
 
     // Initialize semantic cache (optional - continues without if Qdrant unavailable)
@@ -138,31 +147,29 @@ async fn main() -> anyhow::Result<()> {
     info!("Initializing companion services...");
 
     // Memory service (Redis + PostgreSQL)
-    let memory_service = Arc::new(MemoryService::new(
-        redis_client.clone(),
-        pool.clone(),
-    ));
+    let memory_service = Arc::new(MemoryService::new(redis_client.clone(), pool.clone()));
     info!("✓ Memory service initialized (Redis short-term + PostgreSQL long-term)");
 
     // Companion service (NFT verification + DB)
-    let companion_service = match CompanionService::new(
-        pool.clone(),
-        &config.rpc_url,
-        &config.contract_address,
-    ) {
-        Ok(s) => {
-            info!("✓ Companion service initialized");
-            Arc::new(s)
-        }
-        Err(e) => {
-            error!("Failed to initialize companion service: {}", e);
-            return Err(e);
-        }
-    };
+    let companion_service =
+        match CompanionService::new(pool.clone(), &config.rpc_url, &config.contract_address) {
+            Ok(s) => {
+                info!("✓ Companion service initialized");
+                Arc::new(s)
+            }
+            Err(e) => {
+                error!("Failed to initialize companion service: {}", e);
+                return Err(e);
+            }
+        };
 
     // Interaction stats service
     let interaction_stats_service = Arc::new(InteractionStatsService::new(pool.clone()));
     info!("✓ Interaction stats service initialized");
+
+    // Instruction service for user preferences
+    let instruction_service = Arc::new(InstructionService::new(pool.clone()));
+    info!("✓ Instruction service initialized");
 
     // Points and leaderboard services
     info!("Initializing points system...");
@@ -174,8 +181,9 @@ async fn main() -> anyhow::Result<()> {
     // Create companion app state (for all handlers)
     let app_state = CompanionAppState {
         router: router.clone(),
-        companion_service,
+        companion_service: companion_service.clone(),
         memory_service,
+        instruction_service: instruction_service.clone(),
         interaction_stats_service,
         start_time: std::time::Instant::now(),
         metrics: Arc::new(RwLock::new(CompanionChatMetrics::default())),
@@ -205,6 +213,12 @@ async fn main() -> anyhow::Result<()> {
         points_service,
     };
 
+    // Create instruction app state
+    let instruction_state = InstructionAppState {
+        instruction_service: instruction_service.clone(),
+        companion_service: companion_service.clone(),
+    };
+
     info!("Building API routes...");
 
     // Build the router with companion chat handler
@@ -222,12 +236,14 @@ async fn main() -> anyhow::Result<()> {
                 // Gasless mint endpoints
                 .route("/api/mint/nonce", post(get_nonce_handler))
                 .route("/api/mint/gasless", post(gasless_mint_handler))
-                .with_state(mint_state)
+                .with_state(mint_state),
         )
         // Merge points routes
         .merge(points_routes(points_state))
         // Merge twitter routes
         .merge(twitter_routes(twitter_state))
+        // Merge instruction routes
+        .merge(instruction_routes(instruction_state))
         // Add middleware
         .layer(middleware::from_fn(request_logger))
         .layer(middleware::from_fn(add_request_id))
@@ -264,6 +280,9 @@ async fn main() -> anyhow::Result<()> {
     info!("  • GET  /api/twitter/verification/:address   - Get Twitter verification");
     info!("  • POST /api/twitter/complete                - Complete Twitter task");
     info!("  • GET  /api/twitter/completions/:address    - Get user Twitter completions");
+    info!("  • GET  /api/companions/:id/instructions     - Get user instructions");
+    info!("  • PUT  /api/companions/:id/instructions     - Update user instructions");
+    info!("  • DEL  /api/companions/:id/instructions     - Delete user instructions");
     info!("  • GET  /ws                                  - WebSocket streaming");
     info!("");
     info!("Memory System:");

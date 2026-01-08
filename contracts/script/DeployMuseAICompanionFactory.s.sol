@@ -12,7 +12,7 @@ import "../src/companions/IMuseAICompanion.sol";
  *
  * Usage:
  *   forge script script/DeployMuseAICompanionFactory.s.sol:DeployMuseAICompanionFactory \
- *     --rpc-url https://hyperion-testnet.metisdevops.link \
+ *     --rpc-url https://hyperion-testnet.metis.io \
  *     --private-key $PRIVATE_KEY \
  *     --broadcast --legacy -vv
  *

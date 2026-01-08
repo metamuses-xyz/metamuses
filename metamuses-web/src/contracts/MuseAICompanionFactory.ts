@@ -2,7 +2,7 @@ import { Address } from "viem";
 
 // MuseAI Companion Factory Contract - Deployed on Metis Hyperion Testnet
 // Contract: 0x0195F6e8F1e37816c557c71AA36b46333E6d2E7A
-// Explorer: https://hyperion-testnet-explorer.metisdevops.link/address/0x0195F6e8F1e37816c557c71AA36b46333E6d2E7A
+// Explorer: https://explorer.hyperion-testnet.metis.io/address/0x0195F6e8F1e37816c557c71AA36b46333E6d2E7A
 // Deployed: December 18, 2025
 
 export const COMPANION_FACTORY_ADDRESS: Address =

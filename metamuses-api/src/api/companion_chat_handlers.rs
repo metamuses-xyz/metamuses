@@ -1,7 +1,7 @@
 use crate::api::types::*;
 use crate::models::{Interaction, InteractionType, Message};
 use crate::routing::IntelligentRouter;
-use crate::services::{CompanionService, MemoryService, PersonalityEngine};
+use crate::services::{CompanionService, InstructionService, MemoryService, PersonalityEngine};
 use crate::types::{InferenceRequest, ModelTier};
 use axum::{
     extract::State,
@@ -22,6 +22,7 @@ pub struct CompanionAppState {
     pub router: Arc<IntelligentRouter>,
     pub companion_service: Arc<CompanionService>,
     pub memory_service: Arc<MemoryService>,
+    pub instruction_service: Arc<InstructionService>,
     pub interaction_stats_service: Arc<crate::services::InteractionStatsService>,
     pub start_time: std::time::Instant,
     pub metrics: Arc<tokio::sync::RwLock<CompanionChatMetrics>>,
@@ -160,10 +161,37 @@ pub async fn companion_chat_handler(
         context.facts.len()
     );
 
-    // STEP 4: Generate personality-adapted system prompt
-    let system_prompt = PersonalityEngine::generate_system_prompt(&companion);
+    // STEP 4: Fetch user instructions
+    let effective_instructions = state
+        .instruction_service
+        .get_effective_instructions(companion.id, &req.user_address)
+        .await
+        .unwrap_or_else(|e| {
+            error!("Failed to get user instructions: {}", e);
+            crate::services::EffectiveInstructions::default()
+        });
 
-    // STEP 5: Build conversation history for prompt
+    info!(
+        "User instructions loaded: style={:?}, length={:?}, custom={}",
+        effective_instructions.communication_style,
+        effective_instructions.response_length,
+        effective_instructions.custom_instructions.is_some()
+    );
+
+    // STEP 5: Generate personality-adapted system prompt with user instructions
+    let base_system_prompt = PersonalityEngine::generate_system_prompt(&companion);
+    let instruction_segment = effective_instructions.to_prompt_segment();
+
+    let system_prompt = if instruction_segment.is_empty() {
+        base_system_prompt
+    } else {
+        format!(
+            "{}\n\n--- User Preferences ---\n{}",
+            base_system_prompt, instruction_segment
+        )
+    };
+
+    // STEP 6: Build conversation history for prompt
     let mut conversation_history = context.messages.clone();
 
     // Add greeting if first conversation
@@ -175,7 +203,7 @@ pub async fn companion_chat_handler(
         req.query.clone()
     };
 
-    // STEP 6: Store user message
+    // STEP 7: Store user message
     let user_message = Message::user(companion.id, req.user_address.clone(), req.query.clone());
     state
         .memory_service
@@ -186,7 +214,7 @@ pub async fn companion_chat_handler(
 
     conversation_history.push(user_message.clone());
 
-    // STEP 7: Create inference request with personality context
+    // STEP 8: Create inference request with personality context
     let traits = crate::models::Traits::from(&companion);
     let personality_traits = crate::types::PersonalityTraits {
         creativity: traits.creativity,
@@ -222,7 +250,7 @@ pub async fn companion_chat_handler(
         created_at: chrono::Utc::now().timestamp(),
     };
 
-    // STEP 8: Execute inference
+    // STEP 9: Execute inference
     let result = state
         .router
         .route_and_execute(inference_req)
@@ -234,7 +262,7 @@ pub async fn companion_chat_handler(
 
     let latency_ms = start.elapsed().as_millis() as u64;
 
-    // STEP 9: Store AI response
+    // STEP 10: Store AI response
     let assistant_message = Message::assistant(
         companion.id,
         req.user_address.clone(),
@@ -251,7 +279,7 @@ pub async fn companion_chat_handler(
         .map_err(|e| error!("Failed to store assistant message: {}", e))
         .ok();
 
-    // STEP 9.5: Track personality trait evolution
+    // STEP 10.5: Track personality trait evolution
     use crate::services::PersonalityEngine;
     let current_traits = crate::models::Traits::from(&companion);
     let trait_adjustments =
@@ -279,7 +307,7 @@ pub async fn companion_chat_handler(
         .map_err(|e| error!("Failed to update interaction stats: {}", e))
         .ok();
 
-    // STEP 10: Award XP
+    // STEP 11: Award XP
     const XP_PER_MESSAGE: i64 = 10;
     let updated_companion = state
         .companion_service
@@ -291,7 +319,7 @@ pub async fn companion_chat_handler(
     let level_up = updated_companion.level > companion.level;
     let xp_gained = XP_PER_MESSAGE;
 
-    // STEP 10.5: Apply personality evolution on level-up
+    // STEP 11.5: Apply personality evolution on level-up
     let mut final_companion = updated_companion.clone();
     if level_up {
         info!(
@@ -370,7 +398,7 @@ pub async fn companion_chat_handler(
         }
     });
 
-    // STEP 11: Update metrics
+    // STEP 12: Update metrics
     {
         let mut metrics = state.metrics.write().await;
         metrics.total_requests += 1;
@@ -390,7 +418,7 @@ pub async fn companion_chat_handler(
         }
     }
 
-    // STEP 12: Build response
+    // STEP 13: Build response
     let personality_summary = PersonalityEngine::get_personality_summary(&updated_companion);
 
     let response = CompanionChatResponse {

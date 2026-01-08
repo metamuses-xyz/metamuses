@@ -2,7 +2,7 @@ import { Address } from "viem";
 
 // PluginMarketplace Contract - Deployed on Metis Hyperion Testnet
 // Contract: <TO_BE_DEPLOYED>
-// Explorer: https://hyperion-testnet-explorer.metisdevops.link/address/<ADDRESS>
+// Explorer: https://explorer.hyperion-testnet.metis.io/address/<ADDRESS>
 // NOTE: Update address after deployment
 
 export const PLUGIN_MARKETPLACE_ADDRESS: Address =

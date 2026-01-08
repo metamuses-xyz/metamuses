@@ -2,7 +2,7 @@ import { Address } from "viem";
 
 // MuseAI NFT Contract - Deployed on Metis Hyperion Testnet
 // Contract: 0xDE9439ECF60fD291957a5E6c8220FFd8c952f9bA
-// Explorer: https://hyperion-testnet-explorer.metisdevops.link/address/0xDE9439ECF60fD291957a5E6c8220FFd8c952f9bA
+// Explorer: https://explorer.hyperion-testnet.metis.io/address/0xDE9439ECF60fD291957a5E6c8220FFd8c952f9bA
 // Deployed: December 5, 2025
 
 export const MUSE_AI_ADDRESS: Address = "0xDE9439ECF60fD291957a5E6c8220FFd8c952f9bA";
