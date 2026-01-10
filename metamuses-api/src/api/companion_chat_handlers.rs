@@ -24,6 +24,8 @@ pub struct CompanionAppState {
     pub memory_service: Arc<MemoryService>,
     pub instruction_service: Arc<InstructionService>,
     pub interaction_stats_service: Arc<crate::services::InteractionStatsService>,
+    pub redis_client: Arc<redis::Client>,
+    pub rate_limiter: Arc<crate::api::middleware::RateLimiter>,
     pub start_time: std::time::Instant,
     pub metrics: Arc<tokio::sync::RwLock<CompanionChatMetrics>>,
 }
@@ -65,6 +67,29 @@ pub async fn companion_chat_handler(
     if req.user_address.is_empty() {
         return Err(AppError::BadRequest("User address is required".to_string()));
     }
+
+    // STEP 0A: Rate limiting check (before expensive auth)
+    if !state.rate_limiter.check(&req.user_address.to_lowercase()).await {
+        return Err(AppError::TooManyRequests(
+            "Rate limit exceeded. Please wait before sending another message.".to_string()
+        ));
+    }
+
+    // STEP 0B: Authenticate request (EIP-712 signature verification)
+    let _verified_address = crate::api::auth::authenticate_chat_request(
+        &state.redis_client,
+        &req.user_address,
+        req.timestamp,
+        req.nonce.as_deref(),
+        req.signature.as_deref(),
+    )
+    .await
+    .map_err(|e| {
+        error!("Authentication failed: {}", e);
+        AppError::Unauthorized(format!("Authentication failed: {}", e))
+    })?;
+
+    info!("✓ Request authenticated for {}", req.user_address);
 
     let request_id = Uuid::new_v4();
     let start = std::time::Instant::now();
@@ -488,6 +513,7 @@ pub enum AppError {
     BadRequest(String),
     Unauthorized(String),
     NotFound(String),
+    TooManyRequests(String),
     InternalError(String),
 }
 
@@ -497,6 +523,7 @@ impl IntoResponse for AppError {
             AppError::BadRequest(msg) => (StatusCode::BAD_REQUEST, "bad_request", msg),
             AppError::Unauthorized(msg) => (StatusCode::UNAUTHORIZED, "unauthorized", msg),
             AppError::NotFound(msg) => (StatusCode::NOT_FOUND, "not_found", msg),
+            AppError::TooManyRequests(msg) => (StatusCode::TOO_MANY_REQUESTS, "rate_limit_exceeded", msg),
             AppError::InternalError(msg) => {
                 (StatusCode::INTERNAL_SERVER_ERROR, "internal_error", msg)
             }

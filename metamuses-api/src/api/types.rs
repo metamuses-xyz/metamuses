@@ -29,6 +29,18 @@ pub struct ChatRequest {
     /// User's query/message
     pub query: String,
 
+    /// EIP-712 signature for authentication (required)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub signature: Option<String>,
+
+    /// Unix timestamp when signature was created (required)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<u64>,
+
+    /// Unique nonce for replay protection (required)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nonce: Option<String>,
+
     /// Conversation context (previous messages)
     #[serde(default)]
     pub context: Vec<ChatMessage>,

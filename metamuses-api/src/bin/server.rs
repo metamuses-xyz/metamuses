@@ -8,7 +8,7 @@ use metamuses_api::{
             companion_chat_handler, CompanionAppState, CompanionChatMetrics,
         },
         instruction_handlers::{instruction_routes, InstructionAppState},
-        middleware::{add_request_id, cors_layer, request_logger},
+        middleware::{add_request_id, cors_layer, request_logger, RateLimiter},
         mint_handlers::{gasless_mint_handler, get_nonce_handler, MintAppState},
         points_handlers::{points_routes, PointsAppState},
         twitter_handlers::{twitter_routes, TwitterAppState},
@@ -178,6 +178,10 @@ async fn main() -> anyhow::Result<()> {
     let twitter_service = Arc::new(TwitterVerificationService::new(pool.clone()));
     info!("✓ Points system initialized");
 
+    // Initialize rate limiter (40 requests per minute as per user config)
+    let rate_limiter = Arc::new(RateLimiter::new(40));
+    info!("✓ Rate limiter initialized (40 requests/minute per address)");
+
     // Create companion app state (for all handlers)
     let app_state = CompanionAppState {
         router: router.clone(),
@@ -185,6 +189,8 @@ async fn main() -> anyhow::Result<()> {
         memory_service,
         instruction_service: instruction_service.clone(),
         interaction_stats_service,
+        redis_client: redis_client.clone(),
+        rate_limiter,
         start_time: std::time::Instant::now(),
         metrics: Arc::new(RwLock::new(CompanionChatMetrics::default())),
     };
@@ -293,6 +299,12 @@ async fn main() -> anyhow::Result<()> {
     info!("  • Backend subsidizes gas fees");
     info!("  • EIP-712 signature verification");
     info!("  • Replay protection with nonces");
+    info!("");
+    info!("Chat API Protection:");
+    info!("  • EIP-712 signature authentication required");
+    info!("  • Rate limiting: 40 requests/minute per address");
+    info!("  • Nonce-based replay attack protection");
+    info!("  • Timestamp validation (5-minute window)");
     info!("");
     info!("Points & Leaderboard System:");
     info!("  • Daily check-in with streak bonuses (1.0x → 2.0x)");
